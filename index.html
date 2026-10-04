@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>PIOTR OS — Absolute Brainrot Edition</title>
+<title>PIOTREK OS — Absolute Brainrot Edition</title>
 
 <style>
 :root{
@@ -1061,6 +1061,49 @@ td,th{
     display:none;
   }
 }
+
+
+/* =========================================================
+   PIOTREK OS 6 — SYSTEM UI EXTENSION
+========================================================= */
+.system-status-popover{
+  position:fixed;right:10px;bottom:64px;width:min(380px,92vw);z-index:60000;
+  background:rgba(10,20,34,.97);border:1px solid #35506f;border-radius:16px;
+  box-shadow:0 25px 80px rgba(0,0,0,.55);padding:14px;backdrop-filter:blur(18px)
+}
+.system-status-popover h3{margin:3px 0 12px}
+.status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.status-tile{background:#101e31;border:1px solid #2a415e;border-radius:11px;padding:11px}
+.status-tile b{display:block;font-size:18px;margin-top:3px}
+.start-profile{display:flex;align-items:center;gap:10px;padding:10px;margin-bottom:10px;background:#122238;border:1px solid #29435f;border-radius:12px}
+.start-profile .avatar-mini{font-size:28px}
+.task-button{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.taskbar-separator{width:1px;height:28px;background:#3b5069;margin:0 3px}
+.explorer-toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:9px}
+.explorer-path{flex:1;min-width:180px}
+.file-card.system-file{outline:1px solid rgba(77,163,255,.2)}
+.network-meter{height:9px;border-radius:99px;background:#07101c;overflow:hidden;margin-top:6px}
+.network-meter>div{height:100%;background:linear-gradient(90deg,#2ed573,#4da3ff);transition:width .3s}
+.process-table{width:100%;border-collapse:collapse;font-size:13px}
+.process-table th,.process-table td{padding:7px;border-bottom:1px solid #23384f;text-align:left}
+.process-table tr:hover{background:#13263c}
+.tv-extra-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.tv-program-card{padding:9px;border:1px solid #2b415d;border-radius:9px;background:#101f32;cursor:pointer}
+.tv-program-card.active{border-color:var(--accent);background:#18324d}
+.cat-wall{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.cat-wall img{width:100%;height:105px;object-fit:cover;border-radius:10px;background:#0a1320}
+.browser-real-toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.browser-real-frame{width:100%;height:100%;min-height:380px;border:0;background:white;border-radius:8px}
+.reader{height:100%;overflow:auto;background:#f7f7f7;color:#111;padding:20px;border-radius:8px;user-select:text}
+.reader pre{white-space:pre-wrap;user-select:text}
+.reader a{color:#1558a6}
+.web-badge{font-size:11px;padding:3px 7px;border-radius:999px;background:#183b58;color:#9ed6ff}
+.defender-ok{color:#2ed573}.defender-warn{color:#ffa502}.defender-danger{color:#ff4757}
+.uac{padding:22px;background:linear-gradient(145deg,#122238,#0b1422);border:1px solid #426180;border-radius:15px}
+.bios-menu{font-family:Consolas,monospace;background:#050a06;color:#64ff7a;border:1px solid #1b7130;padding:16px;border-radius:10px}
+.bios-menu .bios-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #184b25}
+@media(max-width:700px){.cat-wall{grid-template-columns:repeat(2,1fr)}.tv-extra-grid{grid-template-columns:1fr}.status-grid{grid-template-columns:1fr}.task-button{max-width:130px}}
+
 </style>
 </head>
 
@@ -1075,7 +1118,7 @@ td,th{
   <div class="boot-noise"></div>
 
   <div class="boot-content">
-    <div class="boot-logo">PIOTR OS</div>
+    <div class="boot-logo">PIOTREK OS</div>
     <div class="boot-sub">ABSOLUTE BRAINROT EDITION // KERNEL 5.0</div>
 
     <div class="boot-terminal" id="bootTerminal"></div>
@@ -1100,7 +1143,7 @@ td,th{
 <div id="login" class="hidden">
   <div class="login-card">
     <div class="avatar">🧑‍💻</div>
-    <h1>Piotr</h1>
+    <h1>Piotrek</h1>
     <p>Administrator systemu</p>
 
     <input
@@ -1155,6 +1198,7 @@ td,th{
         placeholder="Szukaj aplikacji..."
       >
 
+      <div class="start-profile"><div class="avatar-mini">🧑‍💻</div><div><b>Piotrek</b><br><small class="muted">Administrator systemu</small></div></div>
       <div class="start-grid" id="startApps"></div>
 
       <div class="panel" style="margin-top:10px">
@@ -1173,6 +1217,8 @@ td,th{
 
     <div class="tray">
       <div class="tray-item" id="networkTray">🌐</div>
+      <div class="tray-item" id="batteryTray">🔋 87%</div>
+      <div class="tray-item" id="volumeTray">🔊</div>
       <div class="tray-item" id="chaosTray">CHAOS 0%</div>
       <div class="tray-item" id="moneyTray">₱ 0</div>
       <div class="tray-item" id="trayClock">00:00</div>
@@ -1187,17 +1233,18 @@ td,th{
 "use strict";
 
 /* ============================================================
-   PIOTR OS 5.0
+   PIOTREK OS 5.0
    Wszystko lokalnie.
    Bez bibliotek.
    Bez API.
    Bez zewnętrznych plików.
 ============================================================ */
 
-const STORAGE_KEY = "piotrOS5_absolute_brainrot";
+const STORAGE_KEY = "piotrOS6_absolute_brainrot";
+const LEGACY_STORAGE_KEY = "piotrOS5_absolute_brainrot";
 
 const DEFAULT_STATE = {
-  version:5,
+  version:6,
   firstRun:true,
   sessions:0,
   lastSeen:null,
@@ -1235,8 +1282,21 @@ const DEFAULT_STATE = {
   tvChannel:0,
   tvPaused:false,
   tvVolume:60,
+  tvProgram:0,
+  tvCatMode:true,
 
   botMemory:[],
+  browserSession:[],
+  networkOnline:true,
+  networkLatency:23,
+  battery:87,
+  volume:60,
+  activeUser:"Piotrek",
+  installedApps:["computer","internet","terminal","notes","tv","bot","task","games","wallet","settings","explorer","network","defender","systeminfo"],
+  updateVersion:"6.0.0",
+  updateHistory:[],
+  securityThreats:1,
+  recentFiles:[],
 
   files:null,
 
@@ -1319,12 +1379,12 @@ const APP = {
     fn:openAchievements
   },
   bot:{
-    name:"PiotrBot",
+    name:"PiotrekBot",
     icon:"🤖",
     fn:openBot
   },
   tv:{
-    name:"Piotr TV",
+    name:"Piotrek TV",
     icon:"📺",
     fn:openTV
   },
@@ -1420,7 +1480,7 @@ function clone(obj){
 
 function loadState(){
   try{
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
 
     if(!raw){
       const fresh = clone(DEFAULT_STATE);
@@ -1527,7 +1587,7 @@ function defaultFiles(){
       name:"README.txt",
       type:"file",
       parent:"desktop",
-      content:"Witaj w PIOTR OS.\nNie próbuj rozumieć systemu."
+      content:"Witaj w PIOTREK OS.\nNie próbuj rozumieć systemu."
     },
     {
       id:"notesfile",
@@ -1714,7 +1774,7 @@ function startBoot(){
     "[ OK ] Loading Duck Management Subsystem...",
     "[ OK ] Checking potato integrity...",
     "[ OK ] Mounting C:/...",
-    "[ OK ] Starting PiotrNet...",
+    "[ OK ] Starting PiotrekNet...",
     "[ OK ] Loading brainrot drivers...",
     "[ OK ] Searching for suspicious.exe...",
     "[WARN] suspicious.exe refuses to cooperate.",
@@ -1772,7 +1832,7 @@ function startBoot(){
     const statuses=[
       "Loading kernel...",
       "Mounting duck subsystem...",
-      "Negotiating with PiotrBot...",
+      "Negotiating with PiotrekBot...",
       "Generating reality...",
       "Pretending to optimize...",
       "Almost definitely working..."
@@ -1810,13 +1870,13 @@ function login(){
 
     if(state.sessions>1){
       notify(
-        "Piotr OS",
+        "Piotrek OS",
         "Wróciłeś. System pamięta poprzednią sesję."
       );
     }else{
       notify(
-        "Piotr OS",
-        "Witaj, Piotr. System jest stabilny w 38%."
+        "Piotrek OS",
+        "Witaj, Piotrek. System jest stabilny w 38%."
       );
     }
 
@@ -1873,7 +1933,7 @@ function shutdownSystem(){
       text-align:center;
     ">
       <div style="font-size:70px">⏻</div>
-      <h1>PIOTR OS został wyłączony.</h1>
+      <h1>PIOTREK OS został wyłączony.</h1>
       <p>Możesz zamknąć kartę.</p>
       <button onclick="location.reload()">URUCHOM PONOWNIE</button>
     </div>
@@ -2410,7 +2470,7 @@ function createFakeFile(){
     name,
     type:"file",
     parent:currentFolder,
-    content:"Nowy plik Piotr OS."
+    content:"Nowy plik Piotrek OS."
   });
 
   increaseChaos(1);
@@ -2658,7 +2718,7 @@ function openTerminal(){
         <div class="terminal-output" id="terminalOutput"></div>
 
         <div class="terminal-input-line">
-          <span>piotr@os:~$</span>
+          <span>piotrek@os:~$</span>
           <input class="terminal-input" id="terminalInput" autocomplete="off">
         </div>
       </div>
@@ -2671,7 +2731,7 @@ function openTerminal(){
   const input=win.querySelector("#terminalInput");
 
   terminalPrint(output,
-`PIOTR OS TERMINAL 5.0
+`PIOTREK OS TERMINAL 5.0
 Wpisz "help" aby zobaczyć komendy.
 System stability: ${Math.max(1,100-state.chaos)}%
 `);
@@ -2684,7 +2744,7 @@ System stability: ${Math.max(1,100-state.chaos)}%
 
       terminalPrint(
         output,
-        "piotr@os:~$ "+command
+        "piotrek@os:~$ "+command
       );
 
       input.value="";
@@ -2785,7 +2845,7 @@ Niektóre są jeszcze głupsze.`
 
     case "matrix":
       triggerMatrix();
-      terminalPrint(output,"Wake up, Piotr.");
+      terminalPrint(output,"Wake up, Piotrek.");
       break;
 
     case "secret":
@@ -2802,7 +2862,7 @@ Niektóre są jeszcze głupsze.`
       break;
 
     case "sudo":
-      terminalPrint(output,"Piotr is not in the sudoers file. Piotr is the sudoers file.");
+      terminalPrint(output,"Piotrek is not in the sudoers file. Piotr is the sudoers file.");
       increaseChaos(5);
       break;
 
@@ -2858,7 +2918,7 @@ Niektóre są jeszcze głupsze.`
     case "sysinfo":
       terminalPrint(
         output,
-`PIOTR OS 5.0
+`PIOTREK OS 5.0
 CPU: ${randomCPU()}%
 RAM: ${Math.round(30+state.chaos*.4)}%
 DISK: ${Math.round(27+state.sessions*1.7)}%
@@ -2871,7 +2931,7 @@ SESSION: ${state.sessions}
     case "ipconfig":
       terminalPrint(
         output,
-`Ethernet adapter PiotrNet:
+`Ethernet adapter PiotrekNet:
 IPv4: 192.168.0.420
 Gateway: 192.168.0.1
 DNS: 8.8.8.8-ish
@@ -2948,7 +3008,7 @@ Status: technically connected`
     case "format":
       terminalPrint(
         output,
-        "FORMAT C: CANCELED. Piotr OS odmawia współpracy."
+        "FORMAT C: CANCELED. Piotrek OS odmawia współpracy."
       );
       increaseChaos(8);
       break;
@@ -3009,7 +3069,7 @@ function generateProcessList(){
     "System",
     "explorer.exe",
     "piotr.exe",
-    "PiotrBot.exe",
+    "PiotrekBot.exe",
     "duck.exe",
     "svchost_potato.exe",
     "unknown.exe",
@@ -3064,7 +3124,7 @@ function killProcess(name,output){
 let browserTabs=[
   {
     id:1,
-    title:"PiotrNet",
+    title:"PiotrekNet",
     url:"home"
   }
 ];
@@ -3073,7 +3133,7 @@ let activeBrowserTab=1;
 
 function openInternet(){
   const win=createWindow(
-    "Internet — PiotrNet",
+    "Internet — PiotrekNet",
     "🌐",
     `
       <div class="browser">
@@ -3152,7 +3212,7 @@ function browserPage(url){
           <h3>🔥 Dzisiaj popularne</h3>
           <p>1. Kaczka tańcząca do techno</p>
           <p>2. Czy ziemniak ma świadomość?</p>
-          <p>3. PiotrBot odmawia pracy</p>
+          <p>3. PiotrekBot odmawia pracy</p>
           <p>4. UFO nad działką</p>
         </div>
 
@@ -3206,12 +3266,12 @@ function browserPage(url){
 
   if(url==="forum"){
     return `
-      <h1>💬 Forum PiotrNet</h1>
+      <h1>💬 Forum PiotrekNet</h1>
 
       ${[
         "Czy ktoś wie dlaczego mój monitor patrzy na mnie?",
         "Kaczka znowu chodzi po pulpicie",
-        "Czy warto inwestować w PiotrCoin?",
+        "Czy warto inwestować w PiotrekCoin?",
         "unknown.exe jest w moim System32",
         "Znalazłem portal. Żałuję."
       ].map((x,i)=>`
@@ -3239,7 +3299,7 @@ function browserPage(url){
       </div>
 
       <div class="net-card">
-        <b>PiotrBot</b>
+        <b>PiotrekBot</b>
         <p>
           "Nie jestem botem. Jestem stylem życia."
         </p>
@@ -3427,7 +3487,7 @@ function browserSearch(query){
 function searchResults(query){
   const facts=[
     "Kaczki mają więcej autorytetu niż system.",
-    "PiotrCoin jest bardzo stabilny, jeżeli nie patrzeć na wykres.",
+    "PiotrekCoin jest bardzo stabilny, jeżeli nie patrzeć na wykres.",
     "Ziemniak może być administratorem.",
     "Nie znaleziono dowodów, ale to nie znaczy, że ich nie ma.",
     "Twoje wyszukiwanie zostało zgłoszone do Kaczki."
@@ -3438,7 +3498,7 @@ function searchResults(query){
 
     ${facts.map((f,i)=>`
       <div class="net-card">
-        <h3>${i+1}. ${escapeHTML(query)} — PiotrNet</h3>
+        <h3>${i+1}. ${escapeHTML(query)} — PiotrekNet</h3>
         <p>${f}</p>
         <button onclick="searchRabbitHole()">WEJDŹ GŁĘBIEJ</button>
       </div>
@@ -3470,7 +3530,7 @@ function browserHome(){
 
   if(tab){
     tab.url="home";
-    tab.title="PiotrNet";
+    tab.title="PiotrekNet";
   }
 
   renderBrowser();
@@ -3490,7 +3550,7 @@ function browserBack(){
 
 function browserForward(){
   notify(
-    "PiotrNet",
+    "PiotrekNet",
     "Przyszłość nie została jeszcze zaimplementowana."
   );
 }
@@ -3568,7 +3628,7 @@ function algorithmPrediction(){
     "Za 7 sekund klikniesz coś dziwnego.",
     "System uważa, że lubisz kaczki.",
     "Masz 94% szans na otwarcie kolejnej aplikacji.",
-    "PiotrNet wie, że nie powinieneś klikać NIE KLIKAJ.",
+    "PiotrekNet wie, że nie powinieneś klikać NIE KLIKAJ.",
     "Wykryto wysokie zainteresowanie absurdem.",
     "Twoim przeznaczeniem jest terminal."
   ];
@@ -3659,7 +3719,7 @@ function aiAnswer(){
   const answers=[
     "Nie wiem, ale brzmi jak problem systemu.",
     "To pytanie zmieniło moją osobowość.",
-    "PiotrBot powiedziałby coś mądrzejszego.",
+    "PiotrekBot powiedziałby coś mądrzejszego.",
     "Odpowiedź brzmi: kaczka.",
     "Nie mogę odpowiedzieć, bo ziemniak patrzy.",
     "Tak.",
@@ -3737,7 +3797,7 @@ let tvFrame=0;
 
 function openTV(){
   const win=createWindow(
-    "Piotr TV — LIVE",
+    "Piotrek TV — LIVE",
     "📺",
     `
       <div class="tv">
@@ -3829,7 +3889,7 @@ function startTV(){
       if(ticker){
         ticker.textContent=
           "BREAKING: "+generateNews()[0].title+
-          "   •   PIOTR OS LIVE   •   KACZKA MA INFORMACJE   •   ";
+          "   •   PIOTREK OS LIVE   •   KACZKA MA INFORMACJE   •   ";
       }
 
       if(info){
@@ -4196,9 +4256,9 @@ function updateTaskManager(){
   const names=[
     "System",
     "explorer.exe",
-    "PiotrBot.exe",
+    "PiotrekBot.exe",
     "duck.exe",
-    "PiotrNet.exe",
+    "PiotrekNet.exe",
     "unknown.exe",
     "reality.exe",
     "potato_service.exe"
@@ -4225,7 +4285,7 @@ function killRandomProcess(){
   const names=[
     "explorer.exe",
     "duck.exe",
-    "PiotrBot.exe",
+    "PiotrekBot.exe",
     "potato_service.exe",
     "unknown.exe"
   ];
@@ -4250,7 +4310,7 @@ function openMonitor(){
     "Monitor systemu",
     "🧠",
     `
-      <h2>PIOTR OS HEALTH</h2>
+      <h2>PIOTREK OS HEALTH</h2>
 
       <div class="grid2">
         <div class="panel">
@@ -4316,7 +4376,7 @@ function openSettings(){
     "Ustawienia",
     "⚙️",
     `
-      <h2>Ustawienia Piotr OS</h2>
+      <h2>Ustawienia Piotrek OS</h2>
 
       <div class="panel">
         <h3>Motyw</h3>
@@ -4370,7 +4430,7 @@ function openSettings(){
       </div>
 
       <div class="panel">
-        <b>Piotr OS 5.0</b>
+        <b>Piotrek OS 5.0</b>
         <p class="muted">
           Kernel: 5.0-brainrot<br>
           Build: ${new Date().toISOString().slice(0,10)}
@@ -4417,7 +4477,7 @@ function setTheme(theme){
 }
 
 function resetGame(){
-  if(!confirm("Naprawdę usunąć zapis Piotr OS?")) return;
+  if(!confirm("Naprawdę usunąć zapis Piotrek OS?")) return;
 
   localStorage.removeItem(STORAGE_KEY);
   location.reload();
@@ -4450,7 +4510,7 @@ const ACHIEVEMENTS=[
   "Nie masz życia",
   "Złap kaczkę",
   "Odkryj sekret",
-  "PiotrCoin",
+  "PiotrekCoin",
   "Bankier",
   "Giełda",
   "Brainrot",
@@ -4511,7 +4571,7 @@ function openAchievements(){
 
 function openBot(){
   const win=createWindow(
-    "PiotrBot 2.0",
+    "PiotrekBot 2.0",
     "🤖",
     `
       <div style="display:flex;flex-direction:column;height:100%">
@@ -4525,7 +4585,7 @@ function openBot(){
           <input
             id="botInput"
             style="flex:1"
-            placeholder="Napisz do PiotrBota..."
+            placeholder="Napisz do PiotrekBota..."
           >
 
           <button onclick="sendBotMessage()">WYŚLIJ</button>
@@ -4558,7 +4618,7 @@ function getBotGreeting(){
     return "Znowu Ty. Pamiętam poprzednie sesje.";
   }
 
-  return "Cześć Piotr. Jestem PiotrBot. Mam kilka pytań dotyczących Twoich decyzji.";
+  return "Cześć Piotrek. Jestem PiotrekBot. Mam kilka pytań dotyczących Twoich decyzji.";
 }
 
 function addBotMessage(chat,who,text){
@@ -4570,7 +4630,7 @@ function addBotMessage(chat,who,text){
   div.style.borderRadius="8px";
 
   div.innerHTML=`
-    <b>${who==="bot"?"🤖 PiotrBot":"🧑 Ty"}</b>
+    <b>${who==="bot"?"🤖 PiotrekBot":"🧑 Ty"}</b>
     <div>${escapeHTML(text)}</div>
   `;
 
@@ -4622,7 +4682,7 @@ function botResponse(text){
   }
 
   if(q.includes("internet")){
-    return "PiotrNet nie jest prawdziwym internetem. Ale zachowuje się jak prawdziwy internet.";
+    return "PiotrekNet nie jest prawdziwym internetem. Ale zachowuje się jak prawdziwy internet.";
   }
 
   if(q.includes("chaos")){
@@ -4630,7 +4690,7 @@ function botResponse(text){
   }
 
   if(q.includes("kim jesteś") || q.includes("kto jesteś")){
-    return "Jestem PiotrBot. Mam osobowość, ale nie mam wynagrodzenia.";
+    return "Jestem PiotrekBot. Mam osobowość, ale nie mam wynagrodzenia.";
   }
 
   const answers=[
@@ -4656,7 +4716,7 @@ function botResponse(text){
 
 function openWallet(){
   createWindow(
-    "Portfel PiotrCoin",
+    "Portfel PiotrekCoin",
     "💰",
     `
       <div class="grid2">
@@ -4666,7 +4726,7 @@ function openWallet(){
         </div>
 
         <div class="stat">
-          <span>PiotrCoin</span>
+          <span>PiotrekCoin</span>
           <br><b>🪙 ${state.piotrCoin}</b>
         </div>
       </div>
@@ -4675,7 +4735,7 @@ function openWallet(){
         <h3>Transakcja</h3>
 
         <button onclick="earnMoney()">💸 Zarób ₱10</button>
-        <button onclick="convertCoin()">🪙 Zamień PiotrCoin</button>
+        <button onclick="convertCoin()">🪙 Zamień PiotrekCoin</button>
         <button onclick="donateMoney()">❤️ Oddaj pieniądze</button>
       </div>
     `,
@@ -4693,18 +4753,18 @@ function earnMoney(){
 
 function convertCoin(){
   if(state.piotrCoin<=0){
-    notify("Portfel","Nie masz PiotrCoin.");
+    notify("Portfel","Nie masz PiotrekCoin.");
     return;
   }
 
   state.piotrCoin--;
   state.money+=5;
 
-  notify("Portfel","1 PiotrCoin → ₱5");
+  notify("Portfel","1 PiotrekCoin → ₱5");
   updateTray();
   saveState();
 
-  unlockAchievement("PiotrCoin");
+  unlockAchievement("PiotrekCoin");
 }
 
 function donateMoney(){
@@ -4832,7 +4892,7 @@ function openShop(){
     ["Kaczka premium","🦆",25,"duck"],
     ["Ziemniak RTX","🥔",40,"potato"],
     ["Monitor niewidzialny","🖥️",7,"monitor"],
-    ["PiotrCoin","🪙",10,"coin"],
+    ["PiotrekCoin","🪙",10,"coin"],
     ["Chaos w puszce","🌀",50,"chaos"]
   ];
 
@@ -5014,7 +5074,7 @@ function openMail(){
   const mails=[
     ["KaczkaOfficial","KWA KWA","Spotkanie kaczek odbędzie się o 03:33."],
     ["Bank Piotra","Twoje pieniądze","Wciąż je mamy."],
-    ["PiotrBot","Ważne","Nie ufaj unknown.exe."],
+    ["PiotrekBot","Ważne","Nie ufaj unknown.exe."],
     ["Admin","SYSTEM","Dlaczego otworzyłeś 17 aplikacji?"],
     ["Ziemniak","RE: RE: RE:","🥔"]
   ];
@@ -5237,7 +5297,7 @@ function openLab(){
         <button onclick="mutate('duck')">🧬 Zmutuj kaczkę</button>
         <button onclick="mutate('potato')">🧬 Zmutuj ziemniaka</button>
         <button onclick="mutate('desktop')">🧬 Zmutuj pulpit</button>
-        <button onclick="mutate('bot')">🧬 Zmutuj PiotrBota</button>
+        <button onclick="mutate('bot')">🧬 Zmutuj PiotrekBota</button>
       </div>
 
       <div class="panel">
@@ -5261,7 +5321,7 @@ function mutate(target){
     duck:"Kaczka otrzymała +3 inteligencji. Nadal mówi KWA.",
     potato:"Ziemniak zaczął podejrzanie świecić.",
     desktop:"Pulpit wygląda tak samo. Ale wie, że go obserwujesz.",
-    bot:"PiotrBot dostał osobowość numer 7."
+    bot:"PiotrekBot dostał osobowość numer 7."
   };
 
   const result=document.getElementById("labResult");
@@ -6115,7 +6175,7 @@ function fakeBSOD(){
   overlay.innerHTML=`
     <div style="font-size:90px">:(</div>
 
-    <h1>Piotr OS napotkał problem.</h1>
+    <h1>Piotrek OS napotkał problem.</h1>
 
     <p>
       Nie martw się. To prawdopodobnie tylko bardzo
@@ -6205,7 +6265,7 @@ function generateNews(){
       text:"System odmówił komentarza."
     },
     {
-      title:"PiotrCoin rośnie",
+      title:"PiotrekCoin rośnie",
       text:"Wartość wzrosła o 0.03%. Analitycy są podejrzliwi."
     },
     {
@@ -6217,7 +6277,7 @@ function generateNews(){
       text:"Powiedział tylko: 🥔"
     },
     {
-      title:"PiotrNet działa",
+      title:"PiotrekNet działa",
       text:"To najbardziej niepokojąca wiadomość dnia."
     }
   ];
@@ -6278,7 +6338,7 @@ function randomEvent(){
     ()=>{
       notify(
         "Losowe wydarzenie",
-        "PiotrBot właśnie o Tobie pomyślał."
+        "PiotrekBot właśnie o Tobie pomyślał."
       );
     },
     ()=>{
@@ -6370,11 +6430,11 @@ document.addEventListener("DOMContentLoaded",init);
 ============================================================ */
 
 window.addEventListener("error",e=>{
-  console.warn("Piotr OS caught an error:",e.error);
+  console.warn("Piotrek OS caught an error:",e.error);
 
   if(systemRunning){
     notify(
-      "Piotr OS",
+      "Piotrek OS",
       "Wykryto drobny błąd. System udaje, że nic się nie stało."
     );
   }
@@ -6387,6 +6447,433 @@ window.addEventListener("error",e=>{
 applyTheme(state.theme);
 updateChaosUI();
 updateTray();
+
+
+
+/* ============================================================
+   PIOTREK OS 6.0 — GIANT SYSTEM UPGRADE
+   Warstwa kompatybilności: zachowuje stare mechaniki, ale
+   dokłada bardziej systemowe zachowanie.
+============================================================ */
+
+const PIOTREK_VERSION="6.0.0";
+const REAL_WEB_ENABLED=location.protocol!=="file:";
+
+/* ---------- APP REGISTRY EXTENSION ---------- */
+Object.assign(APP,{
+  explorer:{name:"Eksplorator plików",icon:"📁",fn:openExplorer6},
+  network:{name:"Sieć i Internet",icon:"📡",fn:openNetwork6},
+  defender:{name:"Piotrek Defender",icon:"🛡️",fn:openDefender6},
+  systeminfo:{name:"Informacje o systemie",icon:"💻",fn:openSystemInfo6},
+  accounts:{name:"Konta użytkowników",icon:"👤",fn:openAccounts6},
+  recovery:{name:"Odzyskiwanie systemu",icon:"🧰",fn:openRecovery6}
+});
+
+/* ---------- REALISTIC DESKTOP ---------- */
+function renderDesktop(){
+  const container=document.getElementById("desktopIcons");
+  const start=document.getElementById("startApps");
+  if(!container||!start) return;
+  container.innerHTML="";
+  start.innerHTML="";
+
+  const desktopApps=["computer","explorer","internet","terminal","tv","bot","task","network","defender","systeminfo","games","wallet","settings"];
+  desktopApps.forEach(key=>{
+    if(!APP[key]) return;
+    const app=APP[key];
+    const icon=document.createElement("div");
+    icon.className="desktop-icon";
+    icon.innerHTML=`<span class="ico">${app.icon}</span><span>${app.name}</span>`;
+    icon.ondblclick=()=>openApp(key);
+    container.appendChild(icon);
+  });
+
+  Object.keys(APP).forEach(key=>{
+    const app=APP[key];
+    const item=document.createElement("div");
+    item.className="start-app";
+    item.dataset.appName=app.name.toLowerCase();
+    item.innerHTML=`<div>${app.icon}</div><small>${app.name}</small>`;
+    item.onclick=()=>{openApp(key);document.getElementById("startMenu")?.classList.add("hidden")};
+    start.appendChild(item);
+  });
+}
+
+/* ---------- SYSTEM STATUS / TRAY ---------- */
+function updateTray(){
+  updateChaosUI();
+  const money=document.getElementById("moneyTray");
+  const battery=document.getElementById("batteryTray");
+  const volume=document.getElementById("volumeTray");
+  const network=document.getElementById("networkTray");
+  if(money) money.textContent="₱ "+Math.floor(state.money);
+  if(battery) battery.textContent="🔋 "+Math.max(1,state.battery)+"%";
+  if(volume) volume.textContent=state.volume<=0?"🔇":"🔊 "+state.volume+"%";
+  if(network) network.textContent=state.networkOnline?"🌐":"⚠️";
+}
+
+function openSystemStatus(){
+  document.getElementById("systemStatusPopover")?.remove();
+  const el=document.createElement("div");
+  el.id="systemStatusPopover";
+  el.className="system-status-popover";
+  el.innerHTML=`
+    <h3>Centrum systemu</h3>
+    <div class="status-grid">
+      <div class="status-tile">🌐 Sieć<b>${state.networkOnline?"Połączono":"Brak internetu"}</b><small>${state.networkLatency} ms</small></div>
+      <div class="status-tile">🔋 Bateria<b>${state.battery}%</b><small>Stan: dobry</small></div>
+      <div class="status-tile">🔊 Dźwięk<b>${state.volume}%</b><small>${state.volume?"Głośność włączona":"Wyciszono"}</small></div>
+      <div class="status-tile">🧠 Kernel<b>${Math.max(1,100-state.chaos)}%</b><small>Stabilność</small></div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="openApp('network')">📡 Sieć</button>
+      <button onclick="openApp('settings')">⚙️ Ustawienia</button>
+    </div>`;
+  document.getElementById("os").appendChild(el);
+  setTimeout(()=>document.addEventListener("click",function closeStatus(e){
+    if(!e.target.closest("#systemStatusPopover")&&!e.target.closest("#networkTray")){el.remove();document.removeEventListener("click",closeStatus)}
+  }),0);
+}
+
+/* Make network tray clickable without destroying existing behavior. */
+document.addEventListener("click",e=>{
+  if(e.target.closest("#networkTray")) openSystemStatus();
+  if(e.target.closest("#batteryTray")) openSystemStatus();
+  if(e.target.closest("#volumeTray")) openSystemStatus();
+});
+
+/* ---------- EXPLORER ---------- */
+let explorerPath6="root";
+function openExplorer6(){
+  const win=createWindow("Eksplorator plików","📁",`
+    <div class="explorer">
+      <aside class="explorer-sidebar">
+        <button style="width:100%;margin-bottom:6px" onclick="explorerGo6('root')">🖥️ Ten komputer</button>
+        <button style="width:100%;margin-bottom:6px" onclick="explorerGo6('desktop')">🗂️ Pulpit</button>
+        <button style="width:100%;margin-bottom:6px" onclick="explorerGo6('documents')">📄 Dokumenty</button>
+        <button style="width:100%;margin-bottom:6px" onclick="explorerGo6('downloads')">⬇️ Pobrane</button>
+        <button style="width:100%;margin-bottom:6px" onclick="explorerGo6('system32')">⚙️ System32</button>
+        <button style="width:100%" onclick="explorerGo6('piotr')">👤 Piotrek</button>
+      </aside>
+      <main class="explorer-main" id="explorerMain6"></main>
+    </div>`,850,560);
+  explorerPath6="root";
+  explorerRender6();
+  return win;
+}
+function explorerGo6(id){explorerPath6=id;explorerRender6()}
+function explorerRender6(){
+  const el=document.getElementById("explorerMain6"); if(!el)return;
+  const folder=getFile(explorerPath6); const children=getChildren(explorerPath6).filter(f=>!f.hidden||state.unlocked.secretFolder);
+  const path=[]; let cur=folder; while(cur){path.unshift(cur.name);cur=getFile(cur.parent)}
+  el.innerHTML=`
+    <div class="explorer-toolbar">
+      <button onclick="explorerBack6()">←</button><button onclick="explorerForward6()">→</button>
+      <input class="explorer-path" value="C:\\${path.slice(1).join('\\')}" readonly>
+      <button onclick="explorerNewFolder6()">📁+</button>
+      <button onclick="explorerNewFile6()">📄+</button>
+    </div>
+    <div class="muted" style="margin-bottom:8px">${children.length} elementów • ${folder?.system?"Folder systemowy":"Folder użytkownika"}</div>
+    <div class="file-grid">${children.map(f=>`<div class="file-card ${f.system?'system-file':''}" ondblclick="explorerOpen6('${f.id}')">
+      <div class="file-icon">${f.type==='folder'?'📁':f.executable?'⚙️':'📄'}</div>
+      <b>${escapeHTML(f.name)}</b><br><small class="muted">${f.type==='folder'?'Folder':'Plik'}${f.system?' • SYSTEM':''}</small>
+    </div>`).join("")||'<div class="muted">Ten folder jest pusty.</div>'}</div>`;
+}
+function explorerBack6(){const f=getFile(explorerPath6);if(f?.parent)explorerPath6=f.parent;explorerRender6()}
+function explorerForward6(){notify("Eksplorator","Historia nawigacji jest jeszcze bardziej Piotrek niż przeglądarka.")}
+function explorerOpen6(id){const f=getFile(id);if(!f)return;if(f.type==='folder'){explorerPath6=id;explorerRender6();return} if(f.executable){increaseChaos(2);notify("Plik wykonywalny",f.name+" został uruchomiony. Prawdopodobnie.");return} openNotesWithText6(f.name,f.content||"")}
+function openNotesWithText6(name,text){
+  const win=createWindow(name,"📄",`<textarea style="width:100%;height:100%;resize:none;user-select:text">${escapeHTML(text)}</textarea>`,600,430);
+  return win;
+}
+function explorerNewFolder6(){
+  const name=prompt("Nazwa nowego folderu:","Nowy folder"); if(!name)return;
+  state.files.push({id:"f_"+Date.now(),name,type:"folder",parent:explorerPath6}); saveState(); explorerRender6(); notify("Eksplorator","Utworzono folder: "+name)
+}
+function explorerNewFile6(){
+  const name=prompt("Nazwa nowego pliku:","nowy.txt"); if(!name)return;
+  state.files.push({id:"f_"+Date.now(),name,type:"file",parent:explorerPath6,content:""}); saveState(); explorerRender6(); notify("Eksplorator","Utworzono plik: "+name)
+}
+
+/* ---------- NETWORK ---------- */
+function openNetwork6(){
+  createWindow("Sieć i Internet","📡",`
+    <h2>Sieć i Internet</h2>
+    <div class="grid2">
+      <div class="panel"><b>Status</b><h2 id="netStatus6">${state.networkOnline?'● Połączono':'○ Offline'}</h2><small>PiotrekNet / Internet</small></div>
+      <div class="panel"><b>Ping</b><h2 id="netPing6">${state.networkLatency} ms</h2><small>Losowana telemetria lokalna</small></div>
+    </div>
+    <div class="panel"><b>Połączenie</b><div class="network-meter"><div style="width:${state.networkOnline?Math.max(20,100-state.networkLatency):2}%"></div></div>
+    <p><b>IP:</b> 192.168.1.42<br><b>DNS:</b> 1.1.1.1<br><b>Protokół:</b> HTTPS / Fetch</p>
+    <button onclick="testNetwork6()">🔄 Testuj połączenie</button>
+    <button onclick="openApp('internet')">🌐 Otwórz przeglądarkę</button>
+    </div>
+    <div class="panel"><b>Tryb prawdziwego internetu</b><p>${REAL_WEB_ENABLED?'Backend dostępny z tego adresu.':'Uruchom lokalny serwer Node, aby włączyć odczyt stron i wyszukiwanie.'}</p></div>`,620,470);
+}
+function testNetwork6(){
+  const start=performance.now();
+  if(!REAL_WEB_ENABLED){state.networkOnline=false;notify("Sieć","Uruchom serwer Piotrek OS, aby aktywować prawdziwy internet.");updateTray();return}
+  fetch('/api/health',{cache:'no-store'}).then(r=>{state.networkOnline=r.ok;state.networkLatency=Math.round(performance.now()-start);updateTray();saveState();notify("Sieć",r.ok?'Połączenie z backendem działa.':'Backend nie odpowiada.')}).catch(()=>{state.networkOnline=false;updateTray();notify("Sieć","Brak połączenia z backendem.")});
+}
+
+/* ---------- REAL WEB BROWSER ---------- */
+let realBrowser6={url:"piotrek://home",history:["piotrek://home"],index:0};
+function openPiotrekBrowser6(){
+  const win=createWindow("Internet — Piotrek Browser","🌐",`
+    <div style="display:flex;flex-direction:column;height:100%">
+      <div class="browser-real-toolbar">
+        <button onclick="realBack6()">←</button><button onclick="realForward6()">→</button><button onclick="realHome6()">⌂</button>
+        <input id="realUrl6" style="flex:1" value="${escapeHTML(realBrowser6.url)}" placeholder="Adres URL lub wyszukiwane hasło">
+        <button onclick="realGo6()">GO</button><button onclick="realReader6()">📖 Reader</button>
+      </div>
+      <div class="row" style="margin-bottom:7px"><span class="web-badge">REAL WEB</span><small class="muted">iframe może być blokowany przez politykę strony; Reader korzysta z backendu.</small></div>
+      <div id="realBrowserPage6" style="flex:1;min-height:0"></div>
+    </div>`,980,620);
+  const input=win.querySelector('#realUrl6'); input.addEventListener('keydown',e=>{if(e.key==='Enter')realGo6()});
+  realRender6(); return win;
+}
+function normalizeUrl6(value){
+  value=value.trim(); if(!value)return 'piotrek://home';
+  if(/^https?:\/\//i.test(value))return value;
+  if(value.includes('.')&&!value.includes(' '))return 'https://'+value;
+  return 'search:'+value;
+}
+function realGo6(){
+  const input=document.getElementById('realUrl6');if(!input)return;
+  let u=normalizeUrl6(input.value); realBrowser6.url=u;
+  realBrowser6.history=realBrowser6.history.slice(0,realBrowser6.index+1);realBrowser6.history.push(u);realBrowser6.index=realBrowser6.history.length-1;
+  state.browserHistory.push(u);state.browserHistory=state.browserHistory.slice(-100);state.stats.searches+=u.startsWith('search:')?1:0;saveState();realRender6();
+}
+function realBack6(){if(realBrowser6.index>0){realBrowser6.index--;realBrowser6.url=realBrowser6.history[realBrowser6.index];realRender6()}}
+function realForward6(){if(realBrowser6.index<realBrowser6.history.length-1){realBrowser6.index++;realBrowser6.url=realBrowser6.history[realBrowser6.index];realRender6()}}
+function realHome6(){realBrowser6.url='piotrek://home';realRender6()}
+function realReader6(){
+  const input=document.getElementById('realUrl6');if(!input)return; const u=normalizeUrl6(input.value);realBrowser6.url=u;realRender6(true)
+}
+async function realRender6(reader=false){
+  const page=document.getElementById('realBrowserPage6');if(!page)return;
+  const u=realBrowser6.url; const input=document.getElementById('realUrl6');if(input)input.value=u;
+  if(u==='piotrek://home'){page.innerHTML=`<div class="net-hero"><div class="net-logo">PIOTREKNET</div><p>Prawdziwy internet + lokalny brainrot.</p><div class="row" style="justify-content:center"><button onclick="realQuick6('https://www.google.com')">Google</button><button onclick="realQuick6('https://www.wikipedia.org')">Wikipedia</button><button onclick="realQuick6('https://cataas.com/cat/gif')">KOT</button></div><div class="panel"><b>Jak działa?</b><p>Adresy HTTP(S) są otwierane jako strona zewnętrzna, a tryb Reader pobiera tekst przez lokalny backend.</p></div></div>`;return}
+  if(u.startsWith('search:')){await renderWebSearch6(u.slice(7));return}
+  if(u.startsWith('piotr://')){page.innerHTML='<div class="panel"><h2>Nieznany protokół</h2><p>'+escapeHTML(u)+'</p></div>';return}
+  if(!reader){page.innerHTML=`<iframe class="browser-real-frame" src="${escapeHTML(u)}" referrerpolicy="no-referrer"></iframe><div style="margin-top:7px"><button onclick="window.open(${JSON.stringify(u)},'_blank')">↗ Otwórz w normalnej karcie</button><button onclick="realReader6()">📖 Pobierz jako Reader</button></div>`;return}
+  if(location.protocol==='file:'){page.innerHTML='<div class="panel"><h2>Reader wymaga serwera</h2><p>Uruchom <code>node piotrek-server.js</code> i otwórz adres localhost.</p></div>';return}
+  page.innerHTML='<div class="reader">Pobieranie strony...</div>';
+  try{const r=await fetch('/api/fetch?url='+encodeURIComponent(u));if(!r.ok)throw new Error('HTTP '+r.status);const data=await r.json();page.innerHTML='<div class="reader"><div class="web-badge">READER MODE</div><h2>'+escapeHTML(data.title||u)+'</h2><p class="muted">'+escapeHTML(data.finalUrl||u)+'</p><hr><pre>'+escapeHTML(data.text||'Brak tekstu')+'</pre></div>'}
+  catch(e){page.innerHTML='<div class="panel"><h2>Nie udało się pobrać strony</h2><p>'+escapeHTML(e.message)+'</p><button onclick="window.open('+JSON.stringify(u)+',\'_blank\')">Otwórz poza Piotrek Browser</button></div>'}
+}
+function realQuick6(u){const input=document.getElementById('realUrl6');if(input){input.value=u;realGo6()}}
+async function renderWebSearch6(q){
+  const page=document.getElementById('realBrowserPage6');if(!page)return;
+  page.innerHTML='<div class="reader">Szukanie w prawdziwym internecie...</div>';
+  if(location.protocol==='file:'){page.innerHTML='<div class="panel"><h2>Wyszukiwanie wymaga serwera</h2><p>Uruchom lokalny backend.</p></div>';return}
+  try{const r=await fetch('/api/search?q='+encodeURIComponent(q));const data=await r.json();
+    page.innerHTML=`<div class="reader"><h2>Wyniki dla: ${escapeHTML(q)}</h2>${(data.results||[]).map(x=>`<div class="net-card"><a href="${escapeHTML(x.url)}" target="_blank"><b>${escapeHTML(x.title)}</b></a><p>${escapeHTML(x.snippet||'')}</p><small>${escapeHTML(x.url)}</small></div>`).join('')||'<p>Brak wyników.</p>'}</div>`
+  }catch(e){page.innerHTML='<div class="panel"><h2>Błąd wyszukiwania</h2><p>'+escapeHTML(e.message)+'</p></div>'}
+}
+
+/* Replace old internal browser with the upgraded browser. */
+APP.internet.fn=openPiotrekBrowser6;
+
+/* ---------- DEFENDER ---------- */
+function openDefender6(){
+  createWindow("Piotrek Defender","🛡️",`
+    <div class="uac"><h2>🛡️ Piotrek Defender</h2><p>Status ochrony: <b class="defender-warn">${state.securityThreats?'Wymagana uwaga':'Chroniony'}</b></p><button onclick="scanSystem6()">🔍 Skanuj teraz</button></div>
+    <div class="panel"><h3>Ochrona w czasie rzeczywistym</h3><p>● Włączona</p><p>● Kontrola pobieranych plików</p><p>● Kontrola aplikacji</p><p>● Monitorowanie System32</p></div>
+    <div class="panel"><b>Ostatnie zagrożenie</b><p>${state.securityThreats?'unknown.exe — podejrzany plik w C:/System32':'Brak aktywnych zagrożeń.'}</p></div>`,620,470)
+}
+function scanSystem6(){
+  notify("Piotrek Defender","Skanowanie systemu rozpoczęte...");
+  setTimeout(()=>{state.securityThreats=state.files.some(f=>f.name==='unknown.exe')?1:0;saveState();notify("Piotrek Defender",state.securityThreats?'Wykryto 1 podejrzany obiekt.':'System czysty. Podejrzanie czysty.');openApp('defender')},900)
+}
+
+/* ---------- SYSTEM INFO ---------- */
+function openSystemInfo6(){
+  createWindow("Informacje o systemie","💻",`
+    <h2>PIOTREK OS</h2><div class="panel"><div class="grid2">
+      <div><b>Wersja</b><p>${PIOTREK_VERSION}</p><b>Build</b><p>${new Date().toISOString().slice(0,10).replaceAll('-','')}</p><b>Kernel</b><p>PiotrekKernel 6.0</p></div>
+      <div><b>Procesor</b><p>Piotrek Processor 8C</p><b>RAM</b><p>8 GB</p><b>Architektura</b><p>x64</p></div>
+    </div></div>
+    <div class="panel"><b>Stan systemu</b><p>Sesje: ${state.sessions}<br>Uruchomienia aplikacji: ${state.appsOpened}<br>Restartów: ${state.stats.restarts}<br>Chaos: ${state.chaos}%<br>Stabilność kernela: ${Math.max(1,100-state.chaos)}%</p></div>
+    <button onclick="openApp('monitor')">🧠 Monitor systemu</button><button onclick="openApp('task')">📊 Task Manager</button>`,600,470)
+}
+
+/* ---------- ACCOUNTS ---------- */
+function openAccounts6(){
+  createWindow("Konta użytkowników","👤",`
+    <h2>Konta użytkowników</h2>
+    <div class="panel"><h3>🧑‍💻 Piotrek</h3><p>Typ konta: Administrator</p><p>Status: <b class="defender-ok">Aktywne</b></p></div>
+    <div class="panel"><h3>👤 Guest</h3><p>Typ konta: Ograniczone</p><p>Status: Nieaktywne</p></div>
+    <div class="panel"><h3>⚙️ SYSTEM</h3><p>Ukryte konto systemowe</p><p>Status: Działa w tle</p></div>
+    <button onclick="notify('Konta','Tworzenie nowych użytkowników odblokuje się po osiągnięciu 50% chaosu.')">+ Dodaj użytkownika</button>`,560,430)
+}
+
+/* ---------- RECOVERY / BIOS ---------- */
+function openRecovery6(){
+  createWindow("Odzyskiwanie systemu","🧰",`
+    <div class="bios-menu"><b>PIOTREK RECOVERY MANAGER</b><div class="bios-row"><span>System Restore</span><span>READY</span></div><div class="bios-row"><span>Startup Repair</span><span>READY</span></div><div class="bios-row"><span>Safe Mode</span><span>AVAILABLE</span></div><div class="bios-row"><span>Reality Repair</span><span>${state.chaos>80?'FAILED':'READY'}</span></div></div>
+    <div class="panel"><button onclick="simulateRecovery6()">🧰 Uruchom diagnostykę</button><button onclick="fakeBIOS6()">⌨️ BIOS / Boot Menu</button></div>`,620,430)
+}
+function simulateRecovery6(){notify("Odzyskiwanie","Sprawdzanie kernela, System32 i Reality Engine...");setTimeout(()=>notify("Odzyskiwanie","Diagnostyka zakończona. System nadal jest dziwny, ale sprawny."),1100)}
+function fakeBIOS6(){
+  const win=createWindow("PIOTREK BIOS","⌨️",`<div class="bios-menu"><h2>PIOTREK BIOS v6.0</h2><div class="bios-row"><span>CPU</span><span>OK</span></div><div class="bios-row"><span>RAM</span><span>8192 MB</span></div><div class="bios-row"><span>STORAGE</span><span>OK</span></div><div class="bios-row"><span>NETWORK</span><span>${state.networkOnline?'OK':'OFFLINE'}</span></div><hr><p>Boot device:</p><button onclick="restartSystem()">▶ PIOTREK OS</button><button onclick="openApp('recovery')">🧰 PIOTREK RECOVERY</button></div>`,650,470);return win
+}
+
+/* ---------- SETTINGS 6 ---------- */
+function openSettings(){
+  createWindow("Ustawienia","⚙️",`
+    <h2>Ustawienia systemu</h2>
+    <div class="panel"><h3>Personalizacja</h3><div class="row"><button onclick="setTheme('blue')">🔵 Niebieski</button><button onclick="setTheme('dark')">⚫ Ciemny</button><button onclick="setTheme('purple')">🟣 Fioletowy</button><button onclick="setTheme('green')">🟢 Matrix</button></div></div>
+    <div class="panel"><h3>System</h3><label><input type="checkbox" ${state.settings.notifications?'checked':''} onchange="state.settings.notifications=this.checked;saveState()"> Powiadomienia</label><br><br><label><input type="checkbox" ${state.settings.randomEvents?'checked':''} onchange="state.settings.randomEvents=this.checked;saveState()"> Losowe wydarzenia</label><br><br><label><input type="checkbox" ${state.settings.animations?'checked':''} onchange="state.settings.animations=this.checked;saveState()"> Animacje</label><br><br><label><input type="checkbox" ${REAL_WEB_ENABLED?'checked':''} disabled> Backend web dostępny</label></div>
+    <div class="panel"><h3>Urządzenia</h3><label>Głośność <input type="range" min="0" max="100" value="${state.volume}" oninput="state.volume=+this.value;updateTray();saveState()"></label><br><label>Jasność <input type="range" min="20" max="100" value="100"></label></div>
+    <div class="panel"><h3>Dane i bezpieczeństwo</h3><button onclick="exportState()">📤 Eksportuj save</button><button onclick="openApp('defender')">🛡️ Defender</button><button onclick="openApp('accounts')">👤 Konta</button><button onclick="resetGame()">☢ RESET CAŁEGO SYSTEMU</button></div>
+    <div class="panel"><b>Piotrek OS ${PIOTREK_VERSION}</b><p class="muted">Kernel: PiotrekKernel 6.0<br>Build: ${new Date().toISOString().slice(0,10)}</p></div>`,700,560)
+}
+
+/* ---------- TASK MANAGER 6 ---------- */
+function openTaskManager(){
+  const win=createWindow("Menedżer zadań","📊",`<div class="grid3"><div class="stat"><span>CPU</span><br><b id="tm6Cpu">0%</b></div><div class="stat"><span>RAM</span><br><b id="tm6Ram">0%</b></div><div class="stat"><span>CHAOS</span><br><b>${state.chaos}%</b></div></div><div class="panel"><table class="process-table"><thead><tr><th>Proces</th><th>CPU</th><th>Pamięć</th><th>Stan</th></tr></thead><tbody id="tm6Processes"></tbody></table></div><div class="row"><button onclick="refreshTask6()">🔄 Odśwież</button><button onclick="killSelected6()">⛔ Zakończ losowy</button></div>`,820,520);
+  refreshTask6(); return win;
+}
+function refreshTask6(){
+  const names=["System","explorer.exe","PiotrekBot.exe","RealityEngine.exe","PiotrekNet.exe","svchost_potato.exe","duck.exe","unknown.exe"];
+  const body=document.getElementById('tm6Processes'); if(!body)return;
+  body.innerHTML=names.map((n,i)=>{const cpu=Math.max(1,Math.round((Math.sin(Date.now()/1200+i)*5+7)+(state.chaos/20)));const mem=Math.round(30+i*17+state.chaos*1.4);return `<tr><td><b>${n}</b></td><td>${cpu}%</td><td>${mem} MB</td><td>${n==='unknown.exe'?'⚠️ podejrzany':'● działa'}</td></tr>`}).join('');
+  const c=document.getElementById('tm6Cpu'),r=document.getElementById('tm6Ram');if(c)c.textContent=Math.min(99,Math.round(18+state.chaos*.6))+'%';if(r)r.textContent=Math.min(99,Math.round(32+state.chaos*.45))+'%';
+}
+function killSelected6(){const names=["explorer.exe","PiotrekBot.exe","duck.exe","unknown.exe"];const n=names[Math.floor(Math.random()*names.length)];if(n==='unknown.exe'){increaseChaos(10);notify('Menedżer zadań','unknown.exe odmówił zakończenia procesu. System odnotował to osobiście.')}else{notify('Menedżer zadań','Zakończono '+n+'.');increaseChaos(3)}refreshTask6()}
+
+/* ---------- TV 6: more programs + real cat GIF wall ---------- */
+TV_CHANNELS.push(
+  {name:"KOTY.exe",type:"cats"},
+  {name:"TELEZAKUPY KWA",type:"shopping"},
+  {name:"WEATHER OF DOOM",type:"weather"},
+  {name:"POWIATOWA KOMISJA BRAINROTU",type:"commission"},
+  {name:"LIVE Z SYSTEM32",type:"system32"},
+  {name:"KANAŁ DLA ZIEMNIAKA",type:"potato2"}
+);
+function drawTV(ctx,w,h,t){
+  ctx.fillStyle="#030509";ctx.fillRect(0,0,w,h);
+  const channel=TV_CHANNELS[state.tvChannel];
+  if(channel.type==='cats')drawCatsTV6(ctx,w,h,t);
+  else if(channel.type==='shopping')drawShoppingTV6(ctx,w,h,t);
+  else if(channel.type==='weather')drawWeatherTV6(ctx,w,h,t);
+  else if(channel.type==='commission')drawCommissionTV6(ctx,w,h,t);
+  else if(channel.type==='system32')drawSystem32TV6(ctx,w,h,t);
+  else if(channel.type==='potato2')drawPotato2TV6(ctx,w,h,t);
+  else drawLegacyTV6(ctx,w,h,t,channel);
+  ctx.fillStyle="rgba(255,255,255,.035)";for(let y=0;y<h;y+=4)ctx.fillRect(0,y,w,1);
+}
+function drawLegacyTV6(ctx,w,h,t,ch){
+  if(ch.type==='brainrot')return drawBrainrot(ctx,w,h,t);if(ch.type==='duck')return drawDuckNews(ctx,w,h,t);if(ch.type==='potato')return drawPotatoTV(ctx,w,h,t);if(ch.type==='npc')return drawNPC(ctx,w,h,t);if(ch.type==='sport')return drawSport(ctx,w,h,t);ctx.fillStyle='#111';ctx.fillRect(0,0,w,h);ctx.fillStyle='#777';ctx.font='bold 40px Arial';ctx.textAlign='center';ctx.fillText('NIC',w/2,h/2);ctx.font='16px Arial';ctx.fillText('Najbardziej ekskluzywny kanał',w/2,h/2+35)
+}
+function drawCatsTV6(ctx,w,h,t){ctx.fillStyle='#160d21';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='900 34px Arial';ctx.textAlign='center';ctx.fillText('KOTY.exe — PILNY SERWIS',w/2,42);ctx.font='90px Arial';ctx.fillText(['🐈','🐈‍⬛','😾','😺','🧍‍♂️🐈'][Math.floor(t/35)%5],w/2,h/2+20);ctx.font='bold 20px Arial';ctx.fillText(['KOT ODKRYŁ INTERNET','KOT NIC NIE ROZUMIE','KOT MA ADMINA','KOT WYKRYŁ KACZKĘ'][Math.floor(t/28)%4],w/2,h-35)}
+function drawShoppingTV6(ctx,w,h,t){ctx.fillStyle='#10261c';ctx.fillRect(0,0,w,h);ctx.fillStyle='#8effb3';ctx.font='900 34px Arial';ctx.textAlign='center';ctx.fillText('TELEZAKUPY KWA',w/2,45);ctx.font='95px Arial';ctx.fillText(['🥔','🦆','🪑','🧦'][Math.floor(t/25)%4],w/2,h/2+25);ctx.fillStyle='#fff';ctx.font='bold 20px Arial';ctx.fillText('ZADZWOŃ TERAZ. NIE PYTAJ PO CO.',w/2,h-35)}
+function drawWeatherTV6(ctx,w,h,t){ctx.fillStyle='#091a2c';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='900 31px Arial';ctx.textAlign='center';ctx.fillText('WEATHER OF DOOM',w/2,45);ctx.font='70px Arial';ctx.fillText(['☀️','🌧️','🌪️','🥔🌩️'][Math.floor(t/30)%4],w/2,h/2);ctx.font='bold 19px Arial';ctx.fillText('Jutro: 98% szans na ziemniaka.',w/2,h-35)}
+function drawCommissionTV6(ctx,w,h,t){ctx.fillStyle='#21120b';ctx.fillRect(0,0,w,h);ctx.fillStyle='#fff';ctx.font='900 27px Arial';ctx.textAlign='center';ctx.fillText('POWIATOWA KOMISJA BRAINROTU',w/2,42);ctx.font='26px monospace';ctx.fillText(['POSIEDZENIE NR 2137','WNIOSEK: KTO POWIEDZIAŁ KWA?','GŁOSOWANIE NAD ZIEMNIAKIEM','PROTOKÓŁ ZAGINĄŁ'][Math.floor(t/35)%4],w/2,h/2);ctx.font='16px Arial';ctx.fillText('obrady transmitowane z niewiadomego powodu',w/2,h-30)}
+function drawSystem32TV6(ctx,w,h,t){ctx.fillStyle='#020702';ctx.fillRect(0,0,w,h);ctx.fillStyle='#5dff78';ctx.font='bold 22px Consolas';ctx.textAlign='left';const lines=['C:\\Windows\\System32\\','> duck.exe','> suspicious.exe','> reality.dll','> PiotrekBot.exe','> KWA_SERVICE.exe'];lines.forEach((x,i)=>ctx.fillText(x,25,45+i*32));ctx.fillText(['STATUS: OK','STATUS: HMMM','STATUS: KWA'][Math.floor(t/45)%3],25,h-25)}
+function drawPotato2TV6(ctx,w,h,t){ctx.fillStyle='#1b1006';ctx.fillRect(0,0,w,h);ctx.textAlign='center';ctx.fillStyle='#f6d365';ctx.font='900 38px Arial';ctx.fillText('KANAŁ DLA ZIEMNIAKA',w/2,45);ctx.font='110px Arial';ctx.fillText('🥔',w/2,h/2+35);ctx.fillStyle='#fff';ctx.font='bold 19px Arial';ctx.fillText(['ZIEMNIAK OGLĄDA PIOTREK TV','ZIEMNIAK NIE ZGADZA SIĘ','ZIEMNIAK MA PILNE PYTANIE'][Math.floor(t/38)%3],w/2,h-30)}
+function getTVSubtitle(type){
+  const extra={cats:['KOT WYKRYŁ KAMERĘ','KOT MA 7% BATERII','KOT PRZEJĄŁ PILOTA','KOT NIE ZNA KONTEKSTU'],shopping:['PROMOCJA DO ODWOŁANIA','KWA W ZESTAWIE','TANIEJ O 0 ZŁ','OSTATNIA SZTUKA OD 2019'],weather:['FRONT ZIEMNIACZANY','WIATR 2137 KM/H','UWAGA NA KACZKI','NIE WYCHODŹ Z SYSTEMU'],commission:['PROSZĘ ZAPISAĆ DO PROTOKOŁU','WNIOSEK O KWA','GŁOS: PRZECIW ZIEMNIAKOWI','KOMISJA NIE WIE'],system32:['ACCESS: GRANTED','UNKNOWN PROCESS','SYSTEM32 IS WATCHING','KWA_SERVICE ONLINE'],potato2:['ZIEMNIAK LIVE','NIE DOTYKAJ PILOTA','ZIEMNIAK ZATWIERDZIŁ','ZIEMNIAK ODRZUCIŁ']};
+  if(extra[type])return extra[type][Math.floor(tvFrame/45)%extra[type].length];
+  return ({brainrot:['CO JA OGLĄDAM','NIE MA KONTEKSTU','PIOTREK ZNÓW TO ZROBIŁ','KWA SKIBIDI KWA','SYSTEM NIE ZATWIERDZA'],duck:['KWA KWA — INFORMACJE','KACZKA MA STANOWISKO','PILNE: KACZKA WIDZI DESKTOP','KWA'],potato:['ZIEMNIAK JEST GOTOWY','NIE DOTYKAJ ZIEMNIAKA','ZIEMNIAK ODRZUCIŁ WYWIAD'],npc:['HELLO USER','NIE MAM DIALOGU','QUEST FAILED','...'],sport:['TO BĘDZIE HISTORYCZNE','KACZKA ATAKUJE','ZIEMNIAK KONTRUJE','PUBLICZNOŚĆ KRZYCZY'],nothing:['NIC','ABSOLUTNIE NIC','PROSZĘ CZEKAĆ','NIC SIĘ NIE DZIEJE']}[type]||['BRAK DANYCH'])[Math.floor(tvFrame/50)%(({brainrot:['a'],duck:['a'],potato:['a'],npc:['a'],sport:['a'],nothing:['a']}[type]||['a']).length)] || 'BRAK DANYCH';
+}
+function refreshTVProgramUI6(){const box=document.getElementById('tvProgramList6');if(!box)return;box.innerHTML=TV_CHANNELS.map((c,i)=>`<div class="tv-program-card ${i===state.tvChannel?'active':''}" onclick="state.tvChannel=${i};startTV();refreshTVProgramUI6()"><b>${c.name}</b><br><small>${c.type}</small></div>`).join('')}
+
+/* Add live cat GIF wall to TV window without removing canvas channels. */
+const oldOpenTV6=openTV;
+openTV=function(){
+  const win=oldOpenTV6();
+  const tv=win?.querySelector('.tv');
+  if(tv){
+    const extra=document.createElement('div');extra.innerHTML=`<div class="panel"><div class="row"><b>Programy</b><button onclick="loadCatWall6()">🐈 Załaduj koty z internetu</button></div><div id="tvProgramList6" class="tv-extra-grid"></div><div id="catWall6" class="cat-wall"></div></div>`;tv.appendChild(extra);refreshTVProgramUI6();loadCatWall6();
+  }
+  return win;
+};
+async function loadCatWall6(){
+  const wall=document.getElementById('catWall6');if(!wall)return;wall.innerHTML='';
+  const captions=['KOT.EXE','KWA','ADMIN KOTA','NIE MA KONTEKSTU','KOT W SYSTEM32','BRUH'];
+  for(let i=0;i<6;i++){const img=document.createElement('img');img.loading='lazy';img.alt='brainrot cat';img.src='https://cataas.com/cat/gif?'+Date.now()+'_'+i;img.title=captions[i%captions.length];wall.appendChild(img)}
+}
+
+/* ---------- BOT WITH REAL WEB AWARENESS ---------- */
+function botWebEnabled6(){return location.protocol!=='file:'}
+function getBotGreeting(){
+  if(state.chaos>70)return "Witaj. Nie wiem, dlaczego system jeszcze działa, ale mam dostęp do internetu i to chyba pogarsza sprawę.";
+  if(state.sessions>3)return "Znowu Ty. Pamiętam poprzednie sesje. Dodatkowo mogę teraz sprawdzać prawdziwy internet.";
+  return "Cześć Piotrek. Jestem PiotrekBot 6.0. Mogę gadać, pamiętać decyzje i — jeśli backend działa — sprawdzać internet.";
+}
+async function sendBotMessage(){
+  const input=document.getElementById('botInput'),chat=document.getElementById('botChat');if(!input||!chat)return;const text=input.value.trim();if(!text)return;
+  addBotMessage(chat,'user',text);state.botMemory.push(text);state.botMemory=state.botMemory.slice(-50);input.value='';state.reputation.bot++;saveState();
+  const thinking=addBotMessage(chat,'bot','⌛ Sprawdzam, czy internet ma na ten temat opinię...');
+  let answer;
+  if(/(internet|www|stron|aktual|dzisiaj|teraz|wiadomo|pogod|co słychać|co się dzieje|wyszukaj|sprawdź)/i.test(text) && botWebEnabled6()){
+    try{const r=await fetch('/api/search?q='+encodeURIComponent(text));const data=await r.json();answer=botWebSynthesis6(text,data.results||[])}catch(e){answer='Internet odpowiada błędem: '+e.message+'. Wrócę do trybu lokalnego.'}
+  }else answer=botResponse6(text);
+  thinking?.remove?.();addBotMessage(chat,'bot',answer);saveState();
+}
+function botWebSynthesis6(q,results){
+  if(!results.length)return 'Przeszukałem internet i nic sensownego nie znalazłem. Albo internet właśnie udaje System32.';
+  const top=results.slice(0,3);const lines=top.map((r,i)=>`${i+1}. ${r.title} — ${r.snippet||'brak opisu'}`);return `Sprawdziłem prawdziwy internet dla: „${q}”.\n\n${lines.join('\n')}\n\nŹródła są zewnętrzne — mogę je otworzyć w Piotrek Browser.`;
+}
+function botResponse6(text){
+  const q=text.toLowerCase();
+  if(q.includes('kot'))return 'Koty z internetu są już w Piotrek TV. To był błąd, którego system potrzebował.';
+  if(q.includes('piotrek'))return 'Piotrek jest administratorem. Dokumentacja twierdzi, że to dobry pomysł.';
+  if(q.includes('chaos'))return 'Chaos: '+state.chaos+'%. Przy 80% zaczynam udawać, że nie znam Piotrka.';
+  if(q.includes('pamiętasz'))return state.botMemory.length>1?'Pamiętam '+Math.min(state.botMemory.length,50)+' ostatnich wiadomości w tej instalacji.':'Jeszcze niewiele pamiętam.';
+  return botResponse(text);
+}
+
+/* ---------- BOOT 6 ---------- */
+const oldStartBoot6=startBoot;
+startBoot=function(){
+  const boot=document.getElementById('bootTerminal'); if(boot)boot.innerHTML='';
+  oldStartBoot6();
+  setTimeout(()=>{const t=document.getElementById('bootTerminal');if(t){const line=document.createElement('div');line.className='boot-line';line.textContent='[ OK ] Mounting real web bridge...';t.appendChild(line)}},450);
+};
+
+/* ---------- RANDOM SYSTEM LIFE ---------- */
+function passiveSystems(){
+  if(!systemRunning)return;
+  state.battery=Math.max(1,state.battery-(Math.random()<.08?1:0));
+  state.networkLatency=Math.max(8,Math.min(140,Math.round(state.networkLatency+(Math.random()*12-6))));
+  if(Math.random()<.12&&state.settings.notifications)notify('Piotrek OS','Proces w tle zakończył pracę: '+['KWA_SERVICE.exe','potato_indexer.exe','cat_render.exe','RealityEngine.exe'][Math.floor(Math.random()*4)]);
+  updateTray();saveState();
+}
+
+/* ---------- UPDATE CENTER EXTENSION ---------- */
+const oldOpenUpdates6=openUpdates;
+openUpdates=function(){
+  oldOpenUpdates6();
+  setTimeout(()=>{const wins=[...document.querySelectorAll('.window')];const win=wins[wins.length-1];const body=win?.querySelector('.window-body');if(!body)return;const panel=document.createElement('div');panel.className='panel';panel.innerHTML=`<h3>PIOTREK OS 6.0.0</h3><p>✓ Nowy Eksplorator<br>✓ Centrum systemu<br>✓ Piotrek Defender<br>✓ prawdziwy tryb web<br>✓ PiotrekBot Web Search<br>✓ 12+ kanałów Piotrek TV<br>✓ konta użytkowników<br>✓ BIOS / Recovery<br>✓ rozbudowany Task Manager</p><button onclick="installUpdate6()">⬆️ Zainstaluj aktualizację 6.0.0</button>`;body.prepend(panel)},30);
+};
+function installUpdate6(){state.updateVersion='6.0.0';state.updateHistory.push({version:'6.0.0',date:new Date().toISOString()});saveState();notify('Piotrek Update','Aktualizacja 6.0.0 zainstalowana. Nie restartuj. Chyba że chcesz.');}
+
+/* ---------- APP ALIASES ---------- */
+APP.computer.fn=openExplorer6;
+
+/* ---------- START MENU SEARCH / TASKBAR ---------- */
+setTimeout(()=>{
+  const start=document.getElementById('startBtn');
+  if(start&&!start.dataset.statusBound){start.dataset.statusBound='1';start.title='Menu Start'}
+},0);
+
+/* Preserve old saved data while initializing new fields. */
+(function migrate6(){
+  state.version=6;
+  state.tvProgram=state.tvProgram||0;
+  state.browserSession=state.browserSession||[];
+  state.networkOnline=state.networkOnline!==false;
+  state.networkLatency=state.networkLatency||23;
+  state.battery=state.battery||87;
+  state.volume=typeof state.volume==='number'?state.volume:60;
+  state.updateHistory=state.updateHistory||[];
+  state.securityThreats=typeof state.securityThreats==='number'?state.securityThreats:1;
+  state.recentFiles=state.recentFiles||[];
+  saveState();
+})();
 
 </script>
 
