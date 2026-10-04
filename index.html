@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PIOTR OS</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    background: #0874c9;
+}
+
+/* PULPIT */
+
+#desktop {
+    width: 100vw;
+    height: 100vh;
+
+    background:
+        radial-gradient(circle at 50% 30%, #35b7ff, #0874c9 65%, #034b88);
+
+    position: relative;
+}
+
+/* IKONY */
+
+.icon {
+    width: 90px;
+    padding: 10px;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    margin: 10px;
+}
+
+.icon:hover {
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+}
+
+.icon .emoji {
+    font-size: 42px;
+    display: block;
+}
+
+.icon span {
+    font-size: 13px;
+}
+
+/* PASEK */
+
+#taskbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 55px;
+
+    background: rgba(20,20,20,.88);
+
+    display: flex;
+    align-items: center;
+
+    padding: 6px;
+
+    color: white;
+
+    backdrop-filter: blur(10px);
+}
+
+#start {
+    background: #1687df;
+
+    border: none;
+    color: white;
+
+    height: 43px;
+    width: 80px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#start:hover {
+    background: #2d9bf0;
+}
+
+#clock {
+    margin-left: auto;
+    padding: 10px;
+}
+
+/* OKNA */
+
+.window {
+
+    position: absolute;
+
+    width: 500px;
+    min-height: 300px;
+
+    background: #f4f4f4;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.4);
+
+    overflow: hidden;
+
+    display: none;
+}
+
+.titlebar {
+
+    height: 40px;
+
+    background: #202020;
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 10px;
+
+    cursor: move;
+}
+
+.titlebar span {
+    flex: 1;
+}
+
+.close {
+    border: none;
+    background: #e53935;
+    color: white;
+
+    width: 30px;
+    height: 28px;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.content {
+    padding: 20px;
+}
+
+/* NOTATNIK */
+
+textarea {
+
+    width: 100%;
+    height: 250px;
+
+    resize: none;
+
+    border: none;
+
+    outline: none;
+
+    font-family: monospace;
+    font-size: 16px;
+}
+
+/* KALKULATOR */
+
+#calcDisplay {
+
+    width: 100%;
+
+    font-size: 28px;
+
+    padding: 10px;
+
+    text-align: right;
+
+    margin-bottom: 10px;
+}
+
+.calcGrid {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 5px;
+}
+
+.calcGrid button {
+
+    padding: 15px;
+
+    font-size: 18px;
+
+    border: none;
+
+    cursor: pointer;
+
+    background: #ddd;
+
+    border-radius: 5px;
+}
+
+.calcGrid button:hover {
+    background: #bbb;
+}
+
+/* START MENU */
+
+#startMenu {
+
+    position: absolute;
+
+    bottom: 65px;
+    left: 8px;
+
+    width: 300px;
+
+    background: rgba(25,25,25,.95);
+
+    color: white;
+
+    border-radius: 12px;
+
+    padding: 15px;
+
+    display: none;
+
+    box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+#startMenu h2 {
+    margin-top: 0;
+}
+
+.menuButton {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin: 4px 0;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #333;
+
+    color: white;
+
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.menuButton:hover {
+    background: #1687df;
+}
+
+/* ALERT */
+
+#notification {
+
+    position: absolute;
+
+    right: 20px;
+    bottom: 75px;
+
+    background: white;
+
+    color: black;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    box-shadow: 0 5px 30px rgba(0,0,0,.4);
+
+    display: none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="desktop">
+
+    <!-- IKONY -->
+
+    <div class="icon" onclick="openWindow('notepad')">
+
+        <div class="emoji">📝</div>
+
+        <span>Notatnik</span>
+
+    </div>
+
+
+    <div class="icon" onclick="openWindow('calculator')">
+
+        <div class="emoji">🧮</div>
+
+        <span>Kalkulator</span>
+
+    </div>
+
+
+    <div class="icon" onclick="openWindow('internet')">
+
+        <div class="emoji">🌐</div>
+
+        <span>Internet</span>
+
+    </div>
+
+
+    <div class="icon" onclick="openWindow('computer')">
+
+        <div class="emoji">💻</div>
+
+        <span>Ten komputer</span>
+
+    </div>
+
+
+    <!-- NOTATNIK -->
+
+    <div class="window" id="notepad">
+
+        <div class="titlebar">
+
+            <span>📝 Notatnik</span>
+
+            <button class="close"
+                onclick="closeWindow('notepad')">
+                X
+            </button>
+
+        </div>
+
+        <div class="content">
+
+            <textarea
+                id="notes"
+                placeholder="Napisz coś absolutnie ważnego...">
+            </textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- KALKULATOR -->
+
+    <div class="window" id="calculator">
+
+        <div class="titlebar">
+
+            <span>🧮 Kalkulator</span>
+
+            <button class="close"
+                onclick="closeWindow('calculator')">
+                X
+            </button>
+
+        </div>
+
+        <div class="content">
+
+            <input
+                id="calcDisplay"
+                readonly
+            >
+
+            <div class="calcGrid">
+
+                <button onclick="calc('7')">7</button>
+                <button onclick="calc('8')">8</button>
+                <button onclick="calc('9')">9</button>
+                <button onclick="calc('/')">÷</button>
+
+                <button onclick="calc('4')">4</button>
+                <button onclick="calc('5')">5</button>
+                <button onclick="calc('6')">6</button>
+                <button onclick="calc('*')">×</button>
+
+                <button onclick="calc('1')">1</button>
+                <button onclick="calc('2')">2</button>
+                <button onclick="calc('3')">3</button>
+                <button onclick="calc('-')">−</button>
+
+                <button onclick="calc('0')">0</button>
+                <button onclick="calc('.')">.</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="calc('+')">+</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INTERNET -->
+
+    <div class="window" id="internet">
+
+        <div class="titlebar">
+
+            <span>🌐 Internet Explorer 9000</span>
+
+            <button class="close"
+                onclick="closeWindow('internet')">
+                X
+            </button>
+
+        </div>
+
+        <div class="content">
+
+            <h1>Internet</h1>
+
+            <p>
+                Witaj w Internecie.
+            </p>
+
+            <p>
+                Niestety Internet jest dzisiaj zamknięty.
+            </p>
+
+            <button onclick="internetButton()">
+                SPRÓBUJ JESZCZE RAZ
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- TEN KOMPUTER -->
+
+    <div class="window" id="computer">
+
+        <div class="titlebar">
+
+            <span>💻 Ten komputer</span>
+
+            <button class="close"
+                onclick="closeWindow('computer')">
+                X
+            </button>
+
+        </div>
+
+        <div class="content">
+
+            <h2>Ten komputer</h2>
+
+            <p>💾 Dysk C:</p>
+
+            <p>📁 Dokumenty</p>
+
+            <p>📁 Gry</p>
+
+            <p>📁 Bardzo ważne rzeczy</p>
+
+            <p>📁 NIE OTWIERAĆ</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- START MENU -->
+
+    <div id="startMenu">
+
+        <h2>🖥️ PIOTR OS</h2>
+
+        <button class="menuButton"
+            onclick="openWindow('notepad')">
+            📝 Notatnik
+        </button>
+
+        <button class="menuButton"
+            onclick="openWindow('calculator')">
+            🧮 Kalkulator
+        </button>
+
+        <button class="menuButton"
+            onclick="randomEvent()">
+            🎲 Losuj coś
+        </button>
+
+        <button class="menuButton"
+            onclick="shutdown()">
+            🔴 Wyłącz komputer
+        </button>
+
+    </div>
+
+
+    <!-- POWIADOMIENIE -->
+
+    <div id="notification">
+        🔔 Witamy w PIOTR OS!
+    </div>
+
+
+    <!-- PASEK -->
+
+    <div id="taskbar">
+
+        <button id="start" onclick="toggleStart()">
+            🪟 START
+        </button>
+
+        <div id="clock"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ZEGAR */
+
+function updateClock() {
+
+    const now = new Date();
+
+    const time =
+        now.getHours().toString().padStart(2,'0')
+        + ":" +
+        now.getMinutes().toString().padStart(2,'0');
+
+    document.getElementById("clock").textContent = time;
+}
+
+setInterval(updateClock, 1000);
+
+updateClock();
+
+
+/* OKNA */
+
+let zIndex = 10;
+
+function openWindow(id) {
+
+    const win = document.getElementById(id);
+
+    win.style.display = "block";
+
+    zIndex++;
+
+    win.style.zIndex = zIndex;
+
+    win.style.left =
+        (100 + Math.random() * 150) + "px";
+
+    win.style.top =
+        (70 + Math.random() * 100) + "px";
+
+    document.getElementById("startMenu").style.display = "none";
+}
+
+
+function closeWindow(id) {
+
+    document.getElementById(id).style.display = "none";
+
+}
+
+
+/* START */
+
+function toggleStart() {
+
+    const menu =
+        document.getElementById("startMenu");
+
+    menu.style.display =
+        menu.style.display === "block"
+        ? "none"
+        : "block";
+}
+
+
+/* INTERNET */
+
+function internetButton() {
+
+    alert(
+        "Błąd 404:\n\n" +
+        "Internet uciekł do Żabki."
+    );
+
+}
+
+
+/* LOSOWE AKCJE */
+
+function randomEvent() {
+
+    const messages = [
+
+        "🥔 Ziemniak został wykryty.",
+
+        "🚨 Uwaga: komputer jest komputerem.",
+
+        "🦆 Kaczka patrzy na Ciebie.",
+
+        "💀 System nie wie co robić.",
+
+        "📡 Znaleziono Wi-Fi sąsiada.",
+
+        "🍕 Krytyczny poziom pizzy.",
+
+        "🗿 Wszystko działa zgodnie z planem.",
+
+        "🤨 Kto Ci pozwolił wejść do ustawień?"
+
+    ];
+
+    alert(
+        messages[
+            Math.floor(
+                Math.random() * messages.length
+            )
+        ]
+    );
+
+}
+
+
+/* WYŁĄCZANIE */
+
+function shutdown() {
+
+    document.getElementById("desktop").innerHTML =
+
+        "<div style='color:white;" +
+        "height:100vh;" +
+        "display:flex;" +
+        "align-items:center;" +
+        "justify-content:center;" +
+        "font-size:30px;" +
+        "text-align:center;'>" +
+
+        "💀<br><br>" +
+
+        "PIOTR OS został wyłączony.<br><br>" +
+
+        "<button onclick='location.reload()'>" +
+        "URUCHOM PONOWNIE" +
+        "</button>" +
+
+        "</div>";
+
+}
+
+
+/* KALKULATOR */
+
+function calc(value) {
+
+    document.getElementById("calcDisplay").value += value;
+
+}
+
+
+function calculate() {
+
+    const display =
+        document.getElementById("calcDisplay");
+
+    try {
+
+        display.value =
+            Function(
+                "return " + display.value
+            )();
+
+    } catch {
+
+        display.value = "BŁĄD";
+
+    }
+
+}
+
+
+/* POWIADOMIENIE */
+
+setTimeout(function() {
+
+    const notification =
+        document.getElementById("notification");
+
+    notification.style.display = "block";
+
+    setTimeout(function() {
+
+        notification.style.display = "none";
+
+    }, 4000);
+
+}, 1500);
+
+</script>
+
+</body>
+</html>
