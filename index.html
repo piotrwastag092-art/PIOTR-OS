@@ -2,3787 +2,2967 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PIOTR OS 3.0</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PIOTR OS 4.0</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    user-select: none;
-}
-
-html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background: #0877c9;
-    color: white;
-}
-
-/* =========================
-   GLOBAL
-========================= */
-
-button,
-input,
-textarea {
-    font-family: inherit;
-}
-
-button {
-    cursor: pointer;
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* =========================
-   BOOT
-========================= */
-
-#boot {
-    position: fixed;
-    inset: 0;
-    background: #050505;
-    color: #00ff00;
-    padding: 30px;
-    font-family: monospace;
-    z-index: 99999;
-    overflow: hidden;
-}
-
-.bootLine {
-    margin: 5px 0;
-}
-
-.bootBlink {
-    animation: blink .7s infinite;
-}
-
-@keyframes blink {
-    50% { opacity: 0; }
-}
-
-/* =========================
-   LOGIN
-========================= */
-
-#login {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(135deg, #0b63a5, #172f55);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9000;
-}
-
-.loginBox {
-    width: 360px;
-    background: rgba(0,0,0,.65);
-    border-radius: 15px;
-    padding: 30px;
-    text-align: center;
-    box-shadow: 0 0 40px rgba(0,0,0,.5);
-}
-
-.loginAvatar {
-    font-size: 70px;
-    margin-bottom: 10px;
-}
-
-.loginBox input {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: 0;
-    margin: 10px 0;
-    font-size: 18px;
-}
-
-.loginBox button {
-    width: 100%;
-    padding: 12px;
-    border: 0;
-    border-radius: 8px;
-    background: #1683ff;
-    color: white;
-    font-weight: bold;
-    font-size: 17px;
-}
-
-.loginHint {
-    font-size: 12px;
-    opacity: .6;
-    margin-top: 12px;
-}
-
-/* =========================
-   DESKTOP
-========================= */
-
-#desktop {
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,.1), transparent 20%),
-        radial-gradient(circle at 80% 80%, rgba(0,0,0,.15), transparent 25%),
-        linear-gradient(135deg, #0877c9, #07518e);
-    overflow: hidden;
-}
-
-#desktop.dark {
-    background: linear-gradient(135deg, #101010, #242424);
-}
-
-#desktop.purple {
-    background: linear-gradient(135deg, #5427a8, #9b3dd4);
-}
-
-#desktop.green {
-    background: linear-gradient(135deg, #087d53, #0ca96d);
-}
-
-.desktopIcons {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    z-index: 2;
-}
-
-.icon {
-    width: 85px;
-    text-align: center;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 8px;
-}
-
-.icon:hover {
-    background: rgba(255,255,255,.18);
-}
-
-.iconEmoji {
-    font-size: 38px;
-}
-
-.iconText {
-    font-size: 12px;
-    text-shadow: 1px 1px 3px black;
-}
-
-/* =========================
-   TASKBAR
-========================= */
-
-#taskbar {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 48px;
-    background: rgba(20,20,20,.94);
-    display: flex;
-    align-items: center;
-    z-index: 10000;
-    border-top: 1px solid rgba(255,255,255,.15);
-}
-
-#startButton {
-    height: 100%;
-    padding: 0 18px;
-    border: 0;
-    color: white;
-    background: #1269b5;
-    font-weight: bold;
-}
-
-#startButton:hover {
-    background: #1988e7;
-}
-
-#taskButtons {
-    display: flex;
-    gap: 4px;
-    padding-left: 5px;
-    flex: 1;
-    overflow: hidden;
-}
-
-.taskButton {
-    background: rgba(255,255,255,.1);
-    color: white;
-    border: 1px solid rgba(255,255,255,.15);
-    padding: 7px 12px;
-    border-radius: 5px;
-}
-
-#clock {
-    padding: 0 15px;
-    font-family: monospace;
-}
-
-/* =========================
-   START MENU
-========================= */
-
-#startMenu {
-    position: absolute;
-    bottom: 48px;
-    left: 0;
-    width: 330px;
-    max-height: 75vh;
-    overflow-y: auto;
-    background: rgba(20,20,20,.97);
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 12px 12px 0 0;
-    padding: 12px;
-    z-index: 11000;
-    box-shadow: 0 0 30px rgba(0,0,0,.5);
-}
-
-.startTitle {
-    font-size: 22px;
-    font-weight: bold;
-    padding: 10px;
-}
-
-.startItem {
-    padding: 11px;
-    border-radius: 7px;
-    cursor: pointer;
-}
-
-.startItem:hover {
-    background: rgba(255,255,255,.12);
-}
-
-/* =========================
-   WINDOWS
-========================= */
-
-.window {
-    position: absolute;
-    width: 560px;
-    height: 390px;
-    min-width: 280px;
-    min-height: 180px;
-    background: #f0f0f0;
-    color: #111;
-    border-radius: 9px;
-    overflow: hidden;
-    box-shadow: 0 15px 50px rgba(0,0,0,.45);
-    z-index: 100;
-}
-
-.window.maximized {
-    left: 5px !important;
-    top: 5px !important;
-    width: calc(100% - 10px) !important;
-    height: calc(100% - 58px) !important;
-}
-
-.titlebar {
-    height: 34px;
-    background: linear-gradient(#277fc4, #13578c);
-    color: white;
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    cursor: move;
-}
-
-.titleText {
-    flex: 1;
-    font-weight: bold;
-    font-size: 13px;
-}
-
-.winButtons {
-    display: flex;
-    gap: 4px;
-}
-
-.winBtn {
-    width: 25px;
-    height: 23px;
-    border: 0;
-    border-radius: 4px;
-    background: rgba(255,255,255,.18);
-    color: white;
-}
-
-.winBtn:hover {
-    background: rgba(255,255,255,.35);
-}
-
-.closeBtn:hover {
-    background: #d33;
-}
-
-.windowContent {
-    height: calc(100% - 34px);
-    overflow: auto;
-    padding: 12px;
-    background: #f4f4f4;
-}
-
-.darkContent {
-    background: #151515;
-    color: #eee;
-}
-
-/* =========================
-   NOTEPAD
-========================= */
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+body{background:#0877c9;color:#fff}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+input,textarea{user-select:text}
+.hidden{display:none!important}
+
+#boot{
+ position:fixed;inset:0;background:#050505;color:#00ff55;
+ padding:28px;font:14px monospace;z-index:999999;overflow:hidden
+}
+.bootLine{margin:5px 0}
+.bootBlink{animation:blink .7s infinite}
+@keyframes blink{50%{opacity:0}}
+
+#login{
+ position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(135deg,#07518e,#142d50);z-index:90000
+}
+.loginBox{
+ width:380px;background:rgba(0,0,0,.7);padding:30px;border-radius:18px;
+ text-align:center;box-shadow:0 20px 70px #0008
+}
+.loginAvatar{font-size:75px}
+.loginBox input{width:100%;padding:13px;border:0;border-radius:8px;margin:12px 0;font-size:18px}
+.loginBox button{width:100%;padding:13px;border:0;border-radius:8px;background:#1683ff;color:#fff;font-weight:bold}
+.loginHint{font-size:12px;opacity:.55;margin-top:10px}
+
+#desktop{
+ position:fixed;inset:0;overflow:hidden;
+ background:
+ radial-gradient(circle at 20% 20%,#ffffff1a,transparent 20%),
+ linear-gradient(135deg,#0877c9,#07518e)
+}
+#desktop.dark{background:linear-gradient(135deg,#111,#292929)}
+#desktop.purple{background:linear-gradient(135deg,#52239a,#a238d4)}
+#desktop.green{background:linear-gradient(135deg,#08764d,#0ca96d)}
+#desktop.red{background:linear-gradient(135deg,#7e1717,#d34a20)}
+#desktop.matrix{background:#001900}
+
+.desktopIcons{
+ position:absolute;left:10px;top:10px;display:grid;
+ grid-template-columns:repeat(2,80px);gap:7px;z-index:2
+}
+.icon{
+ width:80px;padding:5px;text-align:center;border-radius:8px;cursor:pointer
+}
+.icon:hover{background:#ffffff22}
+.iconEmoji{font-size:34px}
+.iconText{font-size:11px;text-shadow:1px 1px 3px #000}
+
+#taskbar{
+ position:absolute;left:0;right:0;bottom:0;height:48px;
+ display:flex;align-items:center;background:#151515f5;
+ border-top:1px solid #ffffff22;z-index:30000
+}
+#startButton{height:100%;padding:0 17px;border:0;background:#1269b5;color:#fff;font-weight:bold}
+#startButton:hover{background:#1988e7}
+#taskButtons{display:flex;gap:4px;padding-left:5px;flex:1;overflow:hidden}
+.taskButton{
+ border:1px solid #ffffff1c;background:#ffffff12;color:#fff;
+ padding:7px 10px;border-radius:5px;white-space:nowrap
+}
+#clock{padding:0 15px;font:13px monospace}
+
+#startMenu{
+ position:absolute;left:0;bottom:48px;width:370px;max-height:78vh;
+ overflow:auto;background:#171717f7;border:1px solid #ffffff20;
+ border-radius:13px 13px 0 0;padding:10px;z-index:35000
+}
+.startTitle{font-size:21px;font-weight:bold;padding:10px}
+.startItem{padding:9px;border-radius:6px;cursor:pointer}
+.startItem:hover{background:#ffffff13}
+.startSearch{
+ width:100%;padding:9px;background:#222;color:#fff;border:1px solid #555;
+ border-radius:6px;margin-bottom:8px
+}
+
+.window{
+ position:absolute;width:590px;height:410px;min-width:300px;min-height:180px;
+ background:#f3f3f3;color:#111;border-radius:9px;overflow:hidden;
+ box-shadow:0 18px 60px #0007;z-index:100
+}
+.window.maximized{
+ left:5px!important;top:5px!important;
+ width:calc(100% - 10px)!important;
+ height:calc(100% - 58px)!important
+}
+.titlebar{
+ height:34px;display:flex;align-items:center;padding:0 8px;
+ background:linear-gradient(#277fc4,#13578c);color:#fff;cursor:move
+}
+.titleText{flex:1;font-size:13px;font-weight:bold}
+.winButtons{display:flex;gap:4px}
+.winBtn{
+ width:25px;height:23px;border:0;border-radius:4px;
+ background:#ffffff1c;color:#fff
+}
+.winBtn:hover{background:#ffffff40}
+.closeBtn:hover{background:#d33}
+.windowContent{height:calc(100% - 34px);overflow:auto;padding:12px;background:#f4f4f4}
+.darkContent{background:#151515;color:#eee}
 
-#notesArea {
-    width: 100%;
-    height: calc(100% - 48px);
-    resize: none;
-    border: 1px solid #bbb;
-    padding: 10px;
-    font-size: 15px;
-    color: #111;
-    user-select: text;
+.toolbar{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.toolbar button,.smallBtn{
+ padding:6px 9px;border:1px solid #aaa;border-radius:5px;background:#fff
 }
-
-.noteButtons {
-    height: 40px;
-    display: flex;
-    gap: 5px;
-    margin-bottom: 8px;
-}
-
-/* =========================
-   CALCULATOR
-========================= */
-
-.calc {
-    max-width: 330px;
-    margin: auto;
-}
-
-#calcDisplay {
-    width: 100%;
-    padding: 15px;
-    font-size: 28px;
-    text-align: right;
-    border: 1px solid #aaa;
-    margin-bottom: 7px;
-}
-
-.calcGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-}
-
-.calcGrid button {
-    height: 55px;
-    font-size: 18px;
-    border: 1px solid #aaa;
-    background: white;
-    border-radius: 5px;
-}
-
-.calcGrid button:hover {
-    background: #ddd;
-}
-
-/* =========================
-   TERMINAL
-========================= */
-
-.terminal {
-    height: 100%;
-    background: #050505;
-    color: #00ff66;
-    font-family: monospace;
-    padding: 10px;
-    overflow: auto;
-}
-
-#terminalOutput {
-    white-space: pre-wrap;
-}
-
-#terminalInputLine {
-    display: flex;
-}
-
-#terminalInput {
-    flex: 1;
-    background: transparent;
-    color: #00ff66;
-    border: 0;
-    outline: 0;
-    font-family: monospace;
-    user-select: text;
-}
-
-/* =========================
-   FILE EXPLORER
-========================= */
-
-.fileGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 100px);
-    gap: 15px;
-}
-
-.file {
-    padding: 10px;
-    text-align: center;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.file:hover {
-    background: #ddd;
-}
-
-.fileEmoji {
-    font-size: 38px;
-}
-
-/* =========================
-   SETTINGS
-========================= */
-
-.themeButtons {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.themeButtons button {
-    padding: 15px 20px;
-    border: 0;
-    border-radius: 8px;
-    color: white;
-}
-
-.themeBlue { background: #0877c9; }
-.themeDark { background: #222; }
-.themePurple { background: #7431b8; }
-.themeGreen { background: #078454; }
-
-/* =========================
-   NOTIFICATIONS
-========================= */
-
-#notifications {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    width: 300px;
-    z-index: 50000;
-    pointer-events: none;
-}
-
-.notification {
-    background: rgba(20,20,20,.94);
-    color: white;
-    border-radius: 10px;
-    padding: 13px;
-    margin-bottom: 8px;
-    box-shadow: 0 5px 20px rgba(0,0,0,.4);
-    animation: notifyIn .25s;
-}
-
-@keyframes notifyIn {
-    from {
-        transform: translateX(120%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-/* =========================
-   CONTEXT MENU
-========================= */
-
-#contextMenu {
-    position: fixed;
-    display: none;
-    background: #202020;
-    color: white;
-    width: 210px;
-    border-radius: 8px;
-    padding: 5px;
-    z-index: 60000;
-    box-shadow: 0 10px 30px rgba(0,0,0,.5);
-}
-
-.contextItem {
-    padding: 9px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.contextItem:hover {
-    background: #3a3a3a;
-}
-
-/* =========================
-   FAKE VIRUS / BSOD
-========================= */
-
-#virusScreen,
-#bsod,
-#shutdownScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 100000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-#virusScreen {
-    background: #170000;
-    color: red;
-    font-family: monospace;
-}
-
-#virusBox {
-    max-width: 700px;
-}
-
-#virusBox h1 {
-    font-size: 70px;
-}
-
-#bsod {
-    background: #0753a5;
-    color: white;
-    font-family: monospace;
-    padding: 30px;
-    text-align: left;
+.card{
+ background:#fff;border:1px solid #ccc;border-radius:8px;padding:10px;
+ margin-bottom:8px;color:#111
 }
-
-#shutdownScreen {
-    background: #000;
-    color: white;
-    font-family: monospace;
-}
-
-/* =========================
-   ACHIEVEMENTS
-========================= */
-
-.achievement {
-    background: #ddd;
-    color: #111;
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 7px;
-}
-
-.achievement.locked {
-    opacity: .45;
+.statGrid{
+ display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px
 }
-
-/* =========================
-   CHAOS
-========================= */
-
-#chaosWidget {
-    position: fixed;
-    right: 15px;
-    bottom: 60px;
-    width: 190px;
-    background: rgba(0,0,0,.55);
-    border-radius: 9px;
-    padding: 8px;
-    z-index: 3000;
-    font-size: 11px;
+.stat{
+ background:#fff;border:1px solid #ccc;border-radius:8px;padding:10px;color:#111
 }
+.bigNumber{font-size:34px;font-weight:bold}
+.progress{height:11px;background:#222;border-radius:10px;overflow:hidden}
+.progress>div{height:100%;width:0%;background:linear-gradient(90deg,#00c853,#ffe600,#ff2222)}
 
-#chaosBar {
-    width: 100%;
-    height: 10px;
-    background: #222;
-    border-radius: 10px;
-    overflow: hidden;
+#notesArea{
+ width:100%;height:calc(100% - 45px);resize:none;
+ border:1px solid #aaa;padding:10px;color:#111
 }
 
-#chaosFill {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #00ff55, #ffff00, #ff0000);
+.calc{max-width:340px;margin:auto}
+#calcDisplay{
+ width:100%;padding:14px;font-size:27px;text-align:right;
+ border:1px solid #aaa;margin-bottom:6px
 }
-
-/* =========================
-   KACZKA
-========================= */
+.calcGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.calcGrid button{height:54px;font-size:18px;border:1px solid #aaa;background:#fff;border-radius:5px}
+.calcGrid button:hover{background:#ddd}
 
-#duck {
-    position: fixed;
-    font-size: 55px;
-    z-index: 7000;
-    cursor: pointer;
-    display: none;
-    transition: transform .2s;
+.terminal{
+ height:100%;background:#050505;color:#00ff66;font:13px monospace;
+ padding:10px;overflow:auto
 }
-
-/* =========================
-   SNAIL
-========================= */
-
-#snail {
-    position: fixed;
-    font-size: 40px;
-    z-index: 6500;
-    display: none;
+#terminalOutput{white-space:pre-wrap}
+#terminalInputLine{display:flex}
+#terminalInput{
+ flex:1;background:transparent;color:#00ff66;border:0;outline:0;font:inherit
 }
-
-/* =========================
-   GHOST
-========================= */
 
-#ghost {
-    position: fixed;
-    font-size: 65px;
-    opacity: 0;
-    z-index: 8000;
-    pointer-events: none;
-    transition: opacity 1s;
+.fileGrid{
+ display:grid;grid-template-columns:repeat(auto-fill,100px);gap:12px
 }
-
-/* =========================
-   PORTAL
-========================= */
-
-#portal {
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(circle, #ff00ff, #050505 55%);
-    z-index: 99000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
+.file{
+ padding:9px;text-align:center;border-radius:8px;cursor:pointer
 }
+.file:hover{background:#ddd}
+.fileEmoji{font-size:37px}
 
-.portalInner {
-    max-width: 700px;
-    padding: 30px;
-}
+.themeButtons{display:flex;gap:8px;flex-wrap:wrap}
+.themeButtons button{padding:13px 18px;border:0;border-radius:8px;color:#fff}
+.themeBlue{background:#0877c9}.themeDark{background:#222}
+.themePurple{background:#7431b8}.themeGreen{background:#078454}.themeRed{background:#9b2226}
 
-.portalSpin {
-    font-size: 120px;
-    animation: spin 2s linear infinite;
+#notifications{
+ position:fixed;right:15px;top:15px;width:310px;z-index:70000;pointer-events:none
 }
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.notification{
+ background:#161616f2;color:#fff;border-radius:10px;padding:12px;margin-bottom:8px;
+ box-shadow:0 7px 25px #0008;animation:notifyIn .25s
 }
+@keyframes notifyIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* =========================
-   TV
-========================= */
-
-.tvScreen {
-    background: #111;
-    color: #00ff66;
-    min-height: 220px;
-    border-radius: 10px;
-    padding: 20px;
-    font-family: monospace;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
+#contextMenu{
+ position:fixed;display:none;width:230px;background:#202020;color:#fff;
+ border-radius:8px;padding:5px;z-index:80000;box-shadow:0 12px 35px #0008
 }
+.contextItem{padding:9px;border-radius:5px;cursor:pointer}
+.contextItem:hover{background:#ffffff18}
 
-.channelButtons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 10px;
+#virusScreen,#bsod,#shutdownScreen{
+ position:fixed;inset:0;z-index:999999;display:flex;
+ align-items:center;justify-content:center;text-align:center
 }
-
-/* =========================
-   SHOP
-========================= */
-
-.shopItem {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #eee;
-    color: #111;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 8px;
+#virusScreen{background:#190000;color:#f00;font-family:monospace}
+#virusBox{max-width:720px}
+#virusBox h1{font-size:70px}
+#bsod{
+ background:#0753a5;color:#fff;font-family:monospace;
+ padding:30px;text-align:left
 }
+#shutdownScreen{background:#000;color:#fff;font:14px monospace}
 
-.shopItem button {
-    margin-left: auto;
+.achievement{
+ background:#ddd;color:#111;border-radius:8px;padding:10px;margin-bottom:7px
 }
+.achievement.locked{opacity:.4}
 
-/* =========================
-   STOCK
-========================= */
-
-.stockNumber {
-    font-size: 45px;
-    font-weight: bold;
+#chaosWidget{
+ position:fixed;right:15px;bottom:60px;width:200px;
+ background:#0009;border-radius:9px;padding:8px;z-index:2500;font-size:11px
 }
+#chaosBar{height:10px;background:#222;border-radius:10px;overflow:hidden}
+#chaosFill{height:100%;width:0;background:linear-gradient(90deg,#00ff55,#ffff00,#ff0000)}
 
-.stockUp {
-    color: green;
+#duck,#snail,#ghost,#unknownNpc{
+ position:fixed;display:none;z-index:6500;cursor:pointer
 }
+#duck{font-size:55px}
+#snail{font-size:40px}
+#ghost{font-size:65px;opacity:0;transition:opacity 1s;pointer-events:none}
+#unknownNpc{font-size:50px}
 
-.stockDown {
-    color: red;
+#portal{
+ position:fixed;inset:0;background:radial-gradient(circle,#ff00ff,#050505 55%);
+ z-index:990000;display:none;align-items:center;justify-content:center;text-align:center
 }
-
-/* =========================
-   WALLET
-========================= */
+.portalInner{max-width:700px;padding:30px}
+.portalSpin{font-size:110px;animation:spin 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.wallet {
-    text-align: center;
-    padding: 20px;
+.tvScreen{
+ background:#111;color:#00ff66;min-height:220px;border-radius:10px;
+ padding:20px;font:14px monospace;display:flex;
+ flex-direction:column;justify-content:center;text-align:center
 }
+.channelButtons{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
 
-.walletMoney {
-    font-size: 55px;
-    font-weight: bold;
+.shopItem{
+ display:flex;align-items:center;gap:10px;background:#eee;color:#111;
+ padding:10px;border-radius:8px;margin-bottom:8px
 }
+.shopItem button{margin-left:auto}
 
-/* =========================
-   PIOTRBOT
-========================= */
+.stockNumber{font-size:45px;font-weight:bold}
+.stockUp{color:green}.stockDown{color:red}
 
-.chatBox {
-    height: 250px;
-    overflow-y: auto;
-    background: #ddd;
-    color: #111;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.chatMsg {
-    padding: 6px;
-    margin: 5px;
-    border-radius: 8px;
-}
+.wallet{text-align:center;padding:20px}
+.walletMoney{font-size:55px;font-weight:bold}
 
-.botMsg {
-    background: #c9e6ff;
+.chatBox{
+ height:250px;overflow:auto;background:#ddd;color:#111;padding:10px;border-radius:8px
 }
+.chatMsg{padding:7px;margin:5px;border-radius:8px}
+.botMsg{background:#c9e6ff}.userMsg{background:#d4ffd4;text-align:right}
+.chatInput{display:flex;gap:5px;margin-top:8px}
+.chatInput input{flex:1;padding:9px}
 
-.userMsg {
-    background: #d4ffd4;
-    text-align: right;
+.map{
+ position:relative;height:280px;
+ background:
+ linear-gradient(45deg,#0000000d 25%,transparent 25%),
+ linear-gradient(-45deg,#0000000d 25%,transparent 25%),#bde3a7;
+ background-size:30px 30px;border:3px solid #444;overflow:hidden
 }
-
-.chatInput {
-    display: flex;
-    gap: 5px;
-    margin-top: 8px;
+.mapPlace{
+ position:absolute;background:#fff;color:#111;padding:6px;border-radius:7px;
+ cursor:pointer;box-shadow:0 2px 6px #0005
 }
+.mapPlace:hover{transform:scale(1.1)}
 
-.chatInput input {
-    flex: 1;
-    padding: 9px;
-    user-select: text;
+.ufoRadar{
+ width:220px;height:220px;margin:auto;border-radius:50%;
+ background:
+ radial-gradient(circle,transparent 0 18%,#00ff0033 19% 20%,transparent 21% 38%,#00ff0033 39% 40%,transparent 41%),
+ #071707;border:3px solid #0f0;position:relative
 }
-
-/* =========================
-   MAP
-========================= */
-
-.map {
-    position: relative;
-    height: 280px;
-    background:
-        linear-gradient(45deg, rgba(0,0,0,.05) 25%, transparent 25%),
-        linear-gradient(-45deg, rgba(0,0,0,.05) 25%, transparent 25%),
-        #bde3a7;
-    background-size: 30px 30px;
-    border: 3px solid #444;
-    overflow: hidden;
+.radarDot{
+ position:absolute;width:12px;height:12px;border-radius:50%;
+ background:red;display:none
 }
 
-.mapPlace {
-    position: absolute;
-    background: #fff;
-    color: #111;
-    padding: 6px;
-    border-radius: 7px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+.mail{
+ background:#fff;color:#111;padding:11px;border-radius:8px;margin-bottom:7px;cursor:pointer
 }
+.mail:hover{background:#eee}
 
-.mapPlace:hover {
-    transform: scale(1.1);
+.mutation{
+ padding:11px;background:#ddd;color:#111;border-radius:8px;margin-bottom:8px
 }
+.mutation button{float:right}
 
-/* =========================
-   UFO
-========================= */
-
-.ufoRadar {
-    width: 220px;
-    height: 220px;
-    margin: auto;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle, transparent 0 18%, rgba(0,255,0,.2) 19% 20%, transparent 21% 38%, rgba(0,255,0,.2) 39% 40%, transparent 41%),
-        #071707;
-    border: 3px solid #0f0;
-    position: relative;
+#dontPress{
+ background:#a80000;color:#fff;border:4px solid #ff5555;
+ padding:20px;border-radius:50%;font-size:21px;font-weight:bold;
+ width:180px;height:180px;display:block;margin:30px auto;
+ box-shadow:0 0 30px #f004
 }
+#dontPress:hover{transform:scale(1.05)}
 
-.radarDot {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: red;
-    display: none;
+.browserBar{display:flex;gap:5px}
+.browserBar input{
+ flex:1;padding:9px;border:1px solid #aaa;border-radius:5px
 }
-
-/* =========================
-   MAIL
-========================= */
-
-.mail {
-    background: white;
-    color: #111;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
+.browserPage{
+ margin-top:8px;background:#fff;color:#111;border:1px solid #ccc;
+ min-height:250px;padding:15px;border-radius:7px
 }
-
-.mail:hover {
-    background: #eee;
+.searchResult{
+ padding:8px;border-bottom:1px solid #ddd;cursor:pointer
 }
+.searchResult:hover{background:#eee}
 
-/* =========================
-   LAB
-========================= */
-
-.mutation {
-    padding: 12px;
-    background: #ddd;
-    color: #111;
-    border-radius: 8px;
-    margin-bottom: 8px;
+.process{
+ padding:8px;border-bottom:1px solid #ccc;display:flex;gap:8px;align-items:center
 }
+.processName{flex:1;font-family:monospace}
+.cpuMini{width:90px;height:7px;background:#ddd;border-radius:5px;overflow:hidden}
+.cpuMini div{height:100%;background:#1683ff}
 
-.mutation button {
-    float: right;
+.calendar{
+ display:grid;grid-template-columns:repeat(7,1fr);gap:4px
 }
-
-/* =========================
-   DO NOT PRESS
-========================= */
+.calDay{padding:8px;text-align:center;background:#fff;color:#111;border-radius:4px}
+.calHead{font-weight:bold;background:#ddd}
 
-#dontPress {
-    background: #b00000;
-    color: white;
-    border: 4px solid #ff5555;
-    padding: 20px;
-    border-radius: 50%;
-    font-size: 22px;
-    font-weight: bold;
-    width: 180px;
-    height: 180px;
-    display: block;
-    margin: 30px auto;
-    box-shadow: 0 0 30px rgba(255,0,0,.5);
+.lockScreen{
+ position:fixed;inset:0;z-index:95000;background:#081421eF;
+ display:flex;align-items:center;justify-content:center;text-align:center
 }
+.lockBox{background:#111e;padding:30px;border-radius:16px;width:330px}
+.lockBox input{width:100%;padding:10px;margin:10px 0;border-radius:7px;border:0}
 
-#dontPress:hover {
-    transform: scale(1.05);
+.updateScreen{
+ position:fixed;inset:0;z-index:96000;background:#081421;
+ display:flex;align-items:center;justify-content:center;text-align:center
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width: 700px) {
-    .window {
-        width: calc(100% - 20px);
-        left: 10px !important;
-        height: calc(100% - 80px);
-    }
-
-    #chaosWidget {
-        display: none;
-    }
-
-    .desktopIcons {
-        gap: 5px;
-    }
+.updateBox{width:500px;max-width:90%}
+.updateBar{height:20px;background:#222;border-radius:10px;overflow:hidden}
+.updateFill{height:100%;width:0;background:#1683ff}
 
-    .icon {
-        width: 70px;
-    }
+@media(max-width:700px){
+ .window{width:calc(100% - 20px);left:10px!important;height:calc(100% - 80px)}
+ .desktopIcons{grid-template-columns:repeat(2,65px)}
+ .icon{width:65px}
+ #chaosWidget{display:none}
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================
+<!-- =====================================================
      BOOT
-========================= -->
+===================================================== -->
 
 <div id="boot">
-    <div class="bootLine">PIOTR BIOS v9.999</div>
-    <div class="bootLine">Initializing potato processor...</div>
-    <div class="bootLine">Checking ducks........................ OK</div>
-    <div class="bootLine">Checking common sense................. NOT FOUND</div>
-    <div class="bootLine">Loading suspicious files.............. OK</div>
-    <div class="bootLine">Detecting user........................ PIOTR</div>
-    <div class="bootLine">Installing unnecessary chaos......... 100%</div>
-    <div class="bootLine">Starting PIOTR OS 3.0</div>
-    <div class="bootLine bootBlink">_</div>
+ <div class="bootLine">PIOTR BIOS v10.42</div>
+ <div class="bootLine">Initializing PIOTR KERNEL...</div>
+ <div class="bootLine">CPU...................... potato-core 9000</div>
+ <div class="bootLine">RAM...................... 64 GB (prawdopodobnie)</div>
+ <div class="bootLine">GPU...................... KACZKA RTX</div>
+ <div class="bootLine">Checking common sense... NOT FOUND</div>
+ <div class="bootLine">Checking ducks.......... 1 FOUND</div>
+ <div class="bootLine">Checking potatoes....... 37 FOUND</div>
+ <div class="bootLine">Checking previous users. 1 UNKNOWN</div>
+ <div class="bootLine">Loading Reality Engine.. OK</div>
+ <div class="bootLine">Loading Chaos Engine.... OK</div>
+ <div class="bootLine">Loading PiotrBot........ SUSPICIOUS</div>
+ <div class="bootLine">Loading system.......... 100%</div>
+ <div class="bootLine">Starting PIOTR OS 4.0</div>
+ <div class="bootLine bootBlink">_</div>
 </div>
 
-<!-- =========================
+<!-- =====================================================
      LOGIN
-========================= -->
+===================================================== -->
 
 <div id="login" class="hidden">
-    <div class="loginBox">
-        <div class="loginAvatar">🗿</div>
-        <h2>PIOTR OS</h2>
-        <div>Użytkownik: <b>Piotr</b></div>
-        <input id="passwordInput" type="password" placeholder="Hasło">
-        <button onclick="login()">ZALOGUJ</button>
-        <div class="loginHint">Hasło domyślne: 1234</div>
-        <div id="loginError"></div>
-    </div>
+ <div class="loginBox">
+  <div class="loginAvatar">🗿</div>
+  <h2>PIOTR OS 4.0</h2>
+  <p>Witaj ponownie, <b>Piotr</b>.</p>
+  <input id="passwordInput" type="password" placeholder="Hasło">
+  <button onclick="login()">ZALOGUJ</button>
+  <div class="loginHint">Hasło: 1234</div>
+  <div id="loginError"></div>
+ </div>
 </div>
 
-<!-- =========================
+<!-- =====================================================
      DESKTOP
-========================= -->
+===================================================== -->
 
 <div id="desktop" class="hidden">
 
-    <div class="desktopIcons">
+ <div class="desktopIcons">
 
-        <div class="icon" onclick="openApp('computer')">
-            <div class="iconEmoji">💻</div>
-            <div class="iconText">Ten komputer</div>
-        </div>
+  <div class="icon" onclick="openApp('computer')"><div class="iconEmoji">💻</div><div class="iconText">Ten komputer</div></div>
+  <div class="icon" onclick="openApp('notes')"><div class="iconEmoji">📝</div><div class="iconText">Notatnik</div></div>
+  <div class="icon" onclick="openApp('calculator')"><div class="iconEmoji">🧮</div><div class="iconText">Kalkulator</div></div>
+  <div class="icon" onclick="openApp('terminal')"><div class="iconEmoji">⌨️</div><div class="iconText">Terminal</div></div>
+  <div class="icon" onclick="openApp('browser')"><div class="iconEmoji">🌐</div><div class="iconText">PiotrNet</div></div>
+  <div class="icon" onclick="openApp('settings')"><div class="iconEmoji">⚙️</div><div class="iconText">Ustawienia</div></div>
+  <div class="icon" onclick="openApp('trash')"><div class="iconEmoji">🗑️</div><div class="iconText">Kosz</div></div>
+  <div class="icon" onclick="openApp('achievements')"><div class="iconEmoji">🏆</div><div class="iconText">Osiągnięcia</div></div>
+  <div class="icon" onclick="openApp('taskmanager')"><div class="iconEmoji">📊</div><div class="iconText">Menedżer zadań</div></div>
+  <div class="icon" onclick="openApp('files')"><div class="iconEmoji">📁</div><div class="iconText">Eksplorator</div></div>
+  <div class="icon" onclick="openApp('calendar')"><div class="iconEmoji">📅</div><div class="iconText">Kalendarz</div></div>
+  <div class="icon" onclick="openApp('bot')"><div class="iconEmoji">🤖</div><div class="iconText">PiotrBot</div></div>
+  <div class="icon" onclick="openApp('tv')"><div class="iconEmoji">📺</div><div class="iconText">PIOTR TV</div></div>
+  <div class="icon" onclick="openApp('shop')"><div class="iconEmoji">🛒</div><div class="iconText">Sklep</div></div>
+  <div class="icon" onclick="openApp('stocks')"><div class="iconEmoji">🥔</div><div class="iconText">Giełda</div></div>
+  <div class="icon" onclick="openApp('wallet')"><div class="iconEmoji">💰</div><div class="iconText">Portfel</div></div>
+  <div class="icon" onclick="openApp('bank')"><div class="iconEmoji">🏦</div><div class="iconText">Bank</div></div>
+  <div class="icon" onclick="openApp('mail')"><div class="iconEmoji">📬</div><div class="iconText">Poczta</div></div>
+  <div class="icon" onclick="openApp('map')"><div class="iconEmoji">🗺️</div><div class="iconText">Mapa</div></div>
+  <div class="icon" onclick="openApp('ufo')"><div class="iconEmoji">🛸</div><div class="iconText">Radar UFO</div></div>
+  <div class="icon" onclick="openApp('lab')"><div class="iconEmoji">🧪</div><div class="iconText">Laboratorium</div></div>
+  <div class="icon" onclick="openApp('games')"><div class="iconEmoji">🎮</div><div class="iconText">Gry</div></div>
+  <div class="icon" onclick="openApp('dont')"><div class="iconEmoji">🚫</div><div class="iconText">NIE KLIKAJ</div></div>
 
-        <div class="icon" onclick="openApp('notes')">
-            <div class="iconEmoji">📝</div>
-            <div class="iconText">Notatnik</div>
-        </div>
+ </div>
 
-        <div class="icon" onclick="openApp('calculator')">
-            <div class="iconEmoji">🧮</div>
-            <div class="iconText">Kalkulator</div>
-        </div>
+ <div id="chaosWidget">
+  <div>POZIOM ODKLEJENIA: <b id="chaosText">0%</b></div>
+  <div id="chaosBar"><div id="chaosFill"></div></div>
+ </div>
 
-        <div class="icon" onclick="openApp('terminal')">
-            <div class="iconEmoji">💻</div>
-            <div class="iconText">Terminal</div>
-        </div>
+ <div id="taskbar">
+  <button id="startButton" onclick="toggleStart()">🪟 START</button>
+  <div id="taskButtons"></div>
+  <div id="clock"></div>
+ </div>
 
-        <div class="icon" onclick="openApp('internet')">
-            <div class="iconEmoji">🌐</div>
-            <div class="iconText">Internet</div>
-        </div>
+ <div id="startMenu" class="hidden">
+  <div class="startTitle">🪟 PIOTR OS 4.0</div>
+  <input class="startSearch" id="startSearch" placeholder="Szukaj aplikacji..." oninput="filterStart()">
 
-        <div class="icon" onclick="openApp('settings')">
-            <div class="iconEmoji">⚙️</div>
-            <div class="iconText">Ustawienia</div>
-        </div>
-
-        <div class="icon" onclick="openApp('trash')">
-            <div class="iconEmoji">🗑️</div>
-            <div class="iconText">Kosz</div>
-        </div>
-
-        <div class="icon" onclick="openApp('achievements')">
-            <div class="iconEmoji">🏆</div>
-            <div class="iconText">Osiągnięcia</div>
-        </div>
-
-        <div class="icon" onclick="openApp('bot')">
-            <div class="iconEmoji">🤖</div>
-            <div class="iconText">PiotrBot</div>
-        </div>
-
-        <div class="icon" onclick="openApp('tv')">
-            <div class="iconEmoji">📺</div>
-            <div class="iconText">Telewizor</div>
-        </div>
-
-        <div class="icon" onclick="openApp('shop')">
-            <div class="iconEmoji">🛒</div>
-            <div class="iconText">Sklep</div>
-        </div>
-
-        <div class="icon" onclick="openApp('stocks')">
-            <div class="iconEmoji">🥔</div>
-            <div class="iconText">Giełda Ziemniaka</div>
-        </div>
-
-        <div class="icon" onclick="openApp('wallet')">
-            <div class="iconEmoji">💰</div>
-            <div class="iconText">Portfel</div>
-        </div>
-
-        <div class="icon" onclick="openApp('mail')">
-            <div class="iconEmoji">📬</div>
-            <div class="iconText">Poczta</div>
-        </div>
-
-        <div class="icon" onclick="openApp('map')">
-            <div class="iconEmoji">🗺️</div>
-            <div class="iconText">Mapa</div>
-        </div>
-
-        <div class="icon" onclick="openApp('ufo')">
-            <div class="iconEmoji">🛸</div>
-            <div class="iconText">Radar UFO</div>
-        </div>
-
-        <div class="icon" onclick="openApp('lab')">
-            <div class="iconEmoji">🧪</div>
-            <div class="iconText">Laboratorium</div>
-        </div>
-
-        <div class="icon" onclick="openApp('dont')">
-            <div class="iconEmoji">🚫</div>
-            <div class="iconText">NIE KLIKAJ</div>
-        </div>
-
-    </div>
-
-    <!-- CHAOS -->
-
-    <div id="chaosWidget">
-        <div>POZIOM ODKLEJENIA: <b id="chaosText">0%</b></div>
-        <div id="chaosBar">
-            <div id="chaosFill"></div>
-        </div>
-    </div>
-
-    <!-- TASKBAR -->
-
-    <div id="taskbar">
-        <button id="startButton" onclick="toggleStart()">🪟 START</button>
-        <div id="taskButtons"></div>
-        <div id="clock"></div>
-    </div>
-
-    <!-- START MENU -->
-
-    <div id="startMenu" class="hidden">
-        <div class="startTitle">🪟 PIOTR OS</div>
-
-        <div class="startItem" onclick="openApp('computer')">💻 Ten komputer</div>
-        <div class="startItem" onclick="openApp('notes')">📝 Notatnik</div>
-        <div class="startItem" onclick="openApp('calculator')">🧮 Kalkulator</div>
-        <div class="startItem" onclick="openApp('terminal')">⌨️ Terminal</div>
-        <div class="startItem" onclick="openApp('internet')">🌐 Internet</div>
-        <div class="startItem" onclick="openApp('bot')">🤖 PiotrBot</div>
-        <div class="startItem" onclick="openApp('tv')">📺 TV Piotra</div>
-        <div class="startItem" onclick="openApp('shop')">🛒 Sklep</div>
-        <div class="startItem" onclick="openApp('stocks')">🥔 Giełda</div>
-        <div class="startItem" onclick="openApp('mail')">📬 Poczta</div>
-        <div class="startItem" onclick="openApp('map')">🗺️ Mapa</div>
-        <div class="startItem" onclick="openApp('ufo')">🛸 Radar UFO</div>
-        <div class="startItem" onclick="openApp('lab')">🧪 Laboratorium</div>
-        <div class="startItem" onclick="openApp('settings')">⚙️ Ustawienia</div>
-        <div class="startItem" onclick="openApp('achievements')">🏆 Osiągnięcia</div>
-        <div class="startItem" onclick="fakeVirus()">☠️ Test bezpieczeństwa</div>
-        <div class="startItem" onclick="fakeBSOD()">💀 Awaryjny BSOD</div>
-        <div class="startItem" onclick="shutdown()">⏻ Wyłącz</div>
-    </div>
-
+  <div class="startItem" data-search="komputer" onclick="openApp('computer')">💻 Ten komputer</div>
+  <div class="startItem" data-search="notatnik" onclick="openApp('notes')">📝 Notatnik</div>
+  <div class="startItem" data-search="kalkulator" onclick="openApp('calculator')">🧮 Kalkulator</div>
+  <div class="startItem" data-search="terminal" onclick="openApp('terminal')">⌨️ Terminal</div>
+  <div class="startItem" data-search="internet browser piotrnet" onclick="openApp('browser')">🌐 PiotrNet</div>
+  <div class="startItem" data-search="ustawienia" onclick="openApp('settings')">⚙️ Ustawienia</div>
+  <div class="startItem" data-search="kosz" onclick="openApp('trash')">🗑️ Kosz</div>
+  <div class="startItem" data-search="osiagniecia" onclick="openApp('achievements')">🏆 Osiągnięcia</div>
+  <div class="startItem" data-search="menedzer task manager" onclick="openApp('taskmanager')">📊 Menedżer zadań</div>
+  <div class="startItem" data-search="pliki eksplorator" onclick="openApp('files')">📁 Eksplorator plików</div>
+  <div class="startItem" data-search="kalendarz" onclick="openApp('calendar')">📅 Kalendarz</div>
+  <div class="startItem" data-search="bot ai piotrbot" onclick="openApp('bot')">🤖 PiotrBot</div>
+  <div class="startItem" data-search="telewizor tv" onclick="openApp('tv')">📺 PIOTR TV</div>
+  <div class="startItem" data-search="sklep" onclick="openApp('shop')">🛒 Sklep</div>
+  <div class="startItem" data-search="gielda ziemniak" onclick="openApp('stocks')">🥔 Giełda</div>
+  <div class="startItem" data-search="portfel pieniadze" onclick="openApp('wallet')">💰 Portfel</div>
+  <div class="startItem" data-search="bank" onclick="openApp('bank')">🏦 Bank</div>
+  <div class="startItem" data-search="poczta mail" onclick="openApp('mail')">📬 Poczta</div>
+  <div class="startItem" data-search="mapa" onclick="openApp('map')">🗺️ Mapa</div>
+  <div class="startItem" data-search="ufo radar" onclick="openApp('ufo')">🛸 Radar UFO</div>
+  <div class="startItem" data-search="laboratorium mutacje" onclick="openApp('lab')">🧪 Laboratorium</div>
+  <div class="startItem" data-search="gry snake pong" onclick="openApp('games')">🎮 Gry</div>
+  <div class="startItem" data-search="wirus" onclick="fakeVirus()">☠️ Test bezpieczeństwa</div>
+  <div class="startItem" data-search="bsod" onclick="fakeBSOD()">💀 Awaryjny BSOD</div>
+  <div class="startItem" data-search="blokada lock" onclick="lockScreen()">🔒 Zablokuj</div>
+  <div class="startItem" data-search="aktualizacja update" onclick="fakeUpdate()">🔄 Aktualizuj system</div>
+  <div class="startItem" data-search="restart" onclick="restartSystem()">🔁 Uruchom ponownie</div>
+  <div class="startItem" data-search="wylacz shutdown" onclick="shutdown()">⏻ Wyłącz</div>
+ </div>
 </div>
 
-<!-- NOTIFICATIONS -->
+<!-- NPC -->
+<div id="duck" onclick="catchDuck()">🦆</div>
+<div id="snail">🐌</div>
+<div id="ghost">👻</div>
+<div id="unknownNpc" onclick="talkUnknown()">❔</div>
 
+<!-- notifications -->
 <div id="notifications"></div>
 
-<!-- CONTEXT MENU -->
-
+<!-- context -->
 <div id="contextMenu">
-    <div class="contextItem" onclick="openApp('notes')">📝 Nowa notatka</div>
-    <div class="contextItem" onclick="openApp('calculator')">🧮 Kalkulator</div>
-    <div class="contextItem" onclick="openApp('terminal')">💻 Terminal</div>
-    <div class="contextItem" onclick="openApp('bot')">🤖 Zapytaj PiotrBota</div>
-    <div class="contextItem" onclick="randomEvent()">🎲 Losowe zdarzenie</div>
-    <div class="contextItem" onclick="increaseChaos(10)">🔥 Dodaj chaos</div>
+ <div class="contextItem" onclick="openApp('notes')">📝 Nowa notatka</div>
+ <div class="contextItem" onclick="openApp('files')">📁 Nowy folder</div>
+ <div class="contextItem" onclick="openApp('calculator')">🧮 Kalkulator</div>
+ <div class="contextItem" onclick="openApp('terminal')">⌨️ Terminal</div>
+ <div class="contextItem" onclick="openApp('bot')">🤖 PiotrBot</div>
+ <div class="contextItem" onclick="randomEvent()">🎲 Losowe wydarzenie</div>
+ <div class="contextItem" onclick="increaseChaos(10)">🔥 Dodaj chaos</div>
 </div>
 
-<!-- DUCK -->
-
-<div id="duck" onclick="catchDuck()">🦆</div>
-
-<!-- SNAIL -->
-
-<div id="snail">🐌</div>
-
-<!-- GHOST -->
-
-<div id="ghost">👻</div>
-
 <!-- VIRUS -->
-
 <div id="virusScreen" class="hidden">
-    <div id="virusBox">
-        <h1>⚠️</h1>
-        <h2>PIOTR.EXE PRZESTAŁ ROZUMIEĆ RZECZYWISTOŚĆ</h2>
-        <p id="virusText">Wykryto podejrzanie dużo ziemniaków.</p>
-        <button onclick="closeVirus()">URATUJ SYSTEM</button>
-    </div>
+ <div id="virusBox">
+  <h1>⚠️</h1>
+  <h2>PIOTR.EXE PRZESTAŁ ROZUMIEĆ RZECZYWISTOŚĆ</h2>
+  <p id="virusText"></p>
+  <button onclick="closeVirus()">URATUJ SYSTEM</button>
+ </div>
 </div>
 
 <!-- BSOD -->
-
 <div id="bsod" class="hidden">
-    <div>
-        <h1>:(</h1>
-        <h2>PIOTR OS NAPOTKAŁ PROBLEM.</h2>
-        <p>System próbował uruchomić rozsądek.</p>
-        <p>To się nie udało.</p>
-        <p>STOP CODE: PIOTR_NOT_FOUND</p>
-        <br>
-        <button onclick="closeBSOD()">Uruchom ponownie rzeczywistość</button>
-    </div>
+ <div>
+  <h1>:(</h1>
+  <h2>PIOTR OS NAPOTKAŁ PROBLEM.</h2>
+  <p>System próbował uruchomić rozsądek.</p>
+  <p>To się nie udało.</p>
+  <p>STOP CODE: PIOTR_NOT_FOUND</p>
+  <button onclick="closeBSOD()">Uruchom ponownie rzeczywistość</button>
+ </div>
 </div>
 
 <!-- SHUTDOWN -->
-
 <div id="shutdownScreen" class="hidden">
-    <div>
-        <h1>PIOTR OS</h1>
-        <p>System jest wyłączany...</p>
-        <p id="shutdownText">Zapisywanie absolutnie niepotrzebnych danych...</p>
-    </div>
+ <div>
+  <h1>PIOTR OS</h1>
+  <p>System jest wyłączany...</p>
+  <p id="shutdownText">Zapisywanie ziemniaków...</p>
+ </div>
+</div>
+
+<!-- LOCK -->
+<div id="lockScreen" class="lockScreen hidden">
+ <div class="lockBox">
+  <div style="font-size:70px">🔒</div>
+  <h2>PIOTR OS</h2>
+  <p>Sesja zablokowana.</p>
+  <input id="unlockInput" type="password" placeholder="Hasło">
+  <button onclick="unlockScreen()">Odblokuj</button>
+  <p id="unlockError"></p>
+ </div>
+</div>
+
+<!-- UPDATE -->
+<div id="updateScreen" class="updateScreen hidden">
+ <div class="updateBox">
+  <h1>🔄 PIOTR OS UPDATE</h1>
+  <p id="updateText">Przygotowywanie aktualizacji...</p>
+  <div class="updateBar"><div id="updateFill" class="updateFill"></div></div>
+  <p id="updatePercent">0%</p>
+ </div>
 </div>
 
 <!-- PORTAL -->
-
 <div id="portal">
-    <div class="portalInner">
-        <div class="portalSpin">🌀</div>
-        <h1>PORTAL DO PIOTR-VERSE</h1>
-        <p>Nie powinieneś był znaleźć tego miejsca.</p>
-        <p>PIOTR OS NIE JEST PROGRAMEM.</p>
-        <p>PIOTR OS TO STAN UMYSŁU.</p>
-        <button onclick="closePortal()">Powrót do normalności</button>
-    </div>
+ <div class="portalInner">
+  <div class="portalSpin">🌀</div>
+  <h1>PORTAL DO PIOTR-VERSE</h1>
+  <p>Nie powinieneś był znaleźć tego miejsca.</p>
+  <p>PIOTR OS NIE JEST PROGRAMEM.</p>
+  <p>PIOTR OS TO STAN UMYSŁU.</p>
+  <button onclick="closePortal()">Powrót do normalności</button>
+ </div>
 </div>
 
 <script>
 /* =========================================================
-   PIOTR OS 3.0
-   Wszystko lokalnie. Brak bibliotek zewnętrznych.
+   PIOTR OS 4.0 ENGINE
 ========================================================= */
 
-/* =========================
-   STATE
-========================= */
-
-let windows = {};
-let zIndex = 200;
-let chaos = Number(localStorage.getItem("piotrChaos") || 0);
-let money = Number(localStorage.getItem("piotrMoney") || 100);
-let potato = Number(localStorage.getItem("potatoStock") || 37);
-let achievements = JSON.parse(localStorage.getItem("piotrAchievements") || "{}");
-let notes = localStorage.getItem("piotrNotes") || "";
-let theme = localStorage.getItem("piotrTheme") || "blue";
-let duckCaught = Number(localStorage.getItem("duckCaught") || 0);
-let secretCount = Number(localStorage.getItem("secretCount") || 0);
-let pressCount = Number(localStorage.getItem("pressCount") || 0);
-let stockValue = Number(localStorage.getItem("stockValue") || 42);
-
-/* =========================
-   BOOT
-========================= */
-
-setTimeout(() => {
-    document.getElementById("boot").classList.add("hidden");
-    document.getElementById("login").classList.remove("hidden");
-}, 4500);
-
-/* =========================
-   LOGIN
-========================= */
-
-function login() {
-    const input = document.getElementById("passwordInput");
-
-    if (input.value === "1234") {
-        document.getElementById("login").classList.add("hidden");
-        document.getElementById("desktop").classList.remove("hidden");
-
-        applyTheme();
-        notify("Witaj, Piotr.");
-        increaseChaos(2);
-
-        setTimeout(() => {
-            notify("System: Nie klikaj wszystkiego.");
-        }, 2500);
-
-        setTimeout(() => {
-            randomEvent();
-        }, 7000);
-
-    } else {
-        document.getElementById("loginError").textContent =
-            "❌ Złe hasło. Nawet kaczka by zgadła.";
-        increaseChaos(3);
-    }
-}
-
-document.getElementById("passwordInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") login();
-});
-
-/* =========================
-   CLOCK
-========================= */
-
-function updateClock() {
-    const now = new Date();
-
-    document.getElementById("clock").textContent =
-        now.toLocaleTimeString("pl-PL", {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-}
-
-setInterval(updateClock, 1000);
-updateClock();
-
-/* =========================
-   START
-========================= */
-
-function toggleStart() {
-    document.getElementById("startMenu").classList.toggle("hidden");
-}
-
-/* =========================
-   WINDOW SYSTEM
-========================= */
-
-function openApp(app) {
-
-    document.getElementById("startMenu").classList.add("hidden");
-
-    if (windows[app]) {
-        focusWindow(windows[app]);
-        return;
-    }
-
-    const configs = {
-
-        computer: {
-            title: "💻 Ten komputer",
-            content: computerHTML()
-        },
-
-        notes: {
-            title: "📝 Notatnik",
-            content: notesHTML()
-        },
-
-        calculator: {
-            title: "🧮 Kalkulator",
-            content: calculatorHTML()
-        },
-
-        terminal: {
-            title: "⌨️ Terminal",
-            content: terminalHTML()
-        },
-
-        internet: {
-            title: "🌐 Piotr Internet™",
-            content: internetHTML()
-        },
-
-        settings: {
-            title: "⚙️ Ustawienia",
-            content: settingsHTML()
-        },
-
-        trash: {
-            title: "🗑️ Kosz",
-            content: trashHTML()
-        },
-
-        achievements: {
-            title: "🏆 Osiągnięcia",
-            content: achievementsHTML()
-        },
-
-        bot: {
-            title: "🤖 PiotrBot AI™",
-            content: botHTML()
-        },
-
-        tv: {
-            title: "📺 PIOTR TV",
-            content: tvHTML()
-        },
-
-        shop: {
-            title: "🛒 Sklep z Niczym",
-            content: shopHTML()
-        },
-
-        stocks: {
-            title: "🥔 Giełda Ziemniaka",
-            content: stocksHTML()
-        },
-
-        wallet: {
-            title: "💰 Portfel",
-            content: walletHTML()
-        },
-
-        mail: {
-            title: "📬 Poczta Piotra",
-            content: mailHTML()
-        },
-
-        map: {
-            title: "🗺️ Mapa Podejrzanych Miejsc",
-            content: mapHTML()
-        },
-
-        ufo: {
-            title: "🛸 Radar UFO",
-            content: ufoHTML()
-        },
-
-        lab: {
-            title: "🧪 Laboratorium Mutacji",
-            content: labHTML()
-        },
-
-        dont: {
-            title: "🚫 NIE KLIKAJ",
-            content: dontHTML()
-        }
-    };
-
-    if (!configs[app]) return;
-
-    createWindow(
-        app,
-        configs[app].title,
-        configs[app].content
-    );
-
-    increaseChaos(1);
-}
-
-function createWindow(id, title, content) {
-
-    const win = document.createElement("div");
-
-    win.className = "window";
-
-    const offset = Object.keys(windows).length * 25;
-
-    win.style.left = Math.min(150 + offset, window.innerWidth - 300) + "px";
-    win.style.top = Math.min(60 + offset, window.innerHeight - 250) + "px";
-    win.style.zIndex = ++zIndex;
-
-    win.innerHTML = `
-        <div class="titlebar">
-            <div class="titleText">${title}</div>
-
-            <div class="winButtons">
-                <button class="winBtn" onclick="minimizeWindow('${id}')">—</button>
-                <button class="winBtn" onclick="maximizeWindow('${id}')">□</button>
-                <button class="winBtn closeBtn" onclick="closeWindow('${id}')">×</button>
-            </div>
-        </div>
-
-        <div class="windowContent">
-            ${content}
-        </div>
-    `;
-
-    document.getElementById("desktop").appendChild(win);
-
-    windows[id] = win;
-
-    makeDraggable(win);
-
-    win.addEventListener("mousedown", () => {
-        focusWindow(win);
-    });
-
-    const taskButton = document.createElement("button");
-    taskButton.className = "taskButton";
-    taskButton.id = "task-" + id;
-    taskButton.textContent = title;
-    taskButton.onclick = () => {
-        if (win.style.display === "none") {
-            win.style.display = "block";
-        }
-        focusWindow(win);
-    };
-
-    document.getElementById("taskButtons").appendChild(taskButton);
-
-    focusWindow(win);
-
-    if (id === "notes") {
-        setTimeout(loadNotesIntoArea, 0);
-    }
-
-    if (id === "terminal") {
-        setTimeout(() => {
-            const input = document.getElementById("terminalInput");
-            if (input) input.focus();
-        }, 50);
-    }
-
-    if (id === "stocks") {
-        setTimeout(updateStockUI, 0);
-    }
-
-    if (id === "wallet") {
-        setTimeout(updateWalletUI, 0);
-    }
-}
-
-function focusWindow(win) {
-    win.style.zIndex = ++zIndex;
-}
-
-function closeWindow(id) {
-    if (!windows[id]) return;
-
-    windows[id].remove();
-
-    const task = document.getElementById("task-" + id);
-    if (task) task.remove();
-
-    delete windows[id];
-
-    increaseChaos(1);
-}
-
-function minimizeWindow(id) {
-    if (!windows[id]) return;
-
-    windows[id].style.display = "none";
-}
-
-function maximizeWindow(id) {
-    if (!windows[id]) return;
-
-    windows[id].classList.toggle("maximized");
-    focusWindow(windows[id]);
-}
-
-/* =========================
-   DRAG
-========================= */
-
-function makeDraggable(win) {
-
-    const bar = win.querySelector(".titlebar");
-
-    let dragging = false;
-    let startX = 0;
-    let startY = 0;
-    let startLeft = 0;
-    let startTop = 0;
-
-    bar.addEventListener("mousedown", e => {
-
-        if (e.target.closest(".winButtons")) return;
-
-        dragging = true;
-
-        startX = e.clientX;
-        startY = e.clientY;
-
-        startLeft = parseInt(win.offsetLeft);
-        startTop = parseInt(win.offsetTop);
-
-        focusWindow(win);
-    });
-
-    document.addEventListener("mousemove", e => {
-
-        if (!dragging) return;
-
-        let newLeft = startLeft + e.clientX - startX;
-        let newTop = startTop + e.clientY - startY;
-
-        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - 100));
-        newTop = Math.max(0, Math.min(newTop, window.innerHeight - 80));
-
-        win.style.left = newLeft + "px";
-        win.style.top = newTop + "px";
-    });
-
-    document.addEventListener("mouseup", () => {
-        dragging = false;
-    });
-}
-
-/* =========================
-   NOTIFICATION
-========================= */
-
-function notify(message) {
-
-    const container = document.getElementById("notifications");
-
-    const n = document.createElement("div");
-
-    n.className = "notification";
-    n.textContent = message;
-
-    container.appendChild(n);
-
-    setTimeout(() => {
-        n.remove();
-    }, 4500);
-}
-
-/* =========================
-   CHAOS
-========================= */
-
-function increaseChaos(amount = 1) {
-
-    chaos += amount;
-
-    if (chaos > 100) chaos = 100;
-
-    localStorage.setItem("piotrChaos", chaos);
-
-    updateChaosUI();
-
-    if (chaos >= 25 && Math.random() < .15) {
-        notify("System: Poziom normalności spada.");
-    }
-
-    if (chaos >= 50 && Math.random() < .12) {
-        notify("System: Czy ty nadal tu jesteś?");
-    }
-
-    if (chaos >= 75 && Math.random() < .1) {
-        notify("System: ON JUŻ WIE.");
-    }
-
-    if (chaos >= 100 && Math.random() < .2) {
-        unlockAchievement("chaos100");
-    }
-
-    if (secretCount >= 5 && chaos >= 70) {
-        unlockAchievement("portal");
-    }
-}
-
-function updateChaosUI() {
-
-    const fill = document.getElementById("chaosFill");
-    const text = document.getElementById("chaosText");
-
-    if (fill) fill.style.width = chaos + "%";
-    if (text) text.textContent = chaos + "%";
-}
-
-/* =========================
-   THEMES
-========================= */
-
-function applyTheme() {
-
-    const desktop = document.getElementById("desktop");
-
-    desktop.classList.remove(
-        "dark",
-        "purple",
-        "green"
-    );
-
-    if (theme === "dark") desktop.classList.add("dark");
-    if (theme === "purple") desktop.classList.add("purple");
-    if (theme === "green") desktop.classList.add("green");
-
-    localStorage.setItem("piotrTheme", theme);
-}
-
-function setTheme(t) {
-    theme = t;
-    applyTheme();
-    notify("Motyw zmieniony.");
-    increaseChaos(2);
-}
-
-/* =========================
-   NOTES
-========================= */
-
-function notesHTML() {
-
-    return `
-        <div class="noteButtons">
-            <button onclick="saveNotes()">💾 Zapisz</button>
-            <button onclick="loadNotesIntoArea()">📂 Wczytaj</button>
-            <button onclick="clearNotes()">🗑️ Wyczyść</button>
-        </div>
-
-        <textarea id="notesArea"
-            placeholder="Napisz tutaj coś bardzo ważnego... albo listę zakupów.">${escapeHTML(notes)}</textarea>
-    `;
-}
-
-function saveNotes() {
-
-    const area = document.getElementById("notesArea");
-
-    if (!area) return;
-
-    notes = area.value;
-
-    localStorage.setItem("piotrNotes", notes);
-
-    notify("Notatka zapisana.");
-    unlockAchievement("writer");
-    increaseChaos(2);
-}
-
-function loadNotesIntoArea() {
-
-    const area = document.getElementById("notesArea");
-
-    if (area) {
-        area.value = localStorage.getItem("piotrNotes") || "";
-    }
-}
-
-function clearNotes() {
-
-    if (!confirm("Na pewno wyczyścić notatkę?")) return;
-
-    notes = "";
-
-    localStorage.removeItem("piotrNotes");
-
-    const area = document.getElementById("notesArea");
-
-    if (area) area.value = "";
-
-    notify("Notatka wyczyszczona.");
-}
-
-/* =========================
-   CALCULATOR
-========================= */
-
-function calculatorHTML() {
-
-    return `
-        <div class="calc">
-
-            <input id="calcDisplay" readonly>
-
-            <div class="calcGrid">
-
-                <button onclick="calcClear()">C</button>
-                <button onclick="calcAdd('(')">(</button>
-                <button onclick="calcAdd(')')">)</button>
-                <button onclick="calcAdd('/')">÷</button>
-
-                <button onclick="calcAdd('7')">7</button>
-                <button onclick="calcAdd('8')">8</button>
-                <button onclick="calcAdd('9')">9</button>
-                <button onclick="calcAdd('*')">×</button>
-
-                <button onclick="calcAdd('4')">4</button>
-                <button onclick="calcAdd('5')">5</button>
-                <button onclick="calcAdd('6')">6</button>
-                <button onclick="calcAdd('-')">−</button>
-
-                <button onclick="calcAdd('1')">1</button>
-                <button onclick="calcAdd('2')">2</button>
-                <button onclick="calcAdd('3')">3</button>
-                <button onclick="calcAdd('+')">+</button>
-
-                <button onclick="calcAdd('0')">0</button>
-                <button onclick="calcAdd('.')">.</button>
-                <button onclick="calcPiotr()">🗿</button>
-                <button onclick="calcResult()">=</button>
-
-            </div>
-        </div>
-    `;
-}
-
-function calcAdd(value) {
-
-    const d = document.getElementById("calcDisplay");
-
-    if (d) d.value += value;
-}
-
-function calcClear() {
-
-    const d = document.getElementById("calcDisplay");
-
-    if (d) d.value = "";
-}
-
-function calcResult() {
-
-    const d = document.getElementById("calcDisplay");
-
-    if (!d) return;
-
-    try {
-
-        if (!/^[0-9+\-*/(). ]+$/.test(d.value)) {
-            throw new Error();
-        }
-
-        d.value = Function('"use strict";return (' + d.value + ')')();
-
-    } catch {
-        d.value = "PIOTR";
-        notify("Kalkulator obraził się.");
-        increaseChaos(3);
-    }
-}
-
-function calcPiotr() {
-
-    const d = document.getElementById("calcDisplay");
-
-    if (d) d.value = "42";
-
-    notify("Odpowiedź na wszystko: 42.");
-}
-
-/* =========================
-   TERMINAL
-========================= */
-
-function terminalHTML() {
-
-    return `
-        <div class="terminal" onclick="focusTerminal()">
-
-            <div id="terminalOutput">
-PIOTR TERMINAL v3.0
-Wpisz "help", żeby zobaczyć komendy.
-
-            </div>
-
-            <div id="terminalInputLine">
-                <span>piotr@os:~$&nbsp;</span>
-                <input id="terminalInput"
-                       autocomplete="off"
-                       spellcheck="false"
-                       onkeydown="terminalKey(event)">
-            </div>
-
-        </div>
-    `;
-}
-
-function focusTerminal() {
-
-    const input = document.getElementById("terminalInput");
-
-    if (input) input.focus();
-}
-
-function terminalKey(event) {
-
-    if (event.key !== "Enter") return;
-
-    const input = event.target;
-    const command = input.value.trim();
-
-    input.value = "";
-
-    terminalExecute(command);
-}
-
-function terminalPrint(text) {
-
-    const output = document.getElementById("terminalOutput");
-
-    if (!output) return;
-
-    output.innerHTML += "\n" + escapeHTML(text);
-
-    output.parentElement.scrollTop =
-        output.parentElement.scrollHeight;
-}
-
-function terminalExecute(command) {
-
-    if (!command) return;
-
-    terminalPrint("piotr@os:~$ " + command);
-
-    const cmd = command.toLowerCase();
-
-    if (cmd === "help") {
-
-        terminalPrint(`
-DOSTĘPNE KOMENDY:
-
-help       - pomoc
-clear      - wyczyść terminal
-whoami     - kim jesteś
-date       - data
-duck       - kaczka
-matrix     - matrix
-secret     - sekret
-virus      - test wirusa
-bsod       - nie rób tego
-sudo       - próba władzy
-shutdown   - wyłącz system
-chaos      - poziom chaosu
-money      - stan konta
-potato     - stan ziemniaka
-portal     - ???
-ufo        - skanowanie UFO
-snail      - przywołaj ślimaka
-ghost      - przywołaj ducha
-god        - tryb boga
-`);
-
-    } else if (cmd === "clear") {
-
-        const output = document.getElementById("terminalOutput");
-
-        if (output) output.textContent = "";
-
-    } else if (cmd === "whoami") {
-
-        terminalPrint("Piotr. Prawdopodobnie.");
-
-    } else if (cmd === "date") {
-
-        terminalPrint(new Date().toString());
-
-    } else if (cmd === "duck") {
-
-        showDuck();
-        unlockAchievement("duck");
-        terminalPrint("KACZKA ZOSTAŁA WEZWANA.");
-
-    } else if (cmd === "matrix") {
-
-        terminalPrint(
-            "01001000 01000101 01001010 01001001 01000101"
-        );
-
-        increaseChaos(7);
-
-    } else if (cmd === "secret") {
-
-        secretCount++;
-        localStorage.setItem("secretCount", secretCount);
-
-        terminalPrint(
-            "Znalazłeś sekret nr " + secretCount + "."
-        );
-
-        unlockAchievement("secret");
-
-        if (secretCount >= 5) {
-            terminalPrint("Portal zaczyna się otwierać...");
-        }
-
-    } else if (cmd === "virus") {
-
-        fakeVirus();
-
-    } else if (cmd === "bsod") {
-
-        fakeBSOD();
-
-    } else if (cmd === "sudo") {
-
-        terminalPrint(
-            "Piotr nie ma uprawnień. Piotr jest uprawnieniem."
-        );
-
-        increaseChaos(10);
-
-    } else if (cmd === "shutdown") {
-
-        shutdown();
-
-    } else if (cmd === "chaos") {
-
-        terminalPrint("CHAOS = " + chaos + "%");
-
-    } else if (cmd === "money") {
-
-        terminalPrint("PIENIĄDZE = " + money + " P$");
-
-    } else if (cmd === "potato") {
-
-        terminalPrint("ZIEMNIAKI = " + potato);
-
-    } else if (cmd === "portal") {
-
-        if (chaos >= 70 && secretCount >= 5) {
-            showPortal();
-        } else {
-            terminalPrint(
-                "Portal jest zamknięty. Potrzebujesz więcej chaosu."
-            );
-        }
-
-    } else if (cmd === "ufo") {
-
-        scanUFO();
-
-    } else if (cmd === "snail") {
-
-        showSnail();
-
-    } else if (cmd === "ghost") {
-
-        showGhost();
-
-    } else if (cmd === "god") {
-
-        unlockAchievement("god");
-        chaos = 100;
-        updateChaosUI();
-
-        terminalPrint(
-            "TRYB BOGA AKTYWNY. Powodzenia."
-        );
-
-    } else {
-
-        terminalPrint(
-            "Nieznana komenda. System również nie wie, co robisz."
-        );
-
-        increaseChaos(2);
-    }
-}
-
-/* =========================
-   COMPUTER
-========================= */
-
-function computerHTML() {
-
-    return `
-        <h2>💻 Ten komputer</h2>
-
-        <div class="fileGrid">
-
-            <div class="file" onclick="openApp('notes')">
-                <div class="fileEmoji">📝</div>
-                Dokumenty
-            </div>
-
-            <div class="file" onclick="openApp('trash')">
-                <div class="fileEmoji">🗑️</div>
-                Kosz
-            </div>
-
-            <div class="file" onclick="secretFolder()">
-                <div class="fileEmoji">📁</div>
-                SECRET
-            </div>
-
-            <div class="file" onclick="fakeSystemFile()">
-                <div class="fileEmoji">⚠️</div>
-                system32_piotr
-            </div>
-
-            <div class="file" onclick="openApp('lab')">
-                <div class="fileEmoji">🧪</div>
-                Mutacje
-            </div>
-
-            <div class="file" onclick="openApp('map')">
-                <div class="fileEmoji">🗺️</div>
-                Mapa
-            </div>
-
-        </div>
-    `;
-}
-
-function secretFolder() {
-
-    secretCount++;
-
-    localStorage.setItem("secretCount", secretCount);
-
-    unlockAchievement("secret");
-
-    notify("Otworzyłeś SECRET.");
-
-    increaseChaos(10);
-
-    if (secretCount >= 3) {
-        notify("Folder: Przestań mnie otwierać.");
-    }
-
-    if (secretCount >= 5 && chaos >= 70) {
-        showPortal();
-    }
-}
-
-function fakeSystemFile() {
-
-    notify("Ten plik nie powinien istnieć.");
-
-    setTimeout(() => {
-        notify("Ale istnieje.");
-    }, 1200);
-
-    increaseChaos(8);
-}
-
-/* =========================
-   INTERNET
-========================= */
-
-function internetHTML() {
-
-    return `
-        <h2>🌐 Piotr Internet™</h2>
-
-        <p>Witamy w internecie, którego nikt nie zamawiał.</p>
-
-        <hr>
-
-        <button onclick="internetSearch('kaczka')">
-            🔎 Szukaj kaczki
-        </button>
-
-        <button onclick="internetSearch('ziemniak')">
-            🥔 Szukaj ziemniaka
-        </button>
-
-        <button onclick="internetSearch('piotr')">
-            🗿 Szukaj Piotra
-        </button>
-
-        <div id="internetResult" style="margin-top:20px;"></div>
-    `;
-}
-
-function internetSearch(term) {
-
-    const result = document.getElementById("internetResult");
-
-    if (!result) return;
-
-    const results = {
-        kaczka: [
-            "Kaczka została znaleziona.",
-            "Kaczka posiada własny adres IP.",
-            "Kaczka wie, gdzie mieszkasz. Prawdopodobnie."
-        ],
-
-        ziemniak: [
-            "Ziemniak: 100% naturalnego chaosu.",
-            "Ziemniak jest obecnie notowany na giełdzie.",
-            "Ziemniak odmówił komentarza."
-        ],
-
-        piotr: [
-            "Wynik: PIOTR.",
-            "Wynik: jeszcze więcej Piotra.",
-            "Błąd: zbyt dużo Piotra."
-        ]
-    };
-
-    const arr = results[term] || [
-        "Brak wyników.",
-        "Spróbuj wyszukać ziemniaka."
-    ];
-
-    result.innerHTML = `
-        <h3>Wyniki dla: ${term}</h3>
-        ${arr.map(x => `<p>🔹 ${x}</p>`).join("")}
-    `;
-
-    increaseChaos(2);
-}
-
-/* =========================
-   SETTINGS
-========================= */
-
-function settingsHTML() {
-
-    return `
-        <h2>⚙️ Ustawienia</h2>
-
-        <h3>Motyw</h3>
-
-        <div class="themeButtons">
-
-            <button class="themeBlue"
-                onclick="setTheme('blue')">
-                🔵 Niebieski
-            </button>
-
-            <button class="themeDark"
-                onclick="setTheme('dark')">
-                ⚫ Ciemny
-            </button>
-
-            <button class="themePurple"
-                onclick="setTheme('purple')">
-                🟣 Fioletowy
-            </button>
-
-            <button class="themeGreen"
-                onclick="setTheme('green')">
-                🟢 Zielony
-            </button>
-
-        </div>
-
-        <hr>
-
-        <h3>System</h3>
-
-        <button onclick="increaseChaos(20)">
-            🔥 Zwiększ chaos
-        </button>
-
-        <button onclick="resetChaos()">
-            🧘 Reset chaosu
-        </button>
-
-        <button onclick="resetEverything()">
-            ☢️ RESETUJ PIOTR OS
-        </button>
-    `;
-}
-
-function resetChaos() {
-
-    chaos = 0;
-
-    localStorage.setItem("piotrChaos", chaos);
-
-    updateChaosUI();
-
-    notify("Chaos został wyzerowany.");
-
-    increaseChaos(1);
-}
-
-function resetEverything() {
-
-    if (!confirm(
-        "To usunie zapisane notatki, osiągnięcia, pieniądze i sekrety. Kontynuować?"
-    )) return;
-
-    localStorage.clear();
-
-    location.reload();
-}
-
-/* =========================
-   TRASH
-========================= */
-
-function trashHTML() {
-
-    return `
-        <h2>🗑️ Kosz</h2>
-
-        <p>W koszu znajdują się:</p>
-
-        <ul>
-            <li>3 niewykorzystane pomysły</li>
-            <li>1 zgubiona kaczka</li>
-            <li>7 błędów systemowych</li>
-            <li>zdrowy rozsądek</li>
-        </ul>
-
-        <button onclick="emptyTrash()">
-            🗑️ Opróżnij kosz
-        </button>
-    `;
-}
-
-function emptyTrash() {
-
-    notify("Kosz opróżniony.");
-
-    setTimeout(() => {
-        notify("Zdrowy rozsądek próbował wrócić.");
-    }, 1200);
-
-    increaseChaos(5);
-}
-
-/* =========================
-   ACHIEVEMENTS
-========================= */
-
-const achievementList = {
-
-    first: [
-        "first",
-        "👋 Pierwsze uruchomienie",
-        "Uruchomiłeś PIOTR OS."
-    ],
-
-    writer: [
-        "writer",
-        "📝 Pisarz",
-        "Zapisałeś notatkę."
-    ],
-
-    duck: [
-        "duck",
-        "🦆 Łowca Kaczki",
-        "Złapałeś kaczę."
-    ],
-
-    secret: [
-        "secret",
-        "🕵️ Sekret",
-        "Znalazłeś tajemnicę."
-    ],
-
-    chaos100: [
-        "chaos100",
-        "🔥 100% CHAOSU",
-        "Osiągnąłeś maksymalny chaos."
-    ],
-
-    portal: [
-        "portal",
-        "🌀 Portal",
-        "Otworzyłeś portal."
-    ],
-
-    god: [
-        "god",
-        "🗿 Bóg Piotra",
-        "Wpisałeś komendę god."
-    ],
-
-    button: [
-        "button",
-        "🚨 NIE KLIKAJ",
-        "Kliknąłeś przycisk, którego nie należało klikać."
-    ],
-
-    ufo: [
-        "ufo",
-        "🛸 Kontakt",
-        "Znalazłeś UFO."
-    ],
-
-    snail: [
-        "snail",
-        "🐌 Ślimak",
-        "Przywołałeś ślimaka."
-    ]
+const STORAGE="PIOTR_OS_4";
+
+let state=JSON.parse(localStorage.getItem(STORAGE)||"null")||{
+ chaos:0,
+ money:100,
+ potato:37,
+ stock:42,
+ notes:"",
+ theme:"blue",
+ duckCaught:0,
+ secretCount:0,
+ pressCount:0,
+ achievements:{},
+ history:[],
+ files:null,
+ bank:250,
+ reputation:{
+  duck:0,
+  potato:0,
+  bot:0,
+  system:0
+ },
+ stats:{
+  sessions:0,
+  clicks:0,
+  apps:0,
+  windows:0,
+  commands:0,
+  games:0,
+  messages:0
+ },
+ settings:{
+  notifications:true,
+  sound:false
+ },
+ user:"Piotr",
+ bootTime:Date.now()
 };
 
-function unlockAchievement(id) {
-
-    if (achievements[id]) return;
-
-    achievements[id] = true;
-
-    localStorage.setItem(
-        "piotrAchievements",
-        JSON.stringify(achievements)
-    );
-
-    const data = achievementList[id];
-
-    if (data) {
-        notify("🏆 Osiągnięcie: " + data[1]);
-    }
-}
-
-function achievementsHTML() {
-
-    let html = `
-        <h2>🏆 Osiągnięcia</h2>
-    `;
-
-    Object.values(achievementList).forEach(a => {
-
-        const unlocked = achievements[a[0]];
-
-        html += `
-            <div class="achievement ${unlocked ? "" : "locked"}">
-                <b>${unlocked ? a[1] : "🔒 Ukryte osiągnięcie"}</b>
-                <br>
-                <small>
-                    ${unlocked ? a[2] : "Jeszcze nie odkryto."}
-                </small>
-            </div>
-        `;
-    });
-
-    return html;
-}
-
-/* =========================
-   VIRUS
-========================= */
-
-function fakeVirus() {
-
-    document.getElementById("virusScreen").classList.remove("hidden");
-
-    increaseChaos(15);
-
-    const texts = [
-        "Wykryto podejrzanie dużo ziemniaków.",
-        "Kaczka próbuje przejąć system.",
-        "Procesor zgłosił, że nie chce.",
-        "Znaleziono 17 plików o nazwie 'hehe'.",
-        "System nie rozumie użytkownika.",
-        "Wykryto Piotra."
-    ];
-
-    document.getElementById("virusText").textContent =
-        texts[Math.floor(Math.random() * texts.length)];
-}
-
-function closeVirus() {
-
-    document.getElementById("virusScreen").classList.add("hidden");
-
-    notify("System: chyba działa.");
-
-    increaseChaos(5);
-}
-
-/* =========================
-   BSOD
-========================= */
-
-function fakeBSOD() {
-
-    document.getElementById("bsod").classList.remove("hidden");
-
-    increaseChaos(20);
-}
-
-function closeBSOD() {
-
-    document.getElementById("bsod").classList.add("hidden");
-
-    notify("BSOD został anulowany. Gratulacje.");
-}
-
-/* =========================
-   SHUTDOWN
-========================= */
-
-function shutdown() {
-
-    document.getElementById("startMenu").classList.add("hidden");
-
-    const screen = document.getElementById("shutdownScreen");
-
-    screen.classList.remove("hidden");
-
-    const texts = [
-        "Zapisywanie ziemniaków...",
-        "Wyłączanie kaczki...",
-        "Zamykanie 47 procesów...",
-        "Odłączanie Piotra...",
-        "Czyszczenie zdrowego rozsądku..."
-    ];
-
-    let i = 0;
-
-    const interval = setInterval(() => {
-
-        document.getElementById("shutdownText").textContent =
-            texts[i % texts.length];
-
-        i++;
-
-    }, 500);
-
-    setTimeout(() => {
-
-        clearInterval(interval);
-
-        screen.innerHTML = `
-            <div>
-                <h1>💤</h1>
-                <p>PIOTR OS został wyłączony.</p>
-                <button onclick="location.reload()">
-                    WŁĄCZ PONOWNIE
-                </button>
-            </div>
-        `;
-
-    }, 3000);
-}
-
-/* =========================
-   KACZKA
-========================= */
-
-function showDuck() {
-
-    const duck = document.getElementById("duck");
-
-    duck.style.display = "block";
-
-    duck.style.left =
-        Math.random() * (window.innerWidth - 100) + "px";
-
-    duck.style.top =
-        Math.random() * (window.innerHeight - 150) + "px";
-
-    notify("🦆 KACZKA W SYSTEMIE.");
-
-    setTimeout(() => {
-
-        if (duck.style.display !== "none") {
-            duck.style.display = "none";
-        }
-
-    }, 10000);
-}
-
-function catchDuck() {
-
-    const duck = document.getElementById("duck");
-
-    duckCaught++;
-
-    localStorage.setItem("duckCaught", duckCaught);
-
-    duck.style.display = "none";
-
-    notify("🦆 ZŁAPAŁEŚ KACZKĘ.");
-
-    unlockAchievement("duck");
-
-    money += 5;
-
-    saveMoney();
-
-    increaseChaos(8);
-
-    if (duckCaught >= 3) {
-        notify("Kaczka: przestań mnie łapać.");
-    }
-}
-
-/* =========================
-   SNAIL
-========================= */
-
-function showSnail() {
-
-    const snail = document.getElementById("snail");
-
-    snail.style.display = "block";
-
-    snail.style.left = "0px";
-    snail.style.top =
-        (window.innerHeight - 120) + "px";
-
-    unlockAchievement("snail");
-
-    let position = 0;
-
-    const timer = setInterval(() => {
-
-        position += 2;
-
-        snail.style.left = position + "px";
-
-        if (position > window.innerWidth) {
-
-            clearInterval(timer);
-
-            snail.style.display = "none";
-        }
-
-    }, 100);
-
-    notify("🐌 Ślimak rozpoczął podróż.");
-
-    increaseChaos(4);
-}
-
-/* =========================
-   GHOST
-========================= */
-
-function showGhost() {
-
-    const ghost = document.getElementById("ghost");
-
-    ghost.style.left =
-        Math.random() * (window.innerWidth - 100) + "px";
-
-    ghost.style.top =
-        Math.random() * (window.innerHeight - 150) + "px";
-
-    ghost.style.opacity = "1";
-
-    notify("👻 Coś było tutaj przed tobą.");
-
-    increaseChaos(7);
-
-    setTimeout(() => {
-        ghost.style.opacity = "0";
-    }, 3000);
-}
-
-/* =========================
-   BOT
-========================= */
-
-function botHTML() {
-
-    return `
-        <h2>🤖 PiotrBot AI™</h2>
-
-        <div id="chatBox" class="chatBox">
-            <div class="chatMsg botMsg">
-                🤖 PiotrBot: Witaj. Jestem sztuczną inteligencją,
-                ale nadal nie wiem, po co mnie uruchomiłeś.
-            </div>
-        </div>
-
-        <div class="chatInput">
-            <input id="botInput"
-                placeholder="Napisz coś..."
-                onkeydown="botKey(event)">
-
-            <button onclick="botSend()">Wyślij</button>
-        </div>
-    `;
-}
-
-function botKey(event) {
-
-    if (event.key === "Enter") {
-        botSend();
-    }
-}
-
-function botSend() {
-
-    const input = document.getElementById("botInput");
-    const box = document.getElementById("chatBox");
-
-    if (!input || !box) return;
-
-    const msg = input.value.trim();
-
-    if (!msg) return;
-
-    addChat("Ty", msg, "userMsg");
-
-    input.value = "";
-
-    setTimeout(() => {
-
-        const response = botResponse(msg);
-
-        addChat("PiotrBot", response, "botMsg");
-
-    }, 350);
-
-    increaseChaos(2);
-}
-
-function addChat(name, message, cls) {
-
-    const box = document.getElementById("chatBox");
-
-    if (!box) return;
-
-    const div = document.createElement("div");
-
-    div.className = "chatMsg " + cls;
-
-    div.textContent = name + ": " + message;
-
-    box.appendChild(div);
-
-    box.scrollTop = box.scrollHeight;
-}
-
-function botResponse(msg) {
-
-    const m = msg.toLowerCase();
-
-    if (m.includes("cześć") || m.includes("hej")) {
-        return "Hej. Nie powinieneś był tutaj zaglądać.";
-    }
-
-    if (m.includes("kaczka")) {
-        return "🦆 Kaczka ma większe uprawnienia niż ty.";
-    }
-
-    if (m.includes("ziemniak")) {
-        return "🥔 Ziemniak jest fundamentem gospodarki PIOTR OS.";
-    }
-
-    if (m.includes("piotr")) {
-        return "Piotr jest administratorem. Prawdopodobnie.";
-    }
-
-    if (m.includes("chaos")) {
-        return "Chaos wynosi obecnie " + chaos + "%.";
-    }
-
-    if (m.includes("ufo")) {
-        return "🛸 Nie patrz w niebo.";
-    }
-
-    if (m.includes("jesteś")) {
-        return "Jestem PiotrBot. To powinno wystarczyć.";
-    }
-
-    if (m.includes("koch")) {
-        return "Nie posiadam modułu uczuć. Ale dzięki.";
-    }
-
-    const replies = [
-        "Nie wiem.",
-        "To brzmi podejrzanie.",
-        "System zanotował tę informację.",
-        "Nie klikaj wszystkiego.",
-        "Czy ty nadal tu jesteś?",
-        "Interesujące. Bardzo interesujące.",
-        "Piotr OS odnotował twoją wiadomość.",
-        "Nie mam komentarza.",
-        "🤖 Błąd: za dużo sensu.",
-        "Może zapytaj ziemniaka."
-    ];
-
-    return replies[
-        Math.floor(Math.random() * replies.length)
-    ];
-}
-
-/* =========================
-   TV
-========================= */
-
-function tvHTML() {
-
-    return `
-        <h2>📺 PIOTR TV</h2>
-
-        <div id="tvScreen" class="tvScreen">
-            <div style="font-size:35px;">📺</div>
-            <div>PIOTR TV</div>
-            <div>Wybierz kanał.</div>
-        </div>
-
-        <div class="channelButtons">
-
-            <button onclick="tvChannel(1)">1 — Wiadomości</button>
-            <button onclick="tvChannel(2)">2 — Kaczka</button>
-            <button onclick="tvChannel(3)">3 — Ziemniak</button>
-            <button onclick="tvChannel(4)">4 — UFO</button>
-            <button onclick="tvChannel(5)">5 — Pogoda</button>
-            <button onclick="tvChannel(6)">6 — Nic</button>
-
-        </div>
-    `;
-}
-
-function tvChannel(channel) {
-
-    const screen = document.getElementById("tvScreen");
-
-    if (!screen) return;
-
-    const channels = {
-
-        1: [
-            "📰 WIADOMOŚCI: Nic się nie wydarzyło.",
-            "📰 WIADOMOŚCI: Kaczka odnotowała wzrost popularności.",
-            "📰 WIADOMOŚCI: Ziemniak pozostaje stabilny."
-        ],
-
-        2: [
-            "🦆 KACZKA 24/7",
-            "🦆 Kaczka patrzy w kamerę.",
-            "🦆 Kaczka nic nie robi."
-        ],
-
-        3: [
-            "🥔 ZIEMNIAK LIVE",
-            "🥔 Ziemniak obraca się.",
-            "🥔 Ziemniak odpoczywa."
-        ],
-
-        4: [
-            "🛸 UFO NEWS",
-            "🛸 Wykryto obiekt.",
-            "🛸 Obiekt wykrył nas."
-        ],
-
-        5: [
-            "🌦️ POGODA",
-            "🌧️ Deszcz ziemniaków.",
-            "☀️ Słońce świeci. Podejrzane."
-        ],
-
-        6: [
-            "📺 ...",
-            "📺 Nic.",
-            "📺 Absolutnie nic."
-        ]
-    };
-
-    const arr = channels[channel];
-
-    screen.innerHTML = `
-        <div style="font-size:30px;">${arr[0]}</div>
-        <p>${arr[Math.floor(Math.random() * arr.length)]}</p>
-    `;
-
-    increaseChaos(2);
-}
-
-/* =========================
-   SHOP
-========================= */
-
-function shopHTML() {
-
-    return `
-        <h2>🛒 Sklep z Niczym</h2>
-
-        <p>Saldo: <b id="shopMoney">${money} P$</b></p>
-
-        <div class="shopItem">
-            🥔 Ziemniak premium
-            <button onclick="buyItem('potato')">10 P$</button>
-        </div>
-
-        <div class="shopItem">
-            🦆 Certyfikat kaczki
-            <button onclick="buyItem('duck')">25 P$</button>
-        </div>
-
-        <div class="shopItem">
-            🗿 Kamień Piotra
-            <button onclick="buyItem('stone')">50 P$</button>
-        </div>
-
-        <div class="shopItem">
-            ❓ Tajemnicze pudełko
-            <button onclick="buyItem('mystery')">75 P$</button>
-        </div>
-    `;
-}
-
-function buyItem(item) {
-
-    const prices = {
-        potato: 10,
-        duck: 25,
-        stone: 50,
-        mystery: 75
-    };
-
-    const price = prices[item];
-
-    if (money < price) {
-        notify("Nie masz wystarczająco P$.");
-        return;
-    }
-
-    money -= price;
-
-    saveMoney();
-
-    const shopMoney = document.getElementById("shopMoney");
-
-    if (shopMoney) {
-        shopMoney.textContent = money + " P$";
-    }
-
-    const messages = {
-
-        potato: "🥔 Kupiłeś ziemniaka. Gratulacje.",
-
-        duck: "🦆 Certyfikat mówi, że jesteś właścicielem kaczki.",
-
-        stone: "🗿 Kamień patrzy na ciebie.",
-
-        mystery: [
-            "📦 W pudełku była instrukcja do niczego.",
-            "📦 W pudełku był mniejszy karton.",
-            "📦 Pudełko kupiło ciebie."
-        ]
-    };
-
-    const message = Array.isArray(messages[item])
-        ? messages[item][Math.floor(Math.random() * messages[item].length)]
-        : messages[item];
-
-    notify(message);
-
-    increaseChaos(5);
-}
-
-function saveMoney() {
-
-    localStorage.setItem("piotrMoney", money);
-}
-
-/* =========================
-   WALLET
-========================= */
-
-function walletHTML() {
-
-    return `
-        <div class="wallet">
-
-            <h2>💰 Portfel Piotra</h2>
-
-            <div class="walletMoney" id="walletMoney">
-                ${money} P$
-            </div>
-
-            <p>Waluta: PiotrCoin™</p>
-
-            <button onclick="earnMoney()">
-                💸 Wygeneruj 10 P$
-            </button>
-
-            <button onclick="loseMoney()">
-                💀 Stracić 10 P$
-            </button>
-
-        </div>
-    `;
-}
-
-function updateWalletUI() {
-
-    const wallet = document.getElementById("walletMoney");
-
-    if (wallet) {
-        wallet.textContent = money + " P$";
-    }
-}
-
-function earnMoney() {
-
-    money += 10;
-
-    saveMoney();
-    updateWalletUI();
-
-    notify("+10 P$");
-    increaseChaos(1);
-}
-
-function loseMoney() {
-
-    money = Math.max(0, money - 10);
-
-    saveMoney();
-    updateWalletUI();
-
-    notify("-10 P$. Ekonomia działa.");
-    increaseChaos(3);
-}
-
-/* =========================
-   STOCK MARKET
-========================= */
-
-function stocksHTML() {
-
-    return `
-        <h2>🥔 Giełda Ziemniaka</h2>
-
-        <p>Indeks ziemniaczany:</p>
-
-        <div id="stockNumber" class="stockNumber">
-            ${stockValue}
-        </div>
-
-        <p id="stockStatus">Stabilnie.</p>
-
-        <button onclick="buyPotatoStock()">
-            📈 Kup ziemniaka
-        </button>
-
-        <button onclick="refreshStock()">
-            🔄 Odśwież kurs
-        </button>
-
-        <hr>
-
-        <p>Posiadane ziemniaki: <b id="potatoCount">${potato}</b></p>
-    `;
-}
-
-function updateStockUI() {
-
-    const n = document.getElementById("stockNumber");
-
-    if (n) n.textContent = stockValue;
-
-    const p = document.getElementById("potatoCount");
-
-    if (p) p.textContent = potato;
-
-    const status = document.getElementById("stockStatus");
-
-    if (status) {
-
-        if (stockValue > 50) {
-            status.textContent = "📈 ZIEMNIAK ROŚNIE!";
-            status.className = "stockUp";
-        } else if (stockValue < 35) {
-            status.textContent = "📉 ZIEMNIAK UPADA.";
-            status.className = "stockDown";
-        } else {
-            status.textContent = "😐 Ziemniak jest stabilny.";
-            status.className = "";
-        }
-    }
-}
-
-function refreshStock() {
-
-    const old = stockValue;
-
-    stockValue += Math.floor(Math.random() * 21) - 10;
-
-    stockValue = Math.max(1, Math.min(100, stockValue));
-
-    localStorage.setItem("stockValue", stockValue);
-
-    updateStockUI();
-
-    notify(
-        stockValue >= old
-            ? "🥔 Kurs ziemniaka wzrósł."
-            : "🥔 Kurs ziemniaka spadł."
-    );
-
-    increaseChaos(3);
-}
-
-function buyPotatoStock() {
-
-    if (money < 5) {
-        notify("Potrzebujesz 5 P$.");
-        return;
-    }
-
-    money -= 5;
-    potato++;
-
-    saveMoney();
-
-    localStorage.setItem("potatoStock", potato);
-
-    updateStockUI();
-    updateWalletUI();
-
-    notify("🥔 Kupiono ziemniaka.");
-
-    increaseChaos(2);
-}
-
-/* =========================
-   MAIL
-========================= */
-
-function mailHTML() {
-
-    const mails = [
-        [
-            "Kaczka",
-            "Temat: Mamy problem",
-            "Przestań mnie łapać."
-        ],
-        [
-            "Administrator",
-            "Temat: Pilne",
-            "Dlaczego poziom chaosu wynosi " + chaos + "%?"
-        ],
-        [
-            "Ziemniak",
-            "Temat: Giełda",
-            "Kurs będzie rósł. Chyba."
-        ],
-        [
-            "Nieznany",
-            "Temat: ON WIE",
-            "Nie odpowiadaj na ten e-mail."
-        ],
-        [
-            "PiotrBot",
-            "Temat: Re: Re: Re:",
-            "Nie mam pojęcia, co tu robię."
-        ]
-    ];
-
-    return `
-        <h2>📬 Poczta</h2>
-
-        ${mails.map((m, i) => `
-            <div class="mail"
-                onclick="openMail(${i})">
-                <b>${m[0]}</b><br>
-                ${m[1]}
-            </div>
-        `).join("")}
-
-        <div id="mailContent"></div>
-    `;
-}
-
-const mailData = [
-    [
-        "Kaczka",
-        "Temat: Mamy problem",
-        "Przestań mnie łapać."
-    ],
-    [
-        "Administrator",
-        "Temat: Pilne",
-        "Dlaczego poziom chaosu wynosi " + chaos + "%?"
-    ],
-    [
-        "Ziemniak",
-        "Temat: Giełda",
-        "Kurs będzie rósł. Chyba."
-    ],
-    [
-        "Nieznany",
-        "Temat: ON WIE",
-        "Nie odpowiadaj na ten e-mail."
-    ],
-    [
-        "PiotrBot",
-        "Temat: Re: Re: Re:",
-        "Nie mam pojęcia, co tu robię."
+if(!state.files){
+ state.files={
+  type:"folder",
+  name:"C:",
+  children:[
+   {
+    type:"folder",
+    name:"Users",
+    children:[
+     {
+      type:"folder",
+      name:"Piotr",
+      children:[
+       {type:"folder",name:"Documents",children:[]},
+       {type:"folder",name:"Downloads",children:[]},
+       {type:"folder",name:"Desktop",children:[]},
+       {type:"file",name:"czytaj_mnie.txt",content:"Witaj w PIOTR OS."}
+      ]
+     }
     ]
+   },
+   {
+    type:"folder",
+    name:"System",
+    children:[
+     {type:"file",name:"piotr.exe",content:"Nie dotykaj."},
+     {type:"file",name:"duck.sys",content:"QUACK"},
+     {type:"file",name:"common_sense.dll",content:"FILE NOT FOUND"},
+     {type:"file",name:"unknown.exe",content:"..."}
+    ]
+   },
+   {
+    type:"folder",
+    name:"Secrets",
+    hidden:true,
+    children:[
+     {type:"file",name:"portal.key",hidden:true,content:"CHAOS"},
+     {type:"file",name:"previous_user.txt",hidden:true,content:"On był tutaj przed tobą."}
+    ]
+   }
+  ]
+ };
+ save();
+}
+
+let windows={};
+let zIndex=200;
+let currentPath=[];
+let terminalHistory=[];
+let terminalHistoryIndex=-1;
+let stockValue=state.stock;
+let chaos=state.chaos;
+let money=state.money;
+let potato=state.potato;
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function save(){
+ state.chaos=chaos;
+ state.money=money;
+ state.potato=potato;
+ state.stock=stockValue;
+ localStorage.setItem(STORAGE,JSON.stringify(state));
+}
+
+function logActivity(text){
+ state.history.unshift({
+  text,
+  time:new Date().toLocaleTimeString("pl-PL")
+ });
+ if(state.history.length>100)state.history.pop();
+ save();
+}
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+setTimeout(()=>{
+ document.getElementById("boot").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+},5000);
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+function login(){
+ const input=document.getElementById("passwordInput");
+
+ if(input.value==="1234"){
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("desktop").classList.remove("hidden");
+
+  state.stats.sessions++;
+  save();
+
+  applyTheme();
+  updateChaosUI();
+  unlockAchievement("first");
+  notify("Witaj ponownie, Piotr.");
+  logActivity("Zalogowano użytkownika Piotr.");
+
+  setTimeout(()=>notify("System pamięta twoją poprzednią sesję."),1800);
+  setTimeout(()=>randomEvent(),5000);
+ }else{
+  document.getElementById("loginError").textContent="❌ Złe hasło. Nawet kaczka by zgadła.";
+  chaosAdd(3);
+  logActivity("Nieudana próba logowania.");
+ }
+}
+
+document.getElementById("passwordInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")login();
+});
+
+/* =========================================================
+   CLOCK
+========================================================= */
+
+function updateClock(){
+ const d=new Date();
+ document.getElementById("clock").textContent=
+ d.toLocaleTimeString("pl-PL",{hour:"2-digit",minute:"2-digit"});
+}
+setInterval(updateClock,1000);
+updateClock();
+
+/* =========================================================
+   START
+========================================================= */
+
+function toggleStart(){
+ document.getElementById("startMenu").classList.toggle("hidden");
+}
+
+function filterStart(){
+ const q=document.getElementById("startSearch").value.toLowerCase();
+
+ document.querySelectorAll(".startItem").forEach(x=>{
+  x.style.display=x.dataset.search.includes(q)?"block":"none";
+ });
+}
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function notify(message){
+ if(state.settings.notifications===false)return;
+
+ const box=document.getElementById("notifications");
+ const n=document.createElement("div");
+
+ n.className="notification";
+ n.textContent=message;
+ box.appendChild(n);
+
+ setTimeout(()=>n.remove(),5000);
+}
+
+function toggleNotifications(){
+ state.settings.notifications=!state.settings.notifications;
+ save();
+ notify(state.settings.notifications?"Powiadomienia włączone.":"Powiadomienia wyłączone.");
+}
+
+/* =========================================================
+   CHAOS
+========================================================= */
+
+function chaosAdd(amount=1){
+ chaos=Math.max(0,Math.min(100,chaos+amount));
+ state.chaos=chaos;
+ updateChaosUI();
+ save();
+
+ if(chaos>=25&&Math.random()<.1)notify("System: Poziom normalności spada.");
+ if(chaos>=50&&Math.random()<.1)notify("System: Czy ty nadal tu jesteś?");
+ if(chaos>=75&&Math.random()<.1)notify("System: ON JUŻ WIE.");
+ if(chaos>=95&&Math.random()<.08)showUnknown();
+
+ if(chaos>=100)unlockAchievement("chaos100");
+}
+
+function increaseChaos(a){chaosAdd(a)}
+
+function updateChaosUI(){
+ const f=document.getElementById("chaosFill");
+ const t=document.getElementById("chaosText");
+
+ if(f)f.style.width=chaos+"%";
+ if(t)t.textContent=chaos+"%";
+}
+
+/* =========================================================
+   WINDOWS
+========================================================= */
+
+const apps={
+ computer:["💻 Ten komputer",computerHTML],
+ notes:["📝 Notatnik",notesHTML],
+ calculator:["🧮 Kalkulator",calculatorHTML],
+ terminal:["⌨️ Terminal",terminalHTML],
+ browser:["🌐 PiotrNet",browserHTML],
+ settings:["⚙️ Ustawienia",settingsHTML],
+ trash:["🗑️ Kosz",trashHTML],
+ achievements:["🏆 Osiągnięcia",achievementsHTML],
+ taskmanager:["📊 Menedżer zadań",taskManagerHTML],
+ files:["📁 Eksplorator plików",filesHTML],
+ calendar:["📅 Kalendarz",calendarHTML],
+ bot:["🤖 PiotrBot",botHTML],
+ tv:["📺 PIOTR TV",tvHTML],
+ shop:["🛒 Sklep z Niczym",shopHTML],
+ stocks:["🥔 Giełda Ziemniaka",stocksHTML],
+ wallet:["💰 Portfel",walletHTML],
+ bank:["🏦 Bank Piotra",bankHTML],
+ mail:["📬 Poczta",mailHTML],
+ map:["🗺️ Mapa",mapHTML],
+ ufo:["🛸 Radar UFO",ufoHTML],
+ lab:["🧪 Laboratorium",labHTML],
+ games:["🎮 Piotr Games",gamesHTML],
+ dont:["🚫 NIE KLIKAJ",dontHTML]
+};
+
+function openApp(id){
+ document.getElementById("startMenu").classList.add("hidden");
+
+ if(windows[id]){
+  windows[id].style.display="block";
+  focusWindow(windows[id]);
+  return;
+ }
+
+ if(!apps[id])return;
+
+ state.stats.apps++;
+ state.stats.windows++;
+ save();
+ logActivity("Uruchomiono: "+apps[id][0]);
+
+ createWindow(id,apps[id][0],apps[id][1]());
+ chaosAdd(1);
+}
+
+function createWindow(id,title,content){
+ const win=document.createElement("div");
+ win.className="window";
+
+ const count=Object.keys(windows).length;
+ win.style.left=Math.min(120+count*22,window.innerWidth-320)+"px";
+ win.style.top=Math.min(55+count*20,window.innerHeight-260)+"px";
+ win.style.zIndex=++zIndex;
+
+ win.innerHTML=`
+  <div class="titlebar">
+   <div class="titleText">${title}</div>
+   <div class="winButtons">
+    <button class="winBtn" onclick="minimizeWindow('${id}')">—</button>
+    <button class="winBtn" onclick="maximizeWindow('${id}')">□</button>
+    <button class="winBtn closeBtn" onclick="closeWindow('${id}')">×</button>
+   </div>
+  </div>
+  <div class="windowContent">${content}</div>
+ `;
+
+ document.getElementById("desktop").appendChild(win);
+ windows[id]=win;
+ makeDraggable(win);
+
+ win.addEventListener("mousedown",()=>focusWindow(win));
+
+ const task=document.createElement("button");
+ task.className="taskButton";
+ task.id="task-"+id;
+ task.textContent=title;
+ task.onclick=()=>{
+  win.style.display="block";
+  focusWindow(win);
+ };
+
+ document.getElementById("taskButtons").appendChild(task);
+ focusWindow(win);
+
+ if(id==="notes")loadNotes();
+ if(id==="terminal")setTimeout(focusTerminal,50);
+ if(id==="stocks")updateStockUI();
+ if(id==="wallet")updateWalletUI();
+ if(id==="taskmanager")refreshProcesses();
+ if(id==="files")renderFiles();
+}
+
+function focusWindow(win){
+ win.style.zIndex=++zIndex;
+}
+
+function closeWindow(id){
+ if(!windows[id])return;
+ windows[id].remove();
+
+ const t=document.getElementById("task-"+id);
+ if(t)t.remove();
+
+ delete windows[id];
+ logActivity("Zamknięto aplikację: "+id);
+ chaosAdd(1);
+}
+
+function minimizeWindow(id){
+ if(windows[id])windows[id].style.display="none";
+}
+
+function maximizeWindow(id){
+ if(windows[id])windows[id].classList.toggle("maximized");
+}
+
+function makeDraggable(win){
+ const bar=win.querySelector(".titlebar");
+ let drag=false,sx=0,sy=0,sl=0,st=0;
+
+ bar.addEventListener("mousedown",e=>{
+  if(e.target.closest(".winButtons"))return;
+
+  drag=true;
+  sx=e.clientX;
+  sy=e.clientY;
+  sl=win.offsetLeft;
+  st=win.offsetTop;
+  focusWindow(win);
+ });
+
+ document.addEventListener("mousemove",e=>{
+  if(!drag)return;
+
+  win.style.left=Math.max(0,Math.min(window.innerWidth-100,sl+e.clientX-sx))+"px";
+  win.style.top=Math.max(0,Math.min(window.innerHeight-80,st+e.clientY-sy))+"px";
+ });
+
+ document.addEventListener("mouseup",()=>drag=false);
+}
+
+/* =========================================================
+   COMPUTER
+========================================================= */
+
+function computerHTML(){
+ return `
+ <h2>💻 Ten komputer</h2>
+ <div class="statGrid">
+  <div class="stat"><b>CPU</b><div class="bigNumber" id="pcCpu">42%</div></div>
+  <div class="stat"><b>RAM</b><div class="bigNumber" id="pcRam">37%</div></div>
+  <div class="stat"><b>Dysk</b><div class="bigNumber">17%</div></div>
+  <div class="stat"><b>Sieć</b><div class="bigNumber">OK</div></div>
+ </div>
+
+ <hr>
+
+ <div class="fileGrid">
+  <div class="file" onclick="openApp('files')"><div class="fileEmoji">📁</div>Eksplorator</div>
+  <div class="file" onclick="openApp('notes')"><div class="fileEmoji">📝</div>Dokumenty</div>
+  <div class="file" onclick="openApp('trash')"><div class="fileEmoji">🗑️</div>Kosz</div>
+  <div class="file" onclick="openApp('taskmanager')"><div class="fileEmoji">📊</div>Procesy</div>
+  <div class="file" onclick="secretFolder()"><div class="fileEmoji">📁</div>SECRET</div>
+  <div class="file" onclick="systemFile()"><div class="fileEmoji">⚠️</div>unknown.exe</div>
+ </div>
+
+ <hr>
+ <p><b>System:</b> PIOTR OS 4.0</p>
+ <p><b>Użytkownik:</b> ${escapeHTML(state.user)}</p>
+ <p><b>Sesje:</b> ${state.stats.sessions}</p>
+ `;
+}
+
+setInterval(()=>{
+ const cpu=document.getElementById("pcCpu");
+ const ram=document.getElementById("pcRam");
+ if(cpu)cpu.textContent=Math.floor(20+Math.random()*75)+"%";
+ if(ram)ram.textContent=Math.floor(25+Math.random()*60)+"%";
+},2000);
+
+/* =========================================================
+   NOTES
+========================================================= */
+
+function notesHTML(){
+ return `
+ <div class="toolbar">
+  <button onclick="saveNotes()">💾 Zapisz</button>
+  <button onclick="loadNotes()">📂 Wczytaj</button>
+  <button onclick="clearNotes()">🗑️ Wyczyść</button>
+  <button onclick="insertNote('PIOTR OS pamięta.\\n')">🗿 Piotr</button>
+ </div>
+ <textarea id="notesArea" placeholder="Napisz coś...">${escapeHTML(state.notes)}</textarea>
+ `;
+}
+
+function saveNotes(){
+ const a=document.getElementById("notesArea");
+ if(!a)return;
+ state.notes=a.value;
+ save();
+ unlockAchievement("writer");
+ notify("📝 Notatka zapisana.");
+ logActivity("Zapisano notatkę.");
+ chaosAdd(2);
+}
+
+function loadNotes(){
+ const a=document.getElementById("notesArea");
+ if(a)a.value=state.notes||"";
+}
+
+function clearNotes(){
+ const a=document.getElementById("notesArea");
+ if(a)a.value="";
+ state.notes="";
+ save();
+ notify("Notatka wyczyszczona.");
+}
+
+function insertNote(t){
+ const a=document.getElementById("notesArea");
+ if(a)a.value+=t;
+}
+
+/* =========================================================
+   CALCULATOR
+========================================================= */
+
+function calculatorHTML(){
+ return `
+ <div class="calc">
+  <input id="calcDisplay" readonly>
+  <div class="calcGrid">
+   <button onclick="calcClear()">C</button><button onclick="calcAdd('(')">(</button>
+   <button onclick="calcAdd(')')">)</button><button onclick="calcAdd('/')">÷</button>
+   <button onclick="calcAdd('7')">7</button><button onclick="calcAdd('8')">8</button>
+   <button onclick="calcAdd('9')">9</button><button onclick="calcAdd('*')">×</button>
+   <button onclick="calcAdd('4')">4</button><button onclick="calcAdd('5')">5</button>
+   <button onclick="calcAdd('6')">6</button><button onclick="calcAdd('-')">−</button>
+   <button onclick="calcAdd('1')">1</button><button onclick="calcAdd('2')">2</button>
+   <button onclick="calcAdd('3')">3</button><button onclick="calcAdd('+')">+</button>
+   <button onclick="calcAdd('0')">0</button><button onclick="calcAdd('.')">.</button>
+   <button onclick="calcPiotr()">🗿</button><button onclick="calcResult()">=</button>
+  </div>
+ </div>`;
+}
+
+function calcAdd(v){
+ const d=document.getElementById("calcDisplay");
+ if(d)d.value+=v;
+}
+function calcClear(){
+ const d=document.getElementById("calcDisplay");
+ if(d)d.value="";
+}
+function calcPiotr(){
+ const d=document.getElementById("calcDisplay");
+ if(d)d.value="42";
+ notify("Odpowiedź na wszystko: 42.");
+}
+function calcResult(){
+ const d=document.getElementById("calcDisplay");
+ if(!d)return;
+
+ try{
+  if(!/^[0-9+\-*/(). ]+$/.test(d.value))throw 0;
+  d.value=Function('"use strict";return ('+d.value+')')();
+ }catch{
+  d.value="PIOTR";
+  notify("Kalkulator odmówił współpracy.");
+  chaosAdd(4);
+ }
+}
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+function terminalHTML(){
+ return `
+ <div class="terminal" onclick="focusTerminal()">
+  <div id="terminalOutput">PIOTR TERMINAL v4.0
+Kernel: PIOTR
+User: Piotr
+Type "help".
+
+</div>
+  <div id="terminalInputLine">
+   <span>piotr@os:~$&nbsp;</span>
+   <input id="terminalInput" autocomplete="off" spellcheck="false"
+    onkeydown="terminalKey(event)">
+  </div>
+ </div>`;
+}
+
+function focusTerminal(){
+ const i=document.getElementById("terminalInput");
+ if(i)i.focus();
+}
+
+function terminalKey(e){
+ if(e.key==="Enter"){
+  const i=e.target;
+  const c=i.value.trim();
+  if(c){
+   terminalHistory.push(c);
+   terminalHistoryIndex=terminalHistory.length;
+  }
+  i.value="";
+  terminalExecute(c);
+ }
+
+ if(e.key==="ArrowUp"){
+  if(terminalHistory.length){
+   terminalHistoryIndex=Math.max(0,terminalHistoryIndex-1);
+   e.target.value=terminalHistory[terminalHistoryIndex]||"";
+  }
+ }
+
+ if(e.key==="ArrowDown"){
+  if(terminalHistory.length){
+   terminalHistoryIndex=Math.min(terminalHistory.length,terminalHistoryIndex+1);
+   e.target.value=terminalHistory[terminalHistoryIndex]||"";
+  }
+ }
+}
+
+function terminalPrint(text){
+ const o=document.getElementById("terminalOutput");
+ if(!o)return;
+ o.textContent+="\n"+text;
+ o.parentElement.scrollTop=o.parentElement.scrollHeight;
+}
+
+function terminalExecute(command){
+ if(!command)return;
+
+ state.stats.commands++;
+ save();
+
+ terminalPrint("piotr@os:~$ "+command);
+
+ const c=command.toLowerCase();
+
+ const aliases={
+  cls:"clear",
+  dir:"files",
+  ls:"files",
+  help:"help"
+ };
+
+ const cmd=aliases[c]||c;
+
+ if(cmd==="help"){
+  terminalPrint(`
+help       pomoc
+clear      czyszczenie
+whoami     użytkownik
+date       data
+time       czas
+duck       kaczka
+snail      ślimak
+ghost      duch
+ufo        radar
+matrix     matrix
+secret     sekret
+chaos      chaos
+money      pieniądze
+potato     ziemniaki
+files      pliki
+history    historia
+processes  procesy
+sudo       próba władzy
+god        tryb boga
+portal     portal
+virus      wirus
+bsod       awaria
+update     aktualizacja
+lock       blokada
+restart    restart
+shutdown   wyłącz
+about      informacje
+`);
+ }else if(cmd==="clear"){
+  document.getElementById("terminalOutput").textContent="";
+ }else if(cmd==="whoami"){
+  terminalPrint("Piotr. Administrator. Prawdopodobnie.");
+ }else if(cmd==="date"){
+  terminalPrint(new Date().toString());
+ }else if(cmd==="time"){
+  terminalPrint(new Date().toLocaleTimeString("pl-PL"));
+ }else if(cmd==="duck"){
+  showDuck();unlockAchievement("duck");
+ }else if(cmd==="snail"){
+  showSnail();unlockAchievement("snail");
+ }else if(cmd==="ghost"){
+  showGhost();
+ }else if(cmd==="ufo"){
+  scanUFO();
+ }else if(cmd==="matrix"){
+  terminalPrint("01001000 01000101 01001010 01001001 01000101");
+  chaosAdd(8);
+ }else if(cmd==="secret"){
+  findSecret();
+ }else if(cmd==="chaos"){
+  terminalPrint("CHAOS = "+chaos+"%");
+ }else if(cmd==="money"){
+  terminalPrint("PIOTRCOIN = "+money+" P$");
+ }else if(cmd==="potato"){
+  terminalPrint("POTATO = "+potato);
+ }else if(cmd==="files"){
+  terminalPrint("C:\\Users\\Piotr\\Documents");
+  terminalPrint("C:\\System");
+  terminalPrint("C:\\Secrets [HIDDEN]");
+ }else if(cmd==="history"){
+  state.history.slice(0,15).forEach(x=>terminalPrint(x.time+" — "+x.text));
+ }else if(cmd==="processes"){
+  terminalPrint("piotr.exe");
+  terminalPrint("duck.sys");
+  terminalPrint("piotrbot.ai");
+  terminalPrint("unknown.exe");
+  terminalPrint("reality.dll");
+ }else if(cmd==="sudo"){
+  terminalPrint("Piotr nie potrzebuje sudo.");
+  terminalPrint("Piotr jest sudo.");
+  chaosAdd(12);
+ }else if(cmd==="god"){
+  chaos=100;
+  unlockAchievement("god");
+  save();
+  updateChaosUI();
+  terminalPrint("GOD MODE ENABLED.");
+ }else if(cmd==="portal"){
+  if(chaos>=70&&state.secretCount>=5)showPortal();
+  else terminalPrint("Warunki: chaos >= 70 i 5 sekretów.");
+ }else if(cmd==="virus"){
+  fakeVirus();
+ }else if(cmd==="bsod"){
+  fakeBSOD();
+ }else if(cmd==="update"){
+  fakeUpdate();
+ }else if(cmd==="lock"){
+  lockScreen();
+ }else if(cmd==="restart"){
+  restartSystem();
+ }else if(cmd==="shutdown"){
+  shutdown();
+ }else if(cmd==="about"){
+  terminalPrint("PIOTR OS 4.0 — Reality Breaker Edition.");
+ }else{
+  terminalPrint("Nieznana komenda. System udaje, że nie widział.");
+  chaosAdd(2);
+ }
+}
+
+/* =========================================================
+   BROWSER
+========================================================= */
+
+const webPages={
+ "piotr.local":{
+  title:"PIOTR HOME",
+  body:"<h1>🗿 PIOTR HOME</h1><p>Witaj w najbardziej niepotrzebnej części internetu.</p><p>Aktualny chaos: <b>"+chaos+"%</b></p>"
+ },
+ "kaczka.local":{
+  title:"KACZKA",
+  body:"<h1>🦆 KACZKA.NET</h1><p>Kaczka ma 17 milionów użytkowników.</p><p>Nie wiadomo dlaczego.</p>"
+ },
+ "ziemniak.local":{
+  title:"ZIEMNIAK",
+  body:"<h1>🥔 POTATO EXCHANGE</h1><p>Kurs ziemniaka: "+stockValue+"</p>"
+ },
+ "admin.local":{
+  title:"ADMIN",
+  body:"<h1>🔐 ADMIN PANEL</h1><p>Odmowa dostępu.</p><p>Powód: Piotr.</p>"
+ }
+};
+
+function browserHTML(){
+ return `
+ <h2>🌐 PiotrNet</h2>
+ <div class="browserBar">
+  <input id="browserInput" value="piotr.local" onkeydown="browserKey(event)">
+  <button onclick="browserGo()">Idź</button>
+ </div>
+ <div id="browserPage" class="browserPage"></div>
+ <hr>
+ <button onclick="browserSearch()">🔎 Wyszukiwarka</button>
+ <button onclick="browserRandom()">🎲 Losowa strona</button>
+ `;
+}
+
+function browserKey(e){
+ if(e.key==="Enter")browserGo();
+}
+
+function browserGo(){
+ const input=document.getElementById("browserInput");
+ const page=document.getElementById("browserPage");
+ if(!input||!page)return;
+
+ let key=input.value.toLowerCase().trim();
+ key=key.replace(/^https?:\/\//,"");
+
+ if(webPages[key]){
+  page.innerHTML=`<h2>${webPages[key].title}</h2>${webPages[key].body}`;
+  logActivity("Odwiedzono "+key);
+ }else{
+  page.innerHTML=`
+   <h2>🔎 Brak wyników</h2>
+   <p>Nie znaleziono <b>${escapeHTML(key)}</b>.</p>
+   <p>Spróbuj: piotr.local, kaczka.local, ziemniak.local, admin.local</p>`;
+ }
+ chaosAdd(1);
+}
+
+function browserSearch(){
+ const page=document.getElementById("browserPage");
+ if(!page)return;
+
+ page.innerHTML=`
+ <h2>🔎 Piotr Search</h2>
+ <input id="searchInput" style="width:100%;padding:8px" placeholder="Szukaj...">
+ <button onclick="performSearch()" style="margin-top:7px">Szukaj</button>
+ <div id="searchResults"></div>`;
+}
+
+function performSearch(){
+ const q=document.getElementById("searchInput").value.toLowerCase();
+ const r=document.getElementById("searchResults");
+
+ const results=[
+  ["🦆 Kaczka","kaczka.local"],
+  ["🥔 Ziemniak","ziemniak.local"],
+  ["🗿 Piotr","piotr.local"],
+  ["🔐 Administrator","admin.local"]
+ ].filter(x=>x[0].toLowerCase().includes(q)||x[1].includes(q));
+
+ r.innerHTML=results.length
+ ?results.map(x=>`<div class="searchResult" onclick="document.getElementById('browserInput').value='${x[1]}';browserGo()">${x[0]} — ${x[1]}</div>`).join("")
+ :"<p>Brak wyników. Internet się poddał.</p>";
+}
+
+function browserRandom(){
+ const arr=Object.keys(webPages);
+ const k=arr[Math.floor(Math.random()*arr.length)];
+ document.getElementById("browserInput").value=k;
+ browserGo();
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function settingsHTML(){
+ return `
+ <h2>⚙️ Ustawienia</h2>
+
+ <h3>Motyw</h3>
+ <div class="themeButtons">
+  <button class="themeBlue" onclick="setTheme('blue')">🔵 Niebieski</button>
+  <button class="themeDark" onclick="setTheme('dark')">⚫ Ciemny</button>
+  <button class="themePurple" onclick="setTheme('purple')">🟣 Fiolet</button>
+  <button class="themeGreen" onclick="setTheme('green')">🟢 Zielony</button>
+  <button class="themeRed" onclick="setTheme('red')">🔴 Czerwony</button>
+  <button onclick="setTheme('matrix')" style="background:#001900">🟩 Matrix</button>
+ </div>
+
+ <hr>
+ <h3>System</h3>
+
+ <button onclick="toggleNotifications()">
+  🔔 Powiadomienia: ${state.settings.notifications?"ON":"OFF"}
+ </button>
+
+ <button onclick="increaseChaos(20)">🔥 +20 chaosu</button>
+ <button onclick="chaos=0;save();updateChaosUI()">🧘 Reset chaosu</button>
+ <button onclick="fakeUpdate()">🔄 Aktualizacja</button>
+ <button onclick="lockScreen()">🔒 Zablokuj</button>
+
+ <hr>
+ <h3>Informacje</h3>
+ <p>PIOTR OS 4.0</p>
+ <p>Sesje: ${state.stats.sessions}</p>
+ <p>Uruchomienia aplikacji: ${state.stats.apps}</p>
+ <p>Komendy terminala: ${state.stats.commands}</p>
+ <p>Chaos: ${chaos}%</p>
+
+ <hr>
+ <button onclick="resetSystem()">☢️ FABRYCZNY RESET</button>
+ `;
+}
+
+function setTheme(t){
+ state.theme=t;
+ applyTheme();
+ save();
+ notify("Motyw zmieniony.");
+ chaosAdd(2);
+}
+
+function applyTheme(){
+ const d=document.getElementById("desktop");
+ d.classList.remove("dark","purple","green","red","matrix");
+ if(state.theme!=="blue")d.classList.add(state.theme);
+}
+
+/* =========================================================
+   TRASH
+========================================================= */
+
+function trashHTML(){
+ return `
+ <h2>🗑️ Kosz</h2>
+ <div class="card">
+  <p>🦆 1 zgubiona kaczka</p>
+  <p>🥔 8 ziemniaków bez właściciela</p>
+  <p>🧠 zdrowy rozsądek</p>
+  <p>📄 47 pustych dokumentów</p>
+ </div>
+ <button onclick="emptyTrash()">🗑️ Opróżnij</button>
+ `;
+}
+
+function emptyTrash(){
+ notify("Kosz opróżniony.");
+ setTimeout(()=>notify("Zdrowy rozsądek próbował wrócić."),1000);
+ chaosAdd(5);
+}
+
+/* =========================================================
+   TASK MANAGER
+========================================================= */
+
+const processNames=[
+ ["piotr.exe",18],
+ ["explorer.exe",9],
+ ["piotrbot.ai",14],
+ ["duck.sys",7],
+ ["reality.dll",23],
+ ["unknown.exe",3],
+ ["snail.exe",1],
+ ["potato.service",11]
 ];
 
-function openMail(i) {
-
-    const mail = mailData[i];
-
-    const content = document.getElementById("mailContent");
-
-    if (!content) return;
-
-    content.innerHTML = `
-        <hr>
-        <h3>${mail[0]}</h3>
-        <b>${mail[1]}</b>
-        <p>${mail[2]}</p>
-    `;
-
-    increaseChaos(2);
+function taskManagerHTML(){
+ return `
+ <h2>📊 Menedżer zadań</h2>
+ <div class="statGrid">
+  <div class="stat"><b>CPU</b><div id="tmCpu" class="bigNumber">42%</div></div>
+  <div class="stat"><b>RAM</b><div id="tmRam" class="bigNumber">37%</div></div>
+  <div class="stat"><b>Procesy</b><div class="bigNumber">${processNames.length}</div></div>
+ </div>
+ <hr>
+ <div id="processList"></div>
+ `;
 }
 
-/* =========================
+function refreshProcesses(){
+ const box=document.getElementById("processList");
+ if(!box)return;
+
+ box.innerHTML=processNames.map((p,i)=>{
+  const v=Math.max(1,Math.min(95,p[1]+Math.floor(Math.random()*15)));
+  return `
+  <div class="process">
+   <span class="processName">${p[0]}</span>
+   <div class="cpuMini"><div style="width:${v}%"></div></div>
+   <span>${v}%</span>
+   <button class="smallBtn" onclick="killProcess('${p[0]}')">Zakończ</button>
+  </div>`;
+ }).join("");
+}
+
+function killProcess(name){
+ if(name==="explorer.exe"){
+  notify("Nie można zakończyć eksploratora. System potrzebuje pulpit.");
+  return;
+ }
+
+ notify("Proces "+name+" został zakończony.");
+ logActivity("Zakończono proces "+name);
+ chaosAdd(4);
+
+ if(name==="reality.dll"){
+  document.getElementById("desktop").style.transform="rotate(1deg)";
+  setTimeout(()=>document.getElementById("desktop").style.transform="",1500);
+ }
+}
+
+setInterval(()=>{
+ const c=document.getElementById("tmCpu");
+ const r=document.getElementById("tmRam");
+ if(c)c.textContent=Math.floor(20+Math.random()*75)+"%";
+ if(r)r.textContent=Math.floor(30+Math.random()*60)+"%";
+ if(document.getElementById("processList"))refreshProcesses();
+},2500);
+
+/* =========================================================
+   FILE SYSTEM
+========================================================= */
+
+function getFolder(path){
+ let node=state.files;
+
+ for(const part of path){
+  if(!node.children)return null;
+  node=node.children.find(x=>x.name===part);
+  if(!node)return null;
+ }
+
+ return node;
+}
+
+function filesHTML(){
+ currentPath=[];
+ return `
+ <h2>📁 Eksplorator plików</h2>
+ <div id="filePath" class="card"></div>
+ <div class="toolbar">
+  <button onclick="fileUp()">⬆️ Wstecz</button>
+  <button onclick="createFolder()">📁 Nowy folder</button>
+  <button onclick="createFile()">📄 Nowy plik</button>
+  <button onclick="toggleHiddenFiles()">👁️ Ukryte</button>
+ </div>
+ <div id="fileView"></div>
+ `;
+}
+
+let showHidden=false;
+
+function renderFiles(){
+ const folder=getFolder(currentPath);
+ const view=document.getElementById("fileView");
+ const path=document.getElementById("filePath");
+
+ if(!folder||!view)return;
+
+ if(path)path.textContent="C:\\"+currentPath.join("\\");
+
+ let children=folder.children||[];
+
+ children=children.filter(x=>showHidden||!x.hidden);
+
+ view.innerHTML=`
+ <div class="fileGrid">
+ ${children.map((x,i)=>`
+  <div class="file" onclick="openFileNode(${i})">
+   <div class="fileEmoji">${x.type==="folder"?"📁":"📄"}</div>
+   ${escapeHTML(x.name)}
+  </div>
+ `).join("")}
+ </div>`;
+
+ view.dataset.indexMap=JSON.stringify(children.map(x=>x.name));
+}
+
+function openFileNode(index){
+ const folder=getFolder(currentPath);
+ const visible=(folder.children||[]).filter(x=>showHidden||!x.hidden);
+ const node=visible[index];
+
+ if(!node)return;
+
+ if(node.type==="folder"){
+  currentPath.push(node.name);
+  renderFiles();
+ }else{
+  notify("📄 "+node.name);
+  openFileContent(node);
+ }
+}
+
+function openFileContent(node){
+ const id="file_"+Date.now();
+ createWindow(id,"📄 "+node.name,`
+ <h2>${escapeHTML(node.name)}</h2>
+ <textarea style="width:100%;height:260px;color:#111">${escapeHTML(node.content||"")}</textarea>
+ <button onclick="notify('Plik zapisany.')">💾 Zapisz</button>
+ `);
+}
+
+function fileUp(){
+ if(currentPath.length){
+  currentPath.pop();
+  renderFiles();
+ }
+}
+
+function toggleHiddenFiles(){
+ showHidden=!showHidden;
+ renderFiles();
+ notify(showHidden?"Pokazano ukryte pliki.":"Ukryto pliki.");
+}
+
+function createFolder(){
+ const folder=getFolder(currentPath);
+ if(!folder)return;
+
+ const name=prompt("Nazwa folderu:");
+ if(!name)return;
+
+ folder.children.push({
+  type:"folder",
+  name:name,
+  children:[]
+ });
+
+ save();
+ renderFiles();
+ notify("📁 Utworzono folder.");
+}
+
+function createFile(){
+ const folder=getFolder(currentPath);
+ if(!folder)return;
+
+ const name=prompt("Nazwa pliku:");
+ if(!name)return;
+
+ folder.children.push({
+  type:"file",
+  name:name,
+  content:""
+ });
+
+ save();
+ renderFiles();
+ notify("📄 Utworzono plik.");
+}
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+
+function calendarHTML(){
+ const d=new Date();
+ const y=d.getFullYear();
+ const m=d.getMonth();
+
+ const first=new Date(y,m,1).getDay();
+ const days=new Date(y,m+1,0).getDate();
+
+ const names=["Nd","Pn","Wt","Śr","Cz","Pt","So"];
+
+ let html=`
+ <h2>📅 Kalendarz</h2>
+ <h3>${d.toLocaleString("pl-PL",{month:"long",year:"numeric"})}</h3>
+ <div class="calendar">
+ ${names.map(x=>`<div class="calDay calHead">${x}</div>`).join("")}
+ `;
+
+ for(let i=0;i<first;i++)html+=`<div></div>`;
+
+ for(let i=1;i<=days;i++){
+  const today=i===d.getDate();
+  html+=`<div class="calDay" style="${today?"font-weight:bold;border:2px solid #1683ff":""}">${i}</div>`;
+ }
+
+ html+="</div><hr><p>📅 Systemowy dzień: "+d.toLocaleDateString("pl-PL")+"</p>";
+
+ return html;
+}
+
+/* =========================================================
+   ACHIEVEMENTS
+========================================================= */
+
+const achievementList={
+ first:["first","👋 Pierwsze uruchomienie","Uruchomiłeś system."],
+ writer:["writer","📝 Pisarz","Zapisałeś notatkę."],
+ duck:["duck","🦆 Łowca Kaczki","Złapałeś kaczkę."],
+ secret:["secret","🕵️ Sekret","Znalazłeś sekret."],
+ chaos100:["chaos100","🔥 100% CHAOSU","Osiągnąłeś maksymalny chaos."],
+ portal:["portal","🌀 Portal","Otworzyłeś portal."],
+ god:["god","🗿 Bóg Piotra","Aktywowałeś god mode."],
+ button:["button","🚨 NIE KLIKAJ","Kliknąłeś zakazany przycisk."],
+ ufo:["ufo","🛸 Kontakt","Wykryłeś UFO."],
+ snail:["snail","🐌 Ślimak","Przywołałeś ślimaka."],
+ gamer:["gamer","🎮 Gracz","Uruchomiłeś grę."],
+ bank:["bank","🏦 Bankier","Odwiedziłeś bank."],
+ explorer:["explorer","📁 Eksplorator","Otworzyłeś system plików."],
+ hacker:["hacker","⌨️ Haker","Wpisałeś wiele komend."],
+ unknown:["unknown","❔ Nieznany","Spotkałeś unknown.exe."]
+};
+
+function unlockAchievement(id){
+ if(state.achievements[id])return;
+
+ state.achievements[id]=true;
+ save();
+
+ const a=achievementList[id];
+ if(a)notify("🏆 "+a[1]);
+}
+
+function achievementsHTML(){
+ return `
+ <h2>🏆 Osiągnięcia</h2>
+ ${Object.values(achievementList).map(a=>{
+  const ok=state.achievements[a[0]];
+  return `<div class="achievement ${ok?"":"locked"}">
+   <b>${ok?a[1]:"🔒 Ukryte osiągnięcie"}</b><br>
+   <small>${ok?a[2]:"Jeszcze nie odkryto."}</small>
+  </div>`;
+ }).join("")}
+ `;
+}
+
+/* =========================================================
+   PIOTRBOT
+========================================================= */
+
+function botHTML(){
+ return `
+ <h2>🤖 PiotrBot 2.0</h2>
+ <div class="card">
+  <b>Nastrój:</b> <span id="botMood">${botMood()}</span><br>
+  <b>Reputacja:</b> ${state.reputation.bot}
+ </div>
+ <div id="chatBox" class="chatBox">
+  <div class="chatMsg botMsg">PiotrBot: Witaj ponownie. Pamiętam cię.</div>
+ </div>
+ <div class="chatInput">
+  <input id="botInput" placeholder="Porozmawiaj..." onkeydown="botKey(event)">
+  <button onclick="botSend()">Wyślij</button>
+ </div>
+ `;
+}
+
+function botMood(){
+ if(chaos<25)return"🙂 spokojny";
+ if(chaos<50)return"😐 podejrzliwy";
+ if(chaos<75)return"😵 zaniepokojony";
+ if(chaos<95)return"🤨 bardzo podejrzliwy";
+ return"🗿 transcendentalny";
+}
+
+function botKey(e){
+ if(e.key==="Enter")botSend();
+}
+
+function botSend(){
+ const input=document.getElementById("botInput");
+ if(!input)return;
+
+ const msg=input.value.trim();
+ if(!msg)return;
+
+ addChat("Ty",msg,"userMsg");
+ input.value="";
+ state.stats.messages++;
+ save();
+
+ setTimeout(()=>{
+  addChat("PiotrBot",botResponse(msg),"botMsg");
+ },300);
+
+ chaosAdd(2);
+}
+
+function addChat(name,msg,cls){
+ const box=document.getElementById("chatBox");
+ if(!box)return;
+
+ const div=document.createElement("div");
+ div.className="chatMsg "+cls;
+ div.textContent=name+": "+msg;
+ box.appendChild(div);
+ box.scrollTop=box.scrollHeight;
+}
+
+function botResponse(msg){
+ const m=msg.toLowerCase();
+
+ state.reputation.bot++;
+
+ if(m.includes("hej")||m.includes("cześć"))
+  return"Znowu ty. Dobrze.";
+
+ if(m.includes("kaczka"))
+  return"🦆 Kaczka ma większe uprawnienia niż ty.";
+
+ if(m.includes("ziemniak"))
+  return"🥔 Ziemniak jest stabilniejszy od naszej gospodarki.";
+
+ if(m.includes("chaos"))
+  return"Chaos wynosi "+chaos+"%. To zaczyna być niepokojące.";
+
+ if(m.includes("kim jesteś")||m.includes("jesteś"))
+  return"Jestem PiotrBot. Mam więcej procesów niż zdrowego rozsądku.";
+
+ if(m.includes("lubisz"))
+  return state.reputation.bot>5
+   ?"Chyba cię lubię. To problem."
+   :"Jeszcze nie.";
+
+ if(m.includes("ufo"))
+  return"🛸 Nie patrz przez okno.";
+
+ if(m.includes("sekret"))
+  return"Nie wiem nic o sekretach. Absolutnie nic.";
+
+ if(m.includes("admin"))
+  return"Administrator nie chce, żebyś o nim wiedział.";
+
+ const replies=[
+  "Interesujące.",
+  "System zapisał tę wiadomość.",
+  "Nie wiem.",
+  "To brzmi podejrzanie.",
+  "Czy ty naprawdę to robisz?",
+  "Nie klikaj wszystkiego.",
+  "Ziemniak ma na ten temat opinię.",
+  "Przestań.",
+  "Kontynuuj.",
+  "To może doprowadzić do chaosu."
+ ];
+
+ return replies[Math.floor(Math.random()*replies.length)];
+}
+
+/* =========================================================
+   TV
+========================================================= */
+
+function tvHTML(){
+ return `
+ <h2>📺 PIOTR TV</h2>
+ <div id="tvScreen" class="tvScreen">
+  <div style="font-size:40px">📺</div>
+  <div>PIOTR TV</div>
+  <div>Wybierz kanał.</div>
+ </div>
+ <div class="channelButtons">
+  <button onclick="tvChannel(1)">1 Wiadomości</button>
+  <button onclick="tvChannel(2)">2 Kaczka</button>
+  <button onclick="tvChannel(3)">3 Ziemniak</button>
+  <button onclick="tvChannel(4)">4 UFO</button>
+  <button onclick="tvChannel(5)">5 Pogoda</button>
+  <button onclick="tvChannel(6)">6 Nic</button>
+  <button onclick="tvChannel(7)">7 Sport</button>
+  <button onclick="tvChannel(8)">8 Drama</button>
+ </div>`;
+}
+
+function tvChannel(c){
+ const screen=document.getElementById("tvScreen");
+ if(!screen)return;
+
+ const channels={
+ 1:["📰 WIADOMOŚCI","Nic się nie wydarzyło.","Kaczka została zauważona."],
+ 2:["🦆 KACZKA 24/7","Kaczka patrzy w kamerę.","Kaczka nic nie robi."],
+ 3:["🥔 POTATO LIVE","Ziemniak rośnie.","Ziemniak odpoczywa."],
+ 4:["🛸 UFO NEWS","Wykryto obiekt.","Obiekt wykrył nas."],
+ 5:["🌦️ POGODA","Słońce.","Deszcz ziemniaków."],
+ 6:["📺 NIC","...","Absolutnie nic."],
+ 7:["🏆 SPORT","Wyścig ślimaków rozpoczął się.","Kaczka prowadzi."],
+ 8:["🔥 DRAMA","PiotrBot pokłócił się z kalkulatorem.","Kalkulator odmówił komentarza."]
+ };
+
+ const a=channels[c];
+ screen.innerHTML=`<div style="font-size:30px">${a[0]}</div><p>${a[1]}</p><p>${a[Math.floor(Math.random()*a.length)]}</p>`;
+ chaosAdd(2);
+}
+
+/* =========================================================
+   SHOP
+========================================================= */
+
+function shopHTML(){
+ return `
+ <h2>🛒 Sklep z Niczym</h2>
+ <p>Saldo: <b id="shopMoney">${money} P$</b></p>
+ ${[
+  ["potato","🥔 Ziemniak premium",10],
+  ["duck","🦆 Certyfikat kaczki",25],
+  ["stone","🗿 Kamień Piotra",50],
+  ["mystery","❓ Tajemnicze pudełko",75],
+  ["air","💨 Powietrze premium",5],
+  ["nothing","📦 Nic",100]
+ ].map(x=>`
+ <div class="shopItem">
+  ${x[1]} <button onclick="buyItem('${x[0]}',${x[2]})">${x[2]} P$</button>
+ </div>`).join("")}
+ `;
+}
+
+function buyItem(item,price){
+ if(money<price){
+  notify("Nie stać cię.");
+  return;
+ }
+
+ money-=price;
+ save();
+
+ const shop=document.getElementById("shopMoney");
+ if(shop)shop.textContent=money+" P$";
+
+ const messages={
+  potato:"🥔 Kupiłeś ziemniaka.",
+  duck:"🦆 Kupiłeś papier, że posiadasz kaczkę.",
+  stone:"🗿 Kamień patrzy na ciebie.",
+  air:"💨 Powietrze premium. Pachnie tak samo.",
+  nothing:"📦 Gratulacje. Kupiłeś nic.",
+  mystery:"📦 Pudełko zawiera kolejne pudełko."
+ };
+
+ notify(messages[item]);
+ chaosAdd(4);
+}
+
+/* =========================================================
+   WALLET
+========================================================= */
+
+function walletHTML(){
+ return `
+ <div class="wallet">
+  <h2>💰 Portfel Piotra</h2>
+  <div id="walletMoney" class="walletMoney">${money} P$</div>
+  <p>PiotrCoin™</p>
+  <button onclick="earnMoney()">💸 +10 P$</button>
+  <button onclick="loseMoney()">💀 -10 P$</button>
+ </div>`;
+}
+
+function updateWalletUI(){
+ const x=document.getElementById("walletMoney");
+ if(x)x.textContent=money+" P$";
+}
+
+function earnMoney(){
+ money+=10;
+ save();
+ updateWalletUI();
+ notify("+10 P$");
+}
+
+function loseMoney(){
+ money=Math.max(0,money-10);
+ save();
+ updateWalletUI();
+ notify("-10 P$");
+ chaosAdd(3);
+}
+
+/* =========================================================
+   BANK
+========================================================= */
+
+function bankHTML(){
+ unlockAchievement("bank");
+
+ return `
+ <h2>🏦 Bank Piotra</h2>
+ <div class="statGrid">
+  <div class="stat"><b>Gotówka</b><div class="bigNumber">${money} P$</div></div>
+  <div class="stat"><b>Konto</b><div id="bankBalance" class="bigNumber">${state.bank} P$</div></div>
+ </div>
+ <hr>
+ <button onclick="deposit()">⬆️ Wpłać 20</button>
+ <button onclick="withdraw()">⬇️ Wypłać 20</button>
+ <button onclick="bankLoan()">💳 Weź pożyczkę</button>
+ <p id="bankMessage"></p>
+ `;
+}
+
+function refreshBank(){
+ const b=document.getElementById("bankBalance");
+ if(b)b.textContent=state.bank+" P$";
+}
+
+function deposit(){
+ if(money<20){
+  notify("Potrzebujesz 20 P$.");
+  return;
+ }
+ money-=20;
+ state.bank+=20;
+ save();
+ refreshBank();
+ updateWalletUI();
+ notify("Wpłacono 20 P$.");
+}
+
+function withdraw(){
+ if(state.bank<20){
+  notify("Bank: brak środków.");
+  return;
+ }
+ state.bank-=20;
+ money+=20;
+ save();
+ refreshBank();
+ updateWalletUI();
+ notify("Wypłacono 20 P$.");
+}
+
+function bankLoan(){
+ state.bank+=100;
+ state.reputation.system-=1;
+ save();
+ refreshBank();
+ notify("💳 Bank udzielił ci 100 P$ pożyczki.");
+ notify("Bank: kiedyś po nie wrócimy.");
+ chaosAdd(8);
+}
+
+/* =========================================================
+   STOCKS
+========================================================= */
+
+function stocksHTML(){
+ return `
+ <h2>🥔 Giełda Ziemniaka</h2>
+ <div class="stockNumber" id="stockNumber">${stockValue}</div>
+ <p id="stockStatus">Stabilnie.</p>
+ <button onclick="refreshStock()">🔄 Odśwież</button>
+ <button onclick="buyPotatoStock()">🥔 Kup ziemniaka za 5 P$</button>
+ <hr>
+ <p>Ziemniaki: <b id="potatoCount">${potato}</b></p>
+ `;
+}
+
+function updateStockUI(){
+ const n=document.getElementById("stockNumber");
+ const p=document.getElementById("potatoCount");
+ const s=document.getElementById("stockStatus");
+
+ if(n)n.textContent=stockValue;
+ if(p)p.textContent=potato;
+
+ if(s){
+  if(stockValue>65){
+   s.textContent="📈 ZIEMNIAK TO KOSMOS.";
+   s.className="stockUp";
+  }else if(stockValue<30){
+   s.textContent="📉 ZIEMNIAK UMIERA.";
+   s.className="stockDown";
+  }else{
+   s.textContent="😐 Stabilnie.";
+   s.className="";
+  }
+ }
+}
+
+function refreshStock(){
+ const old=stockValue;
+ stockValue=Math.max(1,Math.min(100,stockValue+Math.floor(Math.random()*21)-10));
+ save();
+ updateStockUI();
+ notify(stockValue>=old?"🥔 Kurs wzrósł.":"🥔 Kurs spadł.");
+ chaosAdd(3);
+}
+
+function buyPotatoStock(){
+ if(money<5){
+  notify("Potrzebujesz 5 P$.");
+  return;
+ }
+ money-=5;
+ potato++;
+ save();
+ updateStockUI();
+ updateWalletUI();
+ notify("🥔 Kupiono ziemniaka.");
+}
+
+setInterval(()=>{
+ stockValue=Math.max(1,Math.min(100,stockValue+Math.floor(Math.random()*11)-5));
+ save();
+ updateStockUI();
+},12000);
+
+/* =========================================================
+   MAIL
+========================================================= */
+
+const mails=[
+ ["Kaczka","Mamy problem","Przestań mnie łapać."],
+ ["Administrator","Pilne","Dlaczego chaos przekroczył 70%?"],
+ ["Ziemniak","Giełda","Kurs będzie rósł. Chyba."],
+ ["Nieznany","ON WIE","Nie odpowiadaj."],
+ ["PiotrBot","Re: Re: Re:","Nie wiem, co tu robię."],
+ ["System","Aktualizacja","Nie aktualizuj."],
+ ["Poprzedni użytkownik","Hej","Jeżeli to czytasz, uciekaj."]
+];
+
+function mailHTML(){
+ return `
+ <h2>📬 Poczta</h2>
+ ${mails.map((m,i)=>`
+  <div class="mail" onclick="openMail(${i})">
+   <b>${m[0]}</b><br>${m[1]}
+  </div>`).join("")}
+ <div id="mailContent"></div>
+ `;
+}
+
+function openMail(i){
+ const m=mails[i];
+ const c=document.getElementById("mailContent");
+ if(c)c.innerHTML=`<hr><h3>${m[0]}</h3><b>${m[1]}</b><p>${m[2]}</p>`;
+ chaosAdd(2);
+ if(i===6){
+  state.secretCount++;
+  save();
+  notify("📬 Poprzedni użytkownik zostawił ślad.");
+  unlockAchievement("secret");
+ }
+}
+
+/* =========================================================
    MAP
-========================= */
+========================================================= */
 
-function mapHTML() {
-
-    return `
-        <h2>🗺️ Mapa Podejrzanych Miejsc</h2>
-
-        <div class="map">
-
-            <div class="mapPlace"
-                style="left:10%;top:20%;"
-                onclick="mapPlace('Dom Kaczki')">
-                🦆 Dom Kaczki
-            </div>
-
-            <div class="mapPlace"
-                style="left:55%;top:10%;"
-                onclick="mapPlace('Baza UFO')">
-                🛸 Baza UFO
-            </div>
-
-            <div class="mapPlace"
-                style="left:25%;top:65%;"
-                onclick="mapPlace('Pole Ziemniaków')">
-                🥔 Pole
-            </div>
-
-            <div class="mapPlace"
-                style="left:70%;top:60%;"
-                onclick="mapPlace('Laboratorium')">
-                🧪 Laboratorium
-            </div>
-
-            <div class="mapPlace"
-                style="left:42%;top:40%;"
-                onclick="mapPlace('NIC')">
-                ❓ NIC
-            </div>
-
-        </div>
-
-        <div id="mapResult"></div>
-    `;
+function mapHTML(){
+ return `
+ <h2>🗺️ Mapa Podejrzanych Miejsc</h2>
+ <div class="map">
+  <div class="mapPlace" style="left:10%;top:20%" onclick="mapPlace('Dom Kaczki')">🦆 Dom Kaczki</div>
+  <div class="mapPlace" style="left:55%;top:10%" onclick="mapPlace('Baza UFO')">🛸 Baza UFO</div>
+  <div class="mapPlace" style="left:25%;top:65%" onclick="mapPlace('Pole Ziemniaków')">🥔 Pole</div>
+  <div class="mapPlace" style="left:70%;top:60%" onclick="mapPlace('Laboratorium')">🧪 Lab</div>
+  <div class="mapPlace" style="left:42%;top:40%" onclick="mapPlace('NIC')">❓ NIC</div>
+  <div class="mapPlace" style="left:80%;top:30%" onclick="mapPlace('Strefa 51½')">👽 51½</div>
+ </div>
+ <div id="mapResult"></div>`;
 }
 
-function mapPlace(place) {
+function mapPlace(place){
+ const r=document.getElementById("mapResult");
+ const messages={
+  "Dom Kaczki":"🦆 Kaczka patrzy przez okno.",
+  "Baza UFO":"🛸 Coś tutaj nie jest z Ziemi.",
+  "Pole Ziemniaków":"🥔 Znalazłeś 3 ziemniaki.",
+  "Laboratorium":"🧪 Lepiej tam nie wchodź.",
+  "NIC":"❓ Nic.",
+  "Strefa 51½":"👽 To nie jest właściwa Strefa 51."
+ };
 
-    const result = document.getElementById("mapResult");
+ if(r)r.innerHTML="<p>"+messages[place]+"</p>";
 
-    if (!result) return;
+ if(place==="Pole Ziemniaków"){
+  potato+=3;
+  save();
+ }
 
-    const messages = {
+ if(place==="Strefa 51½"){
+  state.secretCount++;
+  save();
+  unlockAchievement("secret");
+ }
 
-        "Dom Kaczki":
-            "🦆 Kaczka patrzy przez okno.",
-
-        "Baza UFO":
-            "🛸 Coś tutaj zdecydowanie nie jest z Ziemi.",
-
-        "Pole Ziemniaków":
-            "🥔 Znalazłeś 3 ziemniaki.",
-
-        "Laboratorium":
-            "🧪 Lepiej tam nie wchodź.",
-
-        "NIC":
-            "❓ Nic. Dosłownie nic."
-    };
-
-    result.innerHTML =
-        "<p>" + messages[place] + "</p>";
-
-    if (place === "Pole Ziemniaków") {
-
-        potato += 3;
-
-        localStorage.setItem(
-            "potatoStock",
-            potato
-        );
-    }
-
-    increaseChaos(5);
+ chaosAdd(5);
 }
 
-/* =========================
+/* =========================================================
    UFO
-========================= */
+========================================================= */
 
-function ufoHTML() {
-
-    return `
-        <h2>🛸 Radar UFO</h2>
-
-        <div class="ufoRadar">
-            <div id="radarDot" class="radarDot"></div>
-        </div>
-
-        <br>
-
-        <button onclick="scanUFO()">
-            📡 Skanuj niebo
-        </button>
-
-        <div id="ufoResult"></div>
-    `;
+function ufoHTML(){
+ return `
+ <h2>🛸 Radar UFO</h2>
+ <div class="ufoRadar"><div id="radarDot" class="radarDot"></div></div>
+ <br>
+ <button onclick="scanUFO()">📡 Skanuj</button>
+ <div id="ufoResult"></div>
+ `;
 }
 
-function scanUFO() {
+function scanUFO(){
+ const found=Math.random()<.38;
+ const dot=document.getElementById("radarDot");
+ const result=document.getElementById("ufoResult");
 
-    const result = document.getElementById("ufoResult");
-    const dot = document.getElementById("radarDot");
-
-    const found = Math.random() < .35;
-
-    if (found) {
-
-        if (dot) {
-            dot.style.display = "block";
-            dot.style.left = (20 + Math.random() * 60) + "%";
-            dot.style.top = (20 + Math.random() * 60) + "%";
-        }
-
-        if (result) {
-            result.innerHTML =
-                "<h3>🛸 WYKRYTO UFO!</h3><p>Ono też cię skanuje.</p>";
-        }
-
-        notify("🛸 UFO wykryło twój system.");
-
-        unlockAchievement("ufo");
-
-        increaseChaos(12);
-
-    } else {
-
-        if (dot) dot.style.display = "none";
-
-        if (result) {
-            result.innerHTML =
-                "<p>Nie wykryto UFO.</p>";
-        }
-
-        notify("Radar: pusto.");
-    }
+ if(found){
+  if(dot){
+   dot.style.display="block";
+   dot.style.left=(20+Math.random()*60)+"%";
+   dot.style.top=(20+Math.random()*60)+"%";
+  }
+  if(result)result.innerHTML="<h3>🛸 WYKRYTO UFO</h3><p>Ono też cię skanuje.</p>";
+  unlockAchievement("ufo");
+  state.reputation.system++;
+  notify("🛸 UFO wykryło twój system.");
+  chaosAdd(12);
+ }else{
+  if(dot)dot.style.display="none";
+  if(result)result.innerHTML="<p>Nie wykryto UFO.</p>";
+ }
 }
 
-/* =========================
+/* =========================================================
    LAB
-========================= */
+========================================================= */
 
-function labHTML() {
-
-    return `
-        <h2>🧪 Laboratorium Mutacji</h2>
-
-        <p>Wybierz eksperyment:</p>
-
-        <div class="mutation">
-            🦆 Mutacja kaczki
-            <button onclick="mutation('duck')">URUCHOM</button>
-        </div>
-
-        <div class="mutation">
-            🥔 Mutacja ziemniaka
-            <button onclick="mutation('potato')">URUCHOM</button>
-        </div>
-
-        <div class="mutation">
-            🗿 Mutacja Piotra
-            <button onclick="mutation('piotr')">URUCHOM</button>
-        </div>
-
-        <div class="mutation">
-            🌈 Mutacja kolorów
-            <button onclick="mutation('color')">URUCHOM</button>
-        </div>
-
-        <div id="labResult"></div>
-    `;
+function labHTML(){
+ return `
+ <h2>🧪 Laboratorium Mutacji</h2>
+ <div class="mutation">🦆 Mutacja kaczki <button onclick="mutation('duck')">URUCHOM</button></div>
+ <div class="mutation">🥔 Mutacja ziemniaka <button onclick="mutation('potato')">URUCHOM</button></div>
+ <div class="mutation">🗿 Mutacja Piotra <button onclick="mutation('piotr')">URUCHOM</button></div>
+ <div class="mutation">🌈 Mutacja kolorów <button onclick="mutation('color')">URUCHOM</button></div>
+ <div class="mutation">🧠 Mutacja AI <button onclick="mutation('ai')">URUCHOM</button></div>
+ <div id="labResult"></div>`;
 }
 
-function mutation(type) {
+function mutation(type){
+ const r=document.getElementById("labResult");
+ if(!r)return;
 
-    const result = document.getElementById("labResult");
+ if(type==="duck"){
+  r.innerHTML="<p>🦆 Kaczka stała się bardziej podejrzana.</p>";
+  showDuck();
+ }else if(type==="potato"){
+  potato+=10;
+  r.innerHTML="<p>🥔 Powstało 10 ziemniaków.</p>";
+  save();
+ }else if(type==="piotr"){
+  r.innerHTML="<p>🗿 Piotr osiągnął formę kamienną.</p>";
+  chaosAdd(15);
+ }else if(type==="color"){
+  const a=["blue","dark","purple","green","red","matrix"];
+  setTheme(a[Math.floor(Math.random()*a.length)]);
+  r.innerHTML="<p>🌈 System zmienił kolor.</p>";
+ }else if(type==="ai"){
+  state.reputation.bot+=5;
+  r.innerHTML="<p>🤖 PiotrBot stał się odrobinę bardziej świadomy.</p>";
+  notify("PiotrBot: Nie podoba mi się ten eksperyment.");
+  chaosAdd(15);
+ }
 
-    if (!result) return;
-
-    if (type === "duck") {
-
-        result.innerHTML =
-            "<p>🦆 Kaczka stała się bardziej podejrzana.</p>";
-
-        showDuck();
-
-    } else if (type === "potato") {
-
-        potato += 10;
-
-        localStorage.setItem(
-            "potatoStock",
-            potato
-        );
-
-        result.innerHTML =
-            "<p>🥔 Powstało 10 ziemniaków.</p>";
-
-    } else if (type === "piotr") {
-
-        result.innerHTML =
-            "<p>🗿 Piotr osiągnął formę kamienną.</p>";
-
-        increaseChaos(15);
-
-    } else if (type === "color") {
-
-        const colors = [
-            "blue",
-            "dark",
-            "purple",
-            "green"
-        ];
-
-        setTheme(
-            colors[Math.floor(Math.random() * colors.length)]
-        );
-
-        result.innerHTML =
-            "<p>🌈 System zmienił kolor.</p>";
-    }
-
-    increaseChaos(7);
+ chaosAdd(7);
 }
 
-/* =========================
+/* =========================================================
+   GAMES
+========================================================= */
+
+function gamesHTML(){
+ unlockAchievement("gamer");
+
+ return `
+ <h2>🎮 PIOTR GAMES</h2>
+ <div class="toolbar">
+  <button onclick="gameSnake()">🐍 Snake</button>
+  <button onclick="gamePong()">🏓 Pong</button>
+  <button onclick="gameDuckClicker()">🦆 Duck Clicker</button>
+  <button onclick="gamePotato()">🥔 Potato Clicker</button>
+  <button onclick="gameSnailRace()">🐌 Wyścig ślimaków</button>
+ </div>
+ <div id="gameArea" class="card">
+  Wybierz grę.
+ </div>`;
+}
+
+function gameSnake(){
+ const a=document.getElementById("gameArea");
+ if(!a)return;
+
+ a.innerHTML=`
+ <h3>🐍 Snake</h3>
+ <p>Używaj strzałek. Zjedz ziemniaki.</p>
+ <canvas id="snakeCanvas" width="300" height="300" style="background:#111;max-width:100%"></canvas>
+ <p>Wynik: <b id="snakeScore">0</b></p>`;
+
+ startSnake();
+}
+
+function startSnake(){
+ const c=document.getElementById("snakeCanvas");
+ if(!c)return;
+
+ const ctx=c.getContext("2d");
+ const size=15;
+ let snake=[{x:10,y:10}];
+ let food={x:5,y:5};
+ let dx=1,dy=0;
+ let score=0;
+ let alive=true;
+
+ function draw(){
+  if(!alive)return;
+
+  ctx.fillStyle="#111";
+  ctx.fillRect(0,0,300,300);
+
+  ctx.fillStyle="#0f5";
+  snake.forEach(p=>ctx.fillRect(p.x*size,p.y*size,size-1,size-1));
+
+  ctx.fillStyle="#ff0";
+  ctx.fillRect(food.x*size,food.y*size,size-1,size-1);
+
+  const head={
+   x:snake[0].x+dx,
+   y:snake[0].y+dy
+  };
+
+  if(head.x<0||head.x>=20||head.y<0||head.y>=20||
+     snake.some(p=>p.x===head.x&&p.y===head.y)){
+   alive=false;
+   notify("🐍 Snake: koniec.");
+   return;
+  }
+
+  snake.unshift(head);
+
+  if(head.x===food.x&&head.y===food.y){
+   score++;
+   document.getElementById("snakeScore").textContent=score;
+   food={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};
+   if(score>=10)unlockAchievement("gamer");
+  }else{
+   snake.pop();
+  }
+
+  setTimeout(draw,120);
+ }
+
+ const key=e=>{
+  if(e.key==="ArrowUp"&&dy!==1){dx=0;dy=-1}
+  if(e.key==="ArrowDown"&&dy!==-1){dx=0;dy=1}
+  if(e.key==="ArrowLeft"&&dx!==1){dx=-1;dy=0}
+  if(e.key==="ArrowRight"&&dx!==-1){dx=1;dy=0}
+ };
+
+ document.addEventListener("keydown",key);
+ draw();
+}
+
+function gamePong(){
+ const a=document.getElementById("gameArea");
+ if(a)a.innerHTML=`
+ <h3>🏓 Pong</h3>
+ <p>Klikaj przycisk, żeby odbijać piłkę.</p>
+ <button onclick="pongHit()">🏓 ODBIJ!</button>
+ <p>Wynik: <b id="pongScore">0</b></p>`;
+ window.pongScore=0;
+}
+
+function pongHit(){
+ window.pongScore++;
+ const x=document.getElementById("pongScore");
+ if(x)x.textContent=window.pongScore;
+ chaosAdd(1);
+ if(window.pongScore>=20)notify("🏓 Pokonałeś matematycznie nieistniejącego przeciwnika.");
+}
+
+function gameDuckClicker(){
+ const a=document.getElementById("gameArea");
+ if(a)a.innerHTML=`
+ <h3>🦆 Duck Clicker</h3>
+ <button style="font-size:80px" onclick="duckGameClick()">🦆</button>
+ <p>Kaczki: <b id="duckScore">0</b></p>`;
+ window.duckScore=0;
+}
+
+function duckGameClick(){
+ window.duckScore++;
+ const x=document.getElementById("duckScore");
+ if(x)x.textContent=window.duckScore;
+
+ if(window.duckScore%10===0){
+  money+=5;
+  save();
+  notify("+5 P$ za kaczkowanie.");
+ }
+}
+
+function gamePotato(){
+ const a=document.getElementById("gameArea");
+ if(a)a.innerHTML=`
+ <h3>🥔 Potato Clicker</h3>
+ <button style="font-size:80px" onclick="potatoClick()">🥔</button>
+ <p>Ziemniaki: <b id="potatoGameScore">0</b></p>`;
+ window.potatoGameScore=0;
+}
+
+function potatoClick(){
+ window.potatoGameScore++;
+ const x=document.getElementById("potatoGameScore");
+ if(x)x.textContent=window.potatoGameScore;
+
+ if(window.potatoGameScore%25===0){
+  potato++;
+  save();
+  notify("🥔 Zdobyłeś prawdziwego ziemniaka.");
+ }
+}
+
+function gameSnailRace(){
+ const a=document.getElementById("gameArea");
+ if(!a)return;
+
+ a.innerHTML=`
+ <h3>🐌 Wyścig Ślimaków</h3>
+ <p>Ślimak A: <span id="snailA">0</span>%</p>
+ <p>Ślimak B: <span id="snailB">0</span>%</p>
+ <button onclick="startSnailRace()">START</button>`;
+}
+
+function startSnailRace(){
+ let a=0,b=0;
+
+ const timer=setInterval(()=>{
+  a+=Math.floor(Math.random()*7);
+  b+=Math.floor(Math.random()*7);
+
+  const sa=document.getElementById("snailA");
+  const sb=document.getElementById("snailB");
+
+  if(sa)sa.textContent=Math.min(100,a);
+  if(sb)sb.textContent=Math.min(100,b);
+
+  if(a>=100||b>=100){
+   clearInterval(timer);
+   notify(a>=b?"🐌 Ślimak A wygrał.":"🐌 Ślimak B wygrał.");
+  }
+ },300);
+}
+
+/* =========================================================
    DON'T PRESS
-========================= */
+========================================================= */
 
-function dontHTML() {
-
-    return `
-        <h2 style="text-align:center">
-            🚫 NIE NACISKAJ
-        </h2>
-
-        <button id="dontPress" onclick="pressDont()">
-            NIE<br>DOTYKAJ
-        </button>
-
-        <div id="dontResult"
-             style="text-align:center;">
-            Naprawdę.
-        </div>
-    `;
+function dontHTML(){
+ return `
+ <h2 style="text-align:center">🚫 NIE NACISKAJ</h2>
+ <button id="dontPress" onclick="pressDont()">NIE<br>DOTYKAJ</button>
+ <div id="dontResult" style="text-align:center">Naprawdę.</div>`;
 }
 
-function pressDont() {
+function pressDont(){
+ state.pressCount++;
+ save();
 
-    pressCount++;
+ unlockAchievement("button");
 
-    localStorage.setItem(
-        "pressCount",
-        pressCount
-    );
+ const responses=[
+  "Mówiłem, żeby nie naciskać.",
+  "No świetnie.",
+  "Dlaczego?",
+  "Naprawdę to zrobiłeś?",
+  "System zapisał ten moment.",
+  "Kaczka została poinformowana.",
+  "PiotrBot wie.",
+  "To był zły pomysł.",
+  "Jeszcze raz?"
+ ];
 
-    unlockAchievement("button");
+ const r=document.getElementById("dontResult");
+ if(r)r.textContent=responses[Math.floor(Math.random()*responses.length)];
 
-    const result = document.getElementById("dontResult");
+ chaosAdd(5);
 
-    if (!result) return;
-
-    const responses = [
-
-        "Mówiłem, żeby nie naciskać.",
-
-        "No świetnie.",
-
-        "Dlaczego?",
-
-        "Naprawdę to zrobiłeś?",
-
-        "System zapisuje ten moment.",
-
-        "Kaczka została poinformowana.",
-
-        "PiotrBot wie.",
-
-        "To był zły pomysł.",
-
-        "Przycisk jest teraz smutny.",
-
-        "Jeszcze raz?"
-
-    ];
-
-    result.textContent =
-        responses[
-            Math.floor(Math.random() * responses.length)
-        ];
-
-    increaseChaos(5);
-
-    if (pressCount >= 5) {
-
-        notify("Przycisk: przestań.");
-
-    }
-
-    if (pressCount >= 10) {
-
-        fakeBSOD();
-    }
+ if(state.pressCount>=5)notify("Przycisk: przestań.");
+ if(state.pressCount>=10)fakeBSOD();
 }
 
-/* =========================
+/* =========================================================
+   DUCK
+========================================================= */
+
+function showDuck(){
+ const d=document.getElementById("duck");
+ d.style.display="block";
+ d.style.left=Math.random()*(window.innerWidth-100)+"px";
+ d.style.top=Math.random()*(window.innerHeight-150)+"px";
+
+ notify("🦆 KACZKA W SYSTEMIE.");
+
+ setTimeout(()=>{
+  if(d.style.display!=="none")d.style.display="none";
+ },10000);
+}
+
+function catchDuck(){
+ const d=document.getElementById("duck");
+ d.style.display="none";
+
+ state.duckCaught++;
+ state.reputation.duck++;
+ money+=5;
+ save();
+
+ unlockAchievement("duck");
+
+ notify("🦆 ZŁAPAŁEŚ KACZKĘ. +5 P$");
+ chaosAdd(8);
+}
+
+/* =========================================================
+   SNAIL
+========================================================= */
+
+function showSnail(){
+ const s=document.getElementById("snail");
+ s.style.display="block";
+ s.style.left="0px";
+ s.style.top=(window.innerHeight-110)+"px";
+
+ let pos=0;
+
+ const t=setInterval(()=>{
+  pos+=2;
+  s.style.left=pos+"px";
+
+  if(pos>window.innerWidth){
+   clearInterval(t);
+   s.style.display="none";
+  }
+ },100);
+
+ notify("🐌 Ślimak rozpoczął podróż.");
+}
+
+function showGhost(){
+ const g=document.getElementById("ghost");
+
+ g.style.left=Math.random()*(window.innerWidth-100)+"px";
+ g.style.top=Math.random()*(window.innerHeight-150)+"px";
+ g.style.opacity="1";
+
+ notify("👻 Coś było tutaj przed tobą.");
+
+ setTimeout(()=>g.style.opacity="0",3000);
+}
+
+/* =========================================================
+   UNKNOWN NPC
+========================================================= */
+
+function showUnknown(){
+ const u=document.getElementById("unknownNpc");
+
+ u.style.display="block";
+ u.style.left=Math.random()*(window.innerWidth-100)+"px";
+ u.style.top=Math.random()*(window.innerHeight-150)+"px";
+
+ unlockAchievement("unknown");
+}
+
+function talkUnknown(){
+ const responses=[
+  "Nie powinieneś mnie widzieć.",
+  "Poprzedni użytkownik też mnie znalazł.",
+  "System nie chce o mnie mówić.",
+  "Mam dostęp do czegoś, czego nie masz ty.",
+  "Nie jestem procesem."
+ ];
+
+ notify("❔ "+responses[Math.floor(Math.random()*responses.length)]);
+
+ state.secretCount++;
+ save();
+ chaosAdd(10);
+
+ if(state.secretCount>=5&&chaos>=70)showPortal();
+}
+
+/* =========================================================
    RANDOM EVENTS
-========================= */
+========================================================= */
 
-function randomEvent() {
+function randomEvent(){
+ const events=[
+  ()=>notify("🦆 Kaczka przeszła obok."),
+  ()=>notify("🥔 Kurs ziemniaka właśnie się zmienił."),
+  ()=>notify("🤖 PiotrBot patrzy."),
+  ()=>showGhost(),
+  ()=>notify("📡 Wykryto dziwny sygnał."),
+  ()=>notify("💾 System zapisał coś, czego nie pamiętasz."),
+  ()=>showSnail(),
+  ()=>notify("❓ System zadaje pytanie: dlaczego?"),
+  ()=>notify("🛸 Coś przeleciało nad pulpitem."),
+  ()=>notify("🗿 Piotr OS nadal działa."),
+  ()=>showUnknown()
+ ];
 
-    const events = [
-
-        () => {
-            notify("🦆 Kaczka przeszła obok.");
-        },
-
-        () => {
-            notify("🥔 Kurs ziemniaka właśnie się zmienił.");
-            refreshStock();
-        },
-
-        () => {
-            notify("🤖 PiotrBot patrzy.");
-        },
-
-        () => {
-            showGhost();
-        },
-
-        () => {
-            notify("📡 Wykryto dziwny sygnał.");
-        },
-
-        () => {
-            notify("💾 System zapisał coś, czego nie pamiętasz.");
-        },
-
-        () => {
-            notify("🐌 Ślimak jest już bliżej.");
-        },
-
-        () => {
-            notify("❓ System zadaje pytanie: dlaczego?");
-        },
-
-        () => {
-            notify("🛸 Coś przeleciało nad pulpitem.");
-        },
-
-        () => {
-            notify("🗿 Piotr OS nadal działa.");
-        }
-    ];
-
-    events[
-        Math.floor(Math.random() * events.length)
-    ]();
-
-    increaseChaos(
-        Math.floor(Math.random() * 5)
-    );
+ events[Math.floor(Math.random()*events.length)]();
+ chaosAdd(Math.floor(Math.random()*4));
 }
 
-/* =========================
-   RANDOM BACKGROUND EVENTS
-========================= */
+setInterval(()=>{
+ const desktop=document.getElementById("desktop");
+ if(desktop.classList.contains("hidden"))return;
 
-setInterval(() => {
+ if(Math.random()<.35)randomEvent();
+ if(Math.random()<.07)showDuck();
+ if(Math.random()<.04)showGhost();
+},16000);
 
-    if (
-        !document.getElementById("desktop") ||
-        document.getElementById("desktop").classList.contains("hidden")
-    ) return;
+setInterval(()=>{
+ if(!document.getElementById("desktop").classList.contains("hidden")){
+  if(Math.random()<.5)chaosAdd(1);
+ }
+},30000);
 
-    if (Math.random() < .35) {
-        randomEvent();
-    }
+/* =========================================================
+   SECRETS
+========================================================= */
 
-    if (Math.random() < .08) {
-        showDuck();
-    }
+function secretFolder(){
+ findSecret();
+}
 
-    if (Math.random() < .05) {
-        showGhost();
-    }
+function findSecret(){
+ state.secretCount++;
+ save();
 
-}, 15000);
+ unlockAchievement("secret");
 
-/* =========================
+ notify("🕵️ Znalazłeś sekret nr "+state.secretCount+".");
+
+ if(state.secretCount===2)notify("Folder: Przestań mnie otwierać.");
+ if(state.secretCount===3)notify("Folder: Serio?");
+ if(state.secretCount===4)notify("Folder: ON CIĘ WIDZI.");
+ if(state.secretCount>=5&&chaos>=70)showPortal();
+
+ chaosAdd(10);
+}
+
+function systemFile(){
+ notify("Ten plik nie powinien istnieć.");
+ setTimeout(()=>notify("Ale istnieje."),1000);
+ chaosAdd(8);
+}
+
+/* =========================================================
    PORTAL
-========================= */
+========================================================= */
 
-function showPortal() {
-
-    document.getElementById("portal").style.display = "flex";
-
-    unlockAchievement("portal");
-
-    increaseChaos(3);
+function showPortal(){
+ document.getElementById("portal").style.display="flex";
+ unlockAchievement("portal");
+ logActivity("Otwarto portal Piotr-Verse.");
 }
 
-function closePortal() {
-
-    document.getElementById("portal").style.display = "none";
-
-    notify("Powróciłeś z Piotr-Verse.");
-
-    increaseChaos(5);
+function closePortal(){
+ document.getElementById("portal").style.display="none";
+ notify("Powróciłeś z Piotr-Verse.");
+ chaosAdd(5);
 }
 
-/* =========================
+/* =========================================================
+   VIRUS / BSOD
+========================================================= */
+
+function fakeVirus(){
+ document.getElementById("virusScreen").classList.remove("hidden");
+
+ const texts=[
+  "Wykryto podejrzanie dużo ziemniaków.",
+  "Kaczka próbuje przejąć system.",
+  "Procesor zgłosił, że nie chce.",
+  "Znaleziono 17 plików o nazwie hehe.",
+  "System nie rozumie użytkownika.",
+  "Wykryto Piotra."
+ ];
+
+ document.getElementById("virusText").textContent=
+ texts[Math.floor(Math.random()*texts.length)];
+
+ chaosAdd(15);
+}
+
+function closeVirus(){
+ document.getElementById("virusScreen").classList.add("hidden");
+ notify("System: chyba działa.");
+ chaosAdd(5);
+}
+
+function fakeBSOD(){
+ document.getElementById("bsod").classList.remove("hidden");
+ chaosAdd(20);
+}
+
+function closeBSOD(){
+ document.getElementById("bsod").classList.add("hidden");
+ notify("BSOD anulowany.");
+}
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function fakeUpdate(){
+ const screen=document.getElementById("updateScreen");
+ const fill=document.getElementById("updateFill");
+ const percent=document.getElementById("updatePercent");
+ const text=document.getElementById("updateText");
+
+ screen.classList.remove("hidden");
+
+ let p=0;
+
+ const messages=[
+  "Przygotowywanie aktualizacji...",
+  "Aktualizowanie kaczek...",
+  "Instalowanie ziemniaków...",
+  "Naprawianie rzeczywistości...",
+  "Optymalizacja chaosu...",
+  "Aktualizowanie PiotrBot...",
+  "Prawie gotowe..."
+ ];
+
+ const t=setInterval(()=>{
+  p+=Math.floor(Math.random()*9)+2;
+  if(p>100)p=100;
+
+  fill.style.width=p+"%";
+  percent.textContent=p+"%";
+  text.textContent=messages[Math.min(messages.length-1,Math.floor(p/16))];
+
+  if(p>=100){
+   clearInterval(t);
+
+   setTimeout(()=>{
+    screen.classList.add("hidden");
+    notify("🔄 Aktualizacja zakończona. Nic się nie zmieniło.");
+    chaosAdd(10);
+   },700);
+  }
+ },180);
+}
+
+/* =========================================================
+   LOCK / RESTART / SHUTDOWN
+========================================================= */
+
+function lockScreen(){
+ document.getElementById("lockScreen").classList.remove("hidden");
+ document.getElementById("unlockInput").value="";
+ setTimeout(()=>document.getElementById("unlockInput").focus(),100);
+}
+
+function unlockScreen(){
+ const input=document.getElementById("unlockInput");
+
+ if(input.value==="1234"){
+  document.getElementById("lockScreen").classList.add("hidden");
+  notify("Sesja odblokowana.");
+ }else{
+  document.getElementById("unlockError").textContent="Złe hasło.";
+  chaosAdd(2);
+ }
+}
+
+document.getElementById("unlockInput").addEventListener("keydown",e=>{
+ if(e.key==="Enter")unlockScreen();
+});
+
+function restartSystem(){
+ document.getElementById("shutdownScreen").classList.remove("hidden");
+
+ let p=0;
+
+ const t=setInterval(()=>{
+  p+=20;
+  document.getElementById("shutdownText").textContent=
+   "Restartowanie systemu... "+Math.min(100,p)+"%";
+
+  if(p>=100){
+   clearInterval(t);
+   location.reload();
+  }
+ },300);
+}
+
+function shutdown(){
+ document.getElementById("startMenu").classList.add("hidden");
+
+ const s=document.getElementById("shutdownScreen");
+ s.classList.remove("hidden");
+
+ const texts=[
+  "Zapisywanie ziemniaków...",
+  "Wyłączanie kaczki...",
+  "Zamykanie procesów...",
+  "Odłączanie Piotra...",
+  "Czyszczenie zdrowego rozsądku..."
+ ];
+
+ let i=0;
+
+ const t=setInterval(()=>{
+  document.getElementById("shutdownText").textContent=texts[i%texts.length];
+  i++;
+ },500);
+
+ setTimeout(()=>{
+  clearInterval(t);
+  s.innerHTML=`
+   <div>
+    <h1>💤</h1>
+    <p>PIOTR OS został wyłączony.</p>
+    <button onclick="location.reload()">WŁĄCZ PONOWNIE</button>
+   </div>`;
+ },3200);
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetSystem(){
+ if(!confirm("Na pewno usunąć cały zapis PIOTR OS?"))return;
+ localStorage.removeItem(STORAGE);
+ location.reload();
+}
+
+/* =========================================================
    CONTEXT MENU
-========================= */
+========================================================= */
 
-document.addEventListener("contextmenu", e => {
+document.addEventListener("contextmenu",e=>{
+ const desktop=document.getElementById("desktop");
 
-    if (
-        document.getElementById("desktop").classList.contains("hidden")
-    ) return;
+ if(desktop.classList.contains("hidden"))return;
 
-    e.preventDefault();
+ e.preventDefault();
 
-    const menu = document.getElementById("contextMenu");
+ const menu=document.getElementById("contextMenu");
 
-    menu.style.display = "block";
-
-    menu.style.left =
-        Math.min(
-            e.clientX,
-            window.innerWidth - 220
-        ) + "px";
-
-    menu.style.top =
-        Math.min(
-            e.clientY,
-            window.innerHeight - 250
-        ) + "px";
+ menu.style.display="block";
+ menu.style.left=Math.min(e.clientX,window.innerWidth-240)+"px";
+ menu.style.top=Math.min(e.clientY,window.innerHeight-300)+"px";
 });
 
-document.addEventListener("click", e => {
+document.addEventListener("click",e=>{
+ const menu=document.getElementById("contextMenu");
 
-    const menu = document.getElementById("contextMenu");
-
-    if (
-        !menu.contains(e.target) &&
-        e.target.id !== "contextMenu"
-    ) {
-        menu.style.display = "none";
-    }
+ if(!menu.contains(e.target))menu.style.display="none";
 });
 
-/* =========================
-   SECRET KEYBOARD
-========================= */
+/* =========================================================
+   KEYBOARD SECRETS
+========================================================= */
 
-let secretKeys = "";
+let keyBuffer="";
 
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown",e=>{
+ keyBuffer+=(e.key||"").toLowerCase();
 
-    secretKeys += e.key.toLowerCase();
+ if(keyBuffer.length>40)keyBuffer=keyBuffer.slice(-40);
 
-    if (secretKeys.length > 30) {
-        secretKeys = secretKeys.slice(-30);
-    }
+ if(keyBuffer.includes("piotr")){
+  state.secretCount++;
+  save();
+  unlockAchievement("secret");
+  notify("🗿 System wykrył słowo PIOTR.");
+  keyBuffer="";
+  chaosAdd(8);
+ }
 
-    if (secretKeys.includes("piotr")) {
+ if(keyBuffer.includes("kaczka")){
+  notify("🦆 KACZKA.");
+  showDuck();
+  keyBuffer="";
+ }
 
-        secretCount++;
-
-        localStorage.setItem(
-            "secretCount",
-            secretCount
-        );
-
-        unlockAchievement("secret");
-
-        notify("🗿 Wykryto słowo PIOTR.");
-
-        secretKeys = "";
-
-        increaseChaos(8);
-    }
-
-    if (e.key === "Escape") {
-
-        document.getElementById("startMenu")
-            .classList.add("hidden");
-
-        document.getElementById("contextMenu")
-            .style.display = "none";
-    }
+ if(e.key==="Escape"){
+  document.getElementById("startMenu").classList.add("hidden");
+  document.getElementById("contextMenu").style.display="none";
+ }
 });
 
-/* =========================
-   HIDDEN DOUBLE CLICK
-========================= */
+/* =========================================================
+   DESKTOP DOUBLE CLICK
+========================================================= */
 
-let desktopClicks = 0;
+let desktopClicks=0;
 
-document.getElementById("desktop")
-.addEventListener("dblclick", e => {
+document.getElementById("desktop").addEventListener("dblclick",e=>{
+ if(e.target.closest(".icon")||
+    e.target.closest(".window")||
+    e.target.closest("#taskbar"))return;
 
-    if (
-        e.target.closest(".icon") ||
-        e.target.closest(".window") ||
-        e.target.closest("#taskbar")
-    ) return;
+ desktopClicks++;
+ chaosAdd(3);
 
-    desktopClicks++;
-
-    increaseChaos(3);
-
-    if (desktopClicks >= 5) {
-
-        notify(
-            "System: Przestań klikać pusty pulpit."
-        );
-
-        desktopClicks = 0;
-    }
+ if(desktopClicks>=5){
+  notify("System: Przestań klikać pusty pulpit.");
+  desktopClicks=0;
+ }
 });
 
-/* =========================
-   AUTO STOCK FLUCTUATION
-========================= */
+/* =========================================================
+   AUTO MONEY
+========================================================= */
 
-setInterval(() => {
+setInterval(()=>{
+ if(!document.getElementById("desktop").classList.contains("hidden")&&Math.random()<.25){
+  money++;
+  save();
+ }
+},20000);
 
-    if (Math.random() < .6) {
+/* =========================================================
+   HELPERS
+========================================================= */
 
-        stockValue +=
-            Math.floor(Math.random() * 11) - 5;
-
-        stockValue =
-            Math.max(
-                1,
-                Math.min(100, stockValue)
-            );
-
-        localStorage.setItem(
-            "stockValue",
-            stockValue
-        );
-
-        updateStockUI();
-    }
-
-}, 12000);
-
-/* =========================
-   CHAOS PASSIVE
-========================= */
-
-setInterval(() => {
-
-    if (
-        !document.getElementById("desktop") ||
-        document.getElementById("desktop").classList.contains("hidden")
-    ) return;
-
-    if (Math.random() < .45) {
-        increaseChaos(1);
-    }
-
-}, 30000);
-
-/* =========================
-   MONEY PASSIVE
-========================= */
-
-setInterval(() => {
-
-    if (Math.random() < .25) {
-
-        money += 1;
-
-        saveMoney();
-
-        notify("+1 P$ za samo istnienie.");
-
-        updateWalletUI();
-    }
-
-}, 20000);
-
-/* =========================
-   FIRST ACHIEVEMENT
-========================= */
-
-setTimeout(() => {
-
-    unlockAchievement("first");
-
-}, 5000);
-
-/* =========================
-   ESCAPE HELPERS
-========================= */
-
-function escapeHTML(str) {
-
-    return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+function escapeHTML(str){
+ return String(str)
+ .replace(/&/g,"&amp;")
+ .replace(/</g,"&lt;")
+ .replace(/>/g,"&gt;")
+ .replace(/"/g,"&quot;")
+ .replace(/'/g,"&#039;");
 }
 
-/* =========================
-   INITIAL UPDATE
-========================= */
+/* =========================================================
+   MAIL / MAP ETC INIT
+========================================================= */
 
 updateChaosUI();
 applyTheme();
 
-/* =========================
-   FINAL SYSTEM MESSAGE
-========================= */
+/* =========================================================
+   SYSTEM DIRECTOR
+========================================================= */
 
-setTimeout(() => {
+setInterval(()=>{
+ if(document.getElementById("desktop").classList.contains("hidden"))return;
 
-    if (
-        !document.getElementById("desktop") ||
-        document.getElementById("desktop").classList.contains("hidden")
-    ) return;
+ const directorMessages=[];
 
-    notify("PIOTR OS 3.0 gotowy.");
+ if(state.stats.apps>15)
+  directorMessages.push("System: Otworzyłeś już "+state.stats.apps+" aplikacji.");
 
-}, 6000);
+ if(state.stats.commands>20)
+  directorMessages.push("System: Terminal zaczyna cię lubić.");
+
+ if(state.duckCaught>5)
+  directorMessages.push("Kaczka: To już jest polowanie.");
+
+ if(state.secretCount>3)
+  directorMessages.push("System: Przestań szukać.");
+
+ if(state.pressCount>5)
+  directorMessages.push("Przycisk: Ja naprawdę mam tego dość.");
+
+ if(chaos>80)
+  directorMessages.push("System: To już nie jest normalne.");
+
+ if(directorMessages.length&&Math.random()<.25){
+  notify(
+   directorMessages[
+    Math.floor(Math.random()*directorMessages.length)
+   ]
+  );
+ }
+},22000);
+
+/* =========================================================
+   FIRST MESSAGE
+========================================================= */
+
+setTimeout(()=>{
+ const desktop=document.getElementById("desktop");
+
+ if(desktop&&!desktop.classList.contains("hidden")){
+  notify("PIOTR OS 4.0 gotowy.");
+ }
+},6500);
 
 </script>
-
 </body>
 </html>
