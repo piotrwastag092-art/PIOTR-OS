@@ -2,346 +2,883 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>PIOTR OS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PIOTR OS 2.0</title>
 
 <style>
+*{box-sizing:border-box}
 
-* {
-    box-sizing: border-box;
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#000;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-    background: #0874c9;
+button,input,textarea{
+    font:inherit;
 }
 
-/* PULPIT */
+.hidden{
+    display:none!important;
+}
 
-#desktop {
-    width: 100vw;
-    height: 100vh;
+/* =========================
+   BIOS
+========================= */
+
+#bios{
+    position:fixed;
+    inset:0;
+    background:#050505;
+    color:#fff;
+    font-family:monospace;
+    padding:30px;
+    z-index:9999;
+    line-height:1.7;
+}
+
+#bios .green{
+    color:#44ff44;
+}
+
+#biosProgress{
+    width:400px;
+    max-width:80%;
+    height:20px;
+    border:1px solid #fff;
+    margin-top:20px;
+}
+
+#biosBar{
+    width:0;
+    height:100%;
+    background:#fff;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+#login{
+    position:fixed;
+    inset:0;
+    z-index:9000;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
 
     background:
-        radial-gradient(circle at 50% 30%, #35b7ff, #0874c9 65%, #034b88);
+        radial-gradient(circle at center,#274e72,#08131e 70%);
 
-    position: relative;
+    color:white;
 }
 
-/* IKONY */
+.loginBox{
+    width:360px;
+    padding:35px;
+    text-align:center;
 
-.icon {
-    width: 90px;
-    padding: 10px;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    margin: 10px;
+    background:rgba(0,0,0,.65);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:18px;
+
+    box-shadow:0 20px 80px rgba(0,0,0,.7);
 }
 
-.icon:hover {
-    background: rgba(255,255,255,.15);
-    border-radius: 8px;
+.avatar{
+    font-size:80px;
 }
 
-.icon .emoji {
-    font-size: 42px;
-    display: block;
+.loginBox input{
+    width:100%;
+    margin:8px 0;
+    padding:13px;
+
+    border:none;
+    border-radius:8px;
 }
 
-.icon span {
-    font-size: 13px;
+.primary{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:8px;
+
+    background:#1687df;
+    color:white;
+
+    cursor:pointer;
+    font-weight:bold;
 }
 
-/* PASEK */
-
-#taskbar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-
-    width: 100%;
-    height: 55px;
-
-    background: rgba(20,20,20,.88);
-
-    display: flex;
-    align-items: center;
-
-    padding: 6px;
-
-    color: white;
-
-    backdrop-filter: blur(10px);
+.primary:hover{
+    background:#35a4ff;
 }
 
-#start {
-    background: #1687df;
-
-    border: none;
-    color: white;
-
-    height: 43px;
-    width: 80px;
-
-    border-radius: 8px;
-
-    font-weight: bold;
-    cursor: pointer;
+.loginError{
+    color:#ff5555;
+    min-height:20px;
 }
 
-#start:hover {
-    background: #2d9bf0;
+/* =========================
+   DESKTOP
+========================= */
+
+#desktop{
+    position:fixed;
+    inset:0;
+
+    color:white;
+
+    background:
+        radial-gradient(circle at 50% 30%,#38c5ff,#0874c9 60%,#03406e);
+
+    user-select:none;
 }
 
-#clock {
-    margin-left: auto;
-    padding: 10px;
+.desktop.dark{
+    background:
+        radial-gradient(circle at 50% 30%,#555,#111 70%);
 }
 
-/* OKNA */
-
-.window {
-
-    position: absolute;
-
-    width: 500px;
-    min-height: 300px;
-
-    background: #f4f4f4;
-
-    border-radius: 10px;
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.4);
-
-    overflow: hidden;
-
-    display: none;
+.desktop.purple{
+    background:
+        radial-gradient(circle at 50% 30%,#b65cff,#3a075c 70%);
 }
 
-.titlebar {
-
-    height: 40px;
-
-    background: #202020;
-
-    color: white;
-
-    display: flex;
-    align-items: center;
-
-    padding: 0 10px;
-
-    cursor: move;
+.desktop.green{
+    background:
+        radial-gradient(circle at 50% 30%,#49db8a,#075c35 70%);
 }
 
-.titlebar span {
-    flex: 1;
+/* =========================
+   DESKTOP ICONS
+========================= */
+
+.desktopIcons{
+    position:absolute;
+    top:10px;
+    left:10px;
+    width:110px;
 }
 
-.close {
-    border: none;
-    background: #e53935;
-    color: white;
+.icon{
+    width:90px;
+    padding:9px;
+    margin-bottom:7px;
 
-    width: 30px;
-    height: 28px;
+    text-align:center;
+    color:white;
 
-    border-radius: 5px;
+    border-radius:8px;
 
-    cursor: pointer;
+    cursor:pointer;
 }
 
-.content {
-    padding: 20px;
+.icon:hover{
+    background:rgba(255,255,255,.18);
 }
 
-/* NOTATNIK */
-
-textarea {
-
-    width: 100%;
-    height: 250px;
-
-    resize: none;
-
-    border: none;
-
-    outline: none;
-
-    font-family: monospace;
-    font-size: 16px;
+.iconEmoji{
+    display:block;
+    font-size:42px;
 }
 
-/* KALKULATOR */
-
-#calcDisplay {
-
-    width: 100%;
-
-    font-size: 28px;
-
-    padding: 10px;
-
-    text-align: right;
-
-    margin-bottom: 10px;
+.iconName{
+    font-size:13px;
+    text-shadow:0 2px 4px #000;
 }
 
-.calcGrid {
+/* =========================
+   TASKBAR
+========================= */
 
-    display: grid;
+#taskbar{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
 
-    grid-template-columns: repeat(4, 1fr);
+    height:55px;
 
-    gap: 5px;
+    background:rgba(15,15,15,.9);
+
+    display:flex;
+    align-items:center;
+
+    padding:6px;
+
+    backdrop-filter:blur(12px);
+
+    z-index:8000;
 }
 
-.calcGrid button {
+#startButton{
+    height:43px;
+    padding:0 18px;
 
-    padding: 15px;
+    border:0;
+    border-radius:8px;
 
-    font-size: 18px;
+    background:#1687df;
+    color:white;
 
-    border: none;
-
-    cursor: pointer;
-
-    background: #ddd;
-
-    border-radius: 5px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
-.calcGrid button:hover {
-    background: #bbb;
+#startButton:hover{
+    background:#2b9ef1;
 }
 
-/* START MENU */
-
-#startMenu {
-
-    position: absolute;
-
-    bottom: 65px;
-    left: 8px;
-
-    width: 300px;
-
-    background: rgba(25,25,25,.95);
-
-    color: white;
-
-    border-radius: 12px;
-
-    padding: 15px;
-
-    display: none;
-
-    box-shadow: 0 10px 40px rgba(0,0,0,.5);
+#taskApps{
+    display:flex;
+    gap:5px;
+    margin-left:8px;
 }
 
-#startMenu h2 {
-    margin-top: 0;
+.taskApp{
+    height:40px;
+    padding:0 12px;
+
+    background:#333;
+    color:white;
+
+    border:0;
+    border-radius:6px;
+
+    cursor:pointer;
 }
 
-.menuButton {
-
-    width: 100%;
-
-    padding: 12px;
-
-    margin: 4px 0;
-
-    border: none;
-
-    border-radius: 6px;
-
-    background: #333;
-
-    color: white;
-
-    text-align: left;
-
-    cursor: pointer;
+.taskApp:hover{
+    background:#555;
 }
 
-.menuButton:hover {
-    background: #1687df;
+#clock{
+    margin-left:auto;
+    padding:10px 15px;
+    font-weight:bold;
 }
 
-/* ALERT */
+/* =========================
+   START MENU
+========================= */
 
-#notification {
+#startMenu{
+    position:absolute;
 
-    position: absolute;
+    left:7px;
+    bottom:63px;
 
-    right: 20px;
-    bottom: 75px;
+    width:340px;
 
-    background: white;
+    background:rgba(20,20,20,.96);
 
-    color: black;
+    border-radius:14px;
 
-    padding: 15px;
+    padding:15px;
 
-    border-radius: 10px;
+    z-index:8500;
 
-    box-shadow: 0 5px 30px rgba(0,0,0,.4);
-
-    display: none;
+    box-shadow:0 15px 50px #000;
 }
 
+#startMenu h2{
+    margin-top:0;
+}
+
+.startItem{
+    width:100%;
+
+    border:0;
+
+    background:#303030;
+    color:white;
+
+    padding:12px;
+    margin:4px 0;
+
+    border-radius:7px;
+
+    text-align:left;
+
+    cursor:pointer;
+}
+
+.startItem:hover{
+    background:#1687df;
+}
+
+/* =========================
+   WINDOWS
+========================= */
+
+.window{
+    position:absolute;
+
+    width:540px;
+    max-width:90vw;
+
+    min-height:300px;
+    max-height:75vh;
+
+    background:#f4f4f4;
+    color:#111;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    box-shadow:0 25px 80px rgba(0,0,0,.55);
+
+    display:none;
+}
+
+.titlebar{
+    height:40px;
+
+    background:#202020;
+    color:white;
+
+    display:flex;
+    align-items:center;
+
+    padding-left:12px;
+
+    cursor:move;
+}
+
+.titlebar span{
+    flex:1;
+}
+
+.windowButton{
+    width:30px;
+    height:28px;
+
+    border:0;
+    border-radius:5px;
+
+    background:#e53935;
+    color:white;
+
+    cursor:pointer;
+
+    margin-right:6px;
+}
+
+.windowButton:hover{
+    background:#ff5555;
+}
+
+.windowContent{
+    padding:18px;
+    overflow:auto;
+    max-height:calc(75vh - 40px);
+}
+
+/* =========================
+   NOTEPAD
+========================= */
+
+#notes{
+    width:100%;
+    height:350px;
+
+    resize:none;
+
+    border:1px solid #ccc;
+    outline:none;
+
+    padding:12px;
+
+    font-family:monospace;
+}
+
+/* =========================
+   CALCULATOR
+========================= */
+
+#calcDisplay{
+    width:100%;
+
+    padding:12px;
+
+    font-size:25px;
+
+    text-align:right;
+
+    margin-bottom:8px;
+}
+
+.calcGrid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:5px;
+}
+
+.calcGrid button{
+    padding:16px;
+    border:0;
+    border-radius:5px;
+    cursor:pointer;
+    background:#ddd;
+}
+
+.calcGrid button:hover{
+    background:#bbb;
+}
+
+/* =========================
+   TERMINAL
+========================= */
+
+#terminalOutput{
+    height:300px;
+
+    overflow:auto;
+
+    background:#050505;
+    color:#42ff42;
+
+    padding:12px;
+
+    font-family:monospace;
+
+    white-space:pre-wrap;
+}
+
+#terminalInput{
+    width:100%;
+
+    padding:10px;
+
+    background:#050505;
+    color:#42ff42;
+
+    border:0;
+    outline:0;
+
+    font-family:monospace;
+}
+
+/* =========================
+   FILES
+========================= */
+
+.fileGrid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+}
+
+.file{
+    padding:15px;
+    text-align:center;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.file:hover{
+    background:#ddd;
+}
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+.achievement{
+    padding:12px;
+    margin:8px 0;
+
+    background:#ddd;
+
+    border-radius:8px;
+}
+
+.achievement.locked{
+    opacity:.4;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settingButton{
+    padding:12px;
+    margin:5px;
+
+    border:0;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+#notification{
+    position:absolute;
+
+    right:20px;
+    bottom:70px;
+
+    background:white;
+    color:#111;
+
+    padding:15px 20px;
+
+    border-radius:10px;
+
+    box-shadow:0 10px 40px #000;
+
+    z-index:9500;
+
+    display:none;
+}
+
+/* =========================
+   CONTEXT MENU
+========================= */
+
+#contextMenu{
+    position:absolute;
+
+    width:210px;
+
+    background:#222;
+    color:white;
+
+    border-radius:8px;
+
+    padding:5px;
+
+    display:none;
+
+    z-index:10000;
+
+    box-shadow:0 10px 30px #000;
+}
+
+.contextItem{
+    padding:10px;
+
+    border-radius:5px;
+
+    cursor:pointer;
+}
+
+.contextItem:hover{
+    background:#1687df;
+}
+
+/* =========================
+   BSOD
+========================= */
+
+#bsod{
+    position:fixed;
+    inset:0;
+
+    background:#0050a4;
+    color:white;
+
+    z-index:20000;
+
+    display:none;
+
+    padding:10vw;
+
+    font-family:monospace;
+}
+
+.bsodFace{
+    font-size:80px;
+}
+
+.bsodText{
+    font-size:20px;
+    line-height:1.6;
+}
+
+/* =========================
+   VIRUS
+========================= */
+
+#virus{
+    position:fixed;
+    inset:0;
+
+    background:#150000;
+
+    color:#ff3333;
+
+    z-index:19000;
+
+    display:none;
+
+    text-align:center;
+
+    padding-top:20vh;
+
+    font-family:monospace;
+}
+
+#virus h1{
+    font-size:60px;
+}
+
+/* =========================
+   SECRET
+========================= */
+
+.secret{
+    color:#777;
+    cursor:pointer;
+}
+
+.secret:hover{
+    color:#e91e63;
+}
 </style>
 </head>
 
 <body>
 
-<div id="desktop">
+<!-- =========================
+BIOS
+========================= -->
 
-    <!-- IKONY -->
+<div id="bios">
 
-    <div class="icon" onclick="openWindow('notepad')">
+    <div>PIOTR BIOS v2.0.7</div>
+    <div>Copyright 2026 Piotr Industries™</div>
 
-        <div class="emoji">📝</div>
+    <br>
 
-        <span>Notatnik</span>
+    <div class="green">
+        CPU: INTEL POTATO 9000
+    </div>
+
+    <div>
+        RAM: 640 KB
+    </div>
+
+    <div>
+        GPU: NVIDIA KACZKA
+    </div>
+
+    <div>
+        STORAGE: 4 GB
+    </div>
+
+    <br>
+
+    <div id="biosText">
+        Initializing potato...
+    </div>
+
+    <div id="biosProgress">
+        <div id="biosBar"></div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+LOGIN
+========================= -->
+
+<div id="login" class="hidden">
+
+    <div class="loginBox">
+
+        <div class="avatar">🥔</div>
+
+        <h1>PIOTR OS</h1>
+
+        <p>Witaj ponownie, użytkowniku.</p>
+
+        <input
+            id="username"
+            value="Piotr"
+            placeholder="Nazwa użytkownika"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Hasło"
+        >
+
+        <button
+            class="primary"
+            onclick="login()">
+            ZALOGUJ
+        </button>
+
+        <div
+            id="loginError"
+            class="loginError">
+        </div>
+
+        <small>
+            Hasło domyślne: <b>1234</b>
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+DESKTOP
+========================= -->
+
+<div id="desktop" class="hidden">
+
+    <div class="desktopIcons">
+
+        <div class="icon" ondblclick="openWindow('computer')">
+            <span class="iconEmoji">💻</span>
+            <span class="iconName">Ten komputer</span>
+        </div>
+
+        <div class="icon" ondblclick="openWindow('notepad')">
+            <span class="iconEmoji">📝</span>
+            <span class="iconName">Notatnik</span>
+        </div>
+
+        <div class="icon" ondblclick="openWindow('terminal')">
+            <span class="iconEmoji">💻</span>
+            <span class="iconName">Terminal</span>
+        </div>
+
+        <div class="icon" ondblclick="openWindow('trash')">
+            <span class="iconEmoji">🗑️</span>
+            <span class="iconName">Kosz</span>
+        </div>
+
+        <div class="icon" ondblclick="openWindow('achievements')">
+            <span class="iconEmoji">🏆</span>
+            <span class="iconName">Osiągnięcia</span>
+        </div>
 
     </div>
 
 
-    <div class="icon" onclick="openWindow('calculator')">
+    <!-- =====================
+    COMPUTER
+    ====================== -->
 
-        <div class="emoji">🧮</div>
+    <div class="window" id="computer">
 
-        <span>Kalkulator</span>
+        <div class="titlebar">
+            <span>💻 Ten komputer</span>
+
+            <button
+                class="windowButton"
+                onclick="closeWindow('computer')">
+                ×
+            </button>
+        </div>
+
+        <div class="windowContent">
+
+            <h2>Ten komputer</h2>
+
+            <div class="fileGrid">
+
+                <div class="file">
+                    💾
+                    <br>
+                    Dysk C:
+                </div>
+
+                <div class="file"
+                     ondblclick="openWindow('documents')">
+                    📁
+                    <br>
+                    Dokumenty
+                </div>
+
+                <div class="file">
+                    📁
+                    <br>
+                    Gry
+                </div>
+
+                <div class="file"
+                     ondblclick="virusWarning()">
+                    📁
+                    <br>
+                    NIE OTWIERAĆ
+                </div>
+
+                <div class="file"
+                     ondblclick="secretFound()">
+                    📁
+                    <br>
+                    .secret
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
 
-    <div class="icon" onclick="openWindow('internet')">
+    <!-- DOCUMENTS -->
 
-        <div class="emoji">🌐</div>
+    <div class="window" id="documents">
 
-        <span>Internet</span>
+        <div class="titlebar">
+
+            <span>📁 Dokumenty</span>
+
+            <button
+                class="windowButton"
+                onclick="closeWindow('documents')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="windowContent">
+
+            <h2>Dokumenty</h2>
+
+            <p>
+                📄 instrukcja.txt
+            </p>
+
+            <p>
+                📄 bardzo_wazny_dokument.doc
+            </p>
+
+            <p>
+                📄 plan_na_zycie.txt
+            </p>
+
+            <p class="secret"
+               ondblclick="secretFound()">
+                📄 nic_tu_nie_ma.txt
+            </p>
+
+        </div>
 
     </div>
 
 
-    <div class="icon" onclick="openWindow('computer')">
-
-        <div class="emoji">💻</div>
-
-        <span>Ten komputer</span>
-
-    </div>
-
-
-    <!-- NOTATNIK -->
+    <!-- NOTEPAD -->
 
     <div class="window" id="notepad">
 
@@ -349,26 +886,36 @@ textarea {
 
             <span>📝 Notatnik</span>
 
-            <button class="close"
+            <button
+                class="windowButton"
                 onclick="closeWindow('notepad')">
-                X
+                ×
             </button>
 
         </div>
 
-        <div class="content">
+        <div class="windowContent">
 
             <textarea
                 id="notes"
-                placeholder="Napisz coś absolutnie ważnego...">
-            </textarea>
+                placeholder="Napisz coś ważnego..."></textarea>
+
+            <br><br>
+
+            <button onclick="saveNotes()">
+                💾 Zapisz
+            </button>
+
+            <button onclick="loadNotes()">
+                📂 Wczytaj
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- KALKULATOR -->
+    <!-- CALCULATOR -->
 
     <div class="window" id="calculator">
 
@@ -376,14 +923,15 @@ textarea {
 
             <span>🧮 Kalkulator</span>
 
-            <button class="close"
+            <button
+                class="windowButton"
                 onclick="closeWindow('calculator')">
-                X
+                ×
             </button>
 
         </div>
 
-        <div class="content">
+        <div class="windowContent">
 
             <input
                 id="calcDisplay"
@@ -419,34 +967,75 @@ textarea {
     </div>
 
 
+    <!-- TERMINAL -->
+
+    <div class="window" id="terminal">
+
+        <div class="titlebar">
+
+            <span>💻 Terminal</span>
+
+            <button
+                class="windowButton"
+                onclick="closeWindow('terminal')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="windowContent">
+
+            <div id="terminalOutput">
+PIOTR TERMINAL v2.0
+Wpisz "help".
+            </div>
+
+            <input
+                id="terminalInput"
+                placeholder="wpisz komendę..."
+                onkeydown="terminalKey(event)"
+            >
+
+        </div>
+
+    </div>
+
+
     <!-- INTERNET -->
 
     <div class="window" id="internet">
 
         <div class="titlebar">
 
-            <span>🌐 Internet Explorer 9000</span>
+            <span>🌐 Internet 9000</span>
 
-            <button class="close"
+            <button
+                class="windowButton"
                 onclick="closeWindow('internet')">
-                X
+                ×
             </button>
 
         </div>
 
-        <div class="content">
+        <div class="windowContent">
 
-            <h1>Internet</h1>
+            <h1>🌐 Internet</h1>
 
             <p>
-                Witaj w Internecie.
+                Internet jest obecnie niedostępny.
             </p>
 
             <p>
-                Niestety Internet jest dzisiaj zamknięty.
+                Prawdopodobna przyczyna:
             </p>
 
-            <button onclick="internetButton()">
+            <ul>
+                <li>kaczka odłączyła kabel</li>
+                <li>router śpi</li>
+                <li>Piotr kliknął coś, czego nie powinien</li>
+            </ul>
+
+            <button onclick="internetAgain()">
                 SPRÓBUJ JESZCZE RAZ
             </button>
 
@@ -455,34 +1044,138 @@ textarea {
     </div>
 
 
-    <!-- TEN KOMPUTER -->
+    <!-- SETTINGS -->
 
-    <div class="window" id="computer">
+    <div class="window" id="settings">
 
         <div class="titlebar">
 
-            <span>💻 Ten komputer</span>
+            <span>⚙️ Ustawienia</span>
 
-            <button class="close"
-                onclick="closeWindow('computer')">
-                X
+            <button
+                class="windowButton"
+                onclick="closeWindow('settings')">
+                ×
             </button>
 
         </div>
 
-        <div class="content">
+        <div class="windowContent">
 
-            <h2>Ten komputer</h2>
+            <h2>Personalizacja</h2>
 
-            <p>💾 Dysk C:</p>
+            <button
+                class="settingButton"
+                onclick="setTheme('')">
+                🔵 Niebieski
+            </button>
 
-            <p>📁 Dokumenty</p>
+            <button
+                class="settingButton"
+                onclick="setTheme('dark')">
+                ⚫ Ciemny
+            </button>
 
-            <p>📁 Gry</p>
+            <button
+                class="settingButton"
+                onclick="setTheme('purple')">
+                🟣 Fioletowy
+            </button>
 
-            <p>📁 Bardzo ważne rzeczy</p>
+            <button
+                class="settingButton"
+                onclick="setTheme('green')">
+                🟢 Zielony
+            </button>
 
-            <p>📁 NIE OTWIERAĆ</p>
+            <hr>
+
+            <button
+                class="settingButton"
+                onclick="showNotification('Ustawienia zapisane.')">
+                💾 Zapisz ustawienia
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- TRASH -->
+
+    <div class="window" id="trash">
+
+        <div class="titlebar">
+
+            <span>🗑️ Kosz</span>
+
+            <button
+                class="windowButton"
+                onclick="closeWindow('trash')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="windowContent">
+
+            <h2>Kosz</h2>
+
+            <p>
+                🗑️ 47 niezidentyfikowanych plików
+            </p>
+
+            <button onclick="emptyTrash()">
+                OPRÓŻNIJ KOSZ
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACHIEVEMENTS -->
+
+    <div class="window" id="achievements">
+
+        <div class="titlebar">
+
+            <span>🏆 Osiągnięcia</span>
+
+            <button
+                class="windowButton"
+                onclick="closeWindow('achievements')">
+                ×
+            </button>
+
+        </div>
+
+        <div class="windowContent">
+
+            <div class="achievement"
+                 id="ach1">
+                🔒 Uruchom system
+            </div>
+
+            <div class="achievement locked"
+                 id="ach2">
+                🔒 Odkryj sekret
+            </div>
+
+            <div class="achievement locked"
+                 id="ach3">
+                🔒 Uruchom wirusa
+            </div>
+
+            <div class="achievement locked"
+                 id="ach4">
+                🔒 Użyj terminala
+            </div>
+
+            <div class="achievement locked"
+                 id="ach5">
+                🔒 Znajdź Wielką Kaczkę
+            </div>
 
         </div>
 
@@ -491,47 +1184,108 @@ textarea {
 
     <!-- START MENU -->
 
-    <div id="startMenu">
+    <div id="startMenu" class="hidden">
 
         <h2>🖥️ PIOTR OS</h2>
 
-        <button class="menuButton"
+        <button
+            class="startItem"
+            onclick="openWindow('computer')">
+            💻 Ten komputer
+        </button>
+
+        <button
+            class="startItem"
             onclick="openWindow('notepad')">
             📝 Notatnik
         </button>
 
-        <button class="menuButton"
+        <button
+            class="startItem"
             onclick="openWindow('calculator')">
             🧮 Kalkulator
         </button>
 
-        <button class="menuButton"
-            onclick="randomEvent()">
-            🎲 Losuj coś
+        <button
+            class="startItem"
+            onclick="openWindow('terminal')">
+            💻 Terminal
         </button>
 
-        <button class="menuButton"
+        <button
+            class="startItem"
+            onclick="openWindow('internet')">
+            🌐 Internet
+        </button>
+
+        <button
+            class="startItem"
+            onclick="openWindow('settings')">
+            ⚙️ Ustawienia
+        </button>
+
+        <button
+            class="startItem"
+            onclick="openWindow('achievements')">
+            🏆 Osiągnięcia
+        </button>
+
+        <button
+            class="startItem"
             onclick="shutdown()">
-            🔴 Wyłącz komputer
+            🔴 Wyłącz
         </button>
 
     </div>
 
 
-    <!-- POWIADOMIENIE -->
+    <!-- NOTIFICATION -->
 
-    <div id="notification">
-        🔔 Witamy w PIOTR OS!
+    <div id="notification"></div>
+
+
+    <!-- CONTEXT MENU -->
+
+    <div id="contextMenu">
+
+        <div
+            class="contextItem"
+            onclick="openWindow('notepad')">
+            📝 Nowy dokument
+        </div>
+
+        <div
+            class="contextItem"
+            onclick="openWindow('settings')">
+            ⚙️ Personalizuj
+        </div>
+
+        <div
+            class="contextItem"
+            onclick="randomEvent()">
+            🎲 Losowa akcja
+        </div>
+
+        <div
+            class="contextItem"
+            onclick="refreshDesktop()">
+            🔄 Odśwież
+        </div>
+
     </div>
 
 
-    <!-- PASEK -->
+    <!-- TASKBAR -->
 
     <div id="taskbar">
 
-        <button id="start" onclick="toggleStart()">
+        <button
+            id="startButton"
+            onclick="toggleStart()">
             🪟 START
         </button>
+
+        <div id="taskApps"></div>
 
         <div id="clock"></div>
 
@@ -540,34 +1294,215 @@ textarea {
 </div>
 
 
+<!-- =========================
+VIRUS
+========================= -->
+
+<div id="virus">
+
+    <h1>⚠️ WIRUS ⚠️</h1>
+
+    <p>
+        TWÓJ KOMPUTER ZOSTAŁ PRZEJĘTY
+    </p>
+
+    <p id="virusText">
+        Kasowanie systemu...
+    </p>
+
+</div>
+
+
+<!-- =========================
+BSOD
+========================= -->
+
+<div id="bsod">
+
+    <div class="bsodFace">:(</div>
+
+    <div class="bsodText">
+
+        PIOTR OS napotkał problem i musi zostać
+        ponownie uruchomiony.
+
+        <br><br>
+
+        Kod błędu:
+
+        <b>DUCK_EXCEPTION_0x00042</b>
+
+        <br><br>
+
+        100% ukończone.
+
+        <br><br>
+
+        Naciśnij dowolny klawisz, aby wrócić.
+
+    </div>
+
+</div>
+
+
 <script>
 
-/* ZEGAR */
+/* =========================
+   STATE
+========================= */
 
-function updateClock() {
+let zIndex = 100;
+
+let achievements =
+    JSON.parse(
+        localStorage.getItem("piotrAchievements") || "{}"
+    );
+
+let theme =
+    localStorage.getItem("piotrTheme") || "";
+
+
+/* =========================
+   BIOS
+========================= */
+
+let biosProgress = 0;
+
+const biosInterval = setInterval(function(){
+
+    biosProgress += 10;
+
+    document.getElementById("biosBar").style.width =
+        biosProgress + "%";
+
+    const texts = [
+        "Initializing potato...",
+        "Checking ducks...",
+        "Loading questionable files...",
+        "Searching for motivation...",
+        "Installing common sense...",
+        "Common sense not found.",
+        "Starting PIOTR OS..."
+    ];
+
+    document.getElementById("biosText").textContent =
+        texts[Math.min(
+            Math.floor(biosProgress / 15),
+            texts.length - 1
+        )];
+
+    if(biosProgress >= 100){
+
+        clearInterval(biosInterval);
+
+        setTimeout(function(){
+
+            document.getElementById("bios")
+                .classList.add("hidden");
+
+            document.getElementById("login")
+                .classList.remove("hidden");
+
+        },500);
+
+    }
+
+},180);
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+    const password =
+        document.getElementById("password").value;
+
+    if(password === "1234"){
+
+        document.getElementById("login")
+            .classList.add("hidden");
+
+        document.getElementById("desktop")
+            .classList.remove("hidden");
+
+        applyTheme();
+
+        unlock("ach1");
+
+        showNotification(
+            "🔔 Witaj w PIOTR OS 2.0!"
+        );
+
+    }else{
+
+        document.getElementById("loginError")
+            .textContent =
+            "❌ Złe hasło.";
+
+    }
+
+}
+
+document
+    .getElementById("password")
+    .addEventListener("keydown",function(e){
+
+        if(e.key === "Enter"){
+            login();
+        }
+
+    });
+
+
+/* =========================
+   CLOCK
+========================= */
+
+function updateClock(){
 
     const now = new Date();
 
-    const time =
-        now.getHours().toString().padStart(2,'0')
-        + ":" +
-        now.getMinutes().toString().padStart(2,'0');
+    document.getElementById("clock")
+        .textContent =
+        now.toLocaleTimeString(
+            "pl-PL",
+            {
+                hour:"2-digit",
+                minute:"2-digit"
+            }
+        );
 
-    document.getElementById("clock").textContent = time;
 }
 
-setInterval(updateClock, 1000);
-
+setInterval(updateClock,1000);
 updateClock();
 
 
-/* OKNA */
+/* =========================
+   START MENU
+========================= */
 
-let zIndex = 10;
+function toggleStart(){
 
-function openWindow(id) {
+    document
+        .getElementById("startMenu")
+        .classList.toggle("hidden");
 
-    const win = document.getElementById(id);
+}
+
+
+/* =========================
+   WINDOWS
+========================= */
+
+function openWindow(id){
+
+    const win =
+        document.getElementById(id);
+
+    if(!win) return;
 
     win.style.display = "block";
 
@@ -575,71 +1510,408 @@ function openWindow(id) {
 
     win.style.zIndex = zIndex;
 
+    const maxX =
+        Math.max(
+            20,
+            window.innerWidth - win.offsetWidth - 20
+        );
+
+    const maxY =
+        Math.max(
+            60,
+            window.innerHeight - win.offsetHeight - 70
+        );
+
     win.style.left =
-        (100 + Math.random() * 150) + "px";
+        Math.random() * maxX + "px";
 
     win.style.top =
-        (70 + Math.random() * 100) + "px";
+        60 + Math.random() *
+        Math.max(20,maxY-60) + "px";
 
-    document.getElementById("startMenu").style.display = "none";
+    document
+        .getElementById("startMenu")
+        .classList.add("hidden");
+
+    addTaskButton(id);
+
 }
 
 
-function closeWindow(id) {
+function closeWindow(id){
 
-    document.getElementById(id).style.display = "none";
+    const win =
+        document.getElementById(id);
+
+    if(win){
+        win.style.display = "none";
+    }
 
 }
 
 
-/* START */
+function addTaskButton(id){
 
-function toggleStart() {
+    const names = {
+        computer:"💻",
+        notepad:"📝",
+        terminal:"💻",
+        calculator:"🧮",
+        internet:"🌐",
+        settings:"⚙️",
+        trash:"🗑️",
+        achievements:"🏆",
+        documents:"📁"
+    };
 
-    const menu =
-        document.getElementById("startMenu");
+    const existing =
+        document.querySelector(
+            `[data-task="${id}"]`
+        );
 
-    menu.style.display =
-        menu.style.display === "block"
-        ? "none"
-        : "block";
+    if(existing) return;
+
+    const btn =
+        document.createElement("button");
+
+    btn.className = "taskApp";
+
+    btn.dataset.task = id;
+
+    btn.textContent =
+        names[id] || "📄";
+
+    btn.onclick = function(){
+
+        const win =
+            document.getElementById(id);
+
+        if(win.style.display === "none" ||
+           win.style.display === ""){
+
+            openWindow(id);
+
+        }else{
+
+            closeWindow(id);
+
+        }
+
+    };
+
+    document
+        .getElementById("taskApps")
+        .appendChild(btn);
+
 }
 
 
-/* INTERNET */
+/* =========================
+   DRAG WINDOWS
+========================= */
 
-function internetButton() {
+document.addEventListener("mousedown",function(e){
 
-    alert(
-        "Błąd 404:\n\n" +
-        "Internet uciekł do Żabki."
+    const bar =
+        e.target.closest(".titlebar");
+
+    if(!bar) return;
+
+    const win =
+        bar.parentElement;
+
+    zIndex++;
+
+    win.style.zIndex = zIndex;
+
+    const rect =
+        win.getBoundingClientRect();
+
+    const offsetX =
+        e.clientX - rect.left;
+
+    const offsetY =
+        e.clientY - rect.top;
+
+    function move(ev){
+
+        win.style.left =
+            Math.max(
+                0,
+                ev.clientX - offsetX
+            ) + "px";
+
+        win.style.top =
+            Math.max(
+                0,
+                ev.clientY - offsetY
+            ) + "px";
+
+    }
+
+    function stop(){
+
+        document.removeEventListener(
+            "mousemove",
+            move
+        );
+
+        document.removeEventListener(
+            "mouseup",
+            stop
+        );
+
+    }
+
+    document.addEventListener(
+        "mousemove",
+        move
+    );
+
+    document.addEventListener(
+        "mouseup",
+        stop
+    );
+
+});
+
+
+/* =========================
+   NOTEPAD
+========================= */
+
+function saveNotes(){
+
+    localStorage.setItem(
+        "piotrNotes",
+        document.getElementById("notes").value
+    );
+
+    showNotification(
+        "💾 Notatki zapisane."
     );
 
 }
 
 
-/* LOSOWE AKCJE */
+function loadNotes(){
 
-function randomEvent() {
+    document.getElementById("notes").value =
+        localStorage.getItem("piotrNotes") || "";
+
+}
+
+
+/* =========================
+   CALCULATOR
+========================= */
+
+function calc(value){
+
+    document.getElementById(
+        "calcDisplay"
+    ).value += value;
+
+}
+
+
+function calculate(){
+
+    const display =
+        document.getElementById(
+            "calcDisplay"
+        );
+
+    try{
+
+        display.value =
+            Function(
+                "return " + display.value
+            )();
+
+    }catch{
+
+        display.value = "BŁĄD";
+
+    }
+
+}
+
+
+/* =========================
+   TERMINAL
+========================= */
+
+function terminalKey(e){
+
+    if(e.key !== "Enter") return;
+
+    const input =
+        document.getElementById(
+            "terminalInput"
+        );
+
+    const command =
+        input.value.trim().toLowerCase();
+
+    input.value = "";
+
+    terminalCommand(command);
+
+}
+
+
+function terminalPrint(text){
+
+    const output =
+        document.getElementById(
+            "terminalOutput"
+        );
+
+    output.textContent +=
+        "\n" + text;
+
+    output.scrollTop =
+        output.scrollHeight;
+
+}
+
+
+function terminalCommand(command){
+
+    unlock("ach4");
+
+    if(command === "help"){
+
+        terminalPrint(
+`Dostępne komendy:
+
+help
+clear
+whoami
+date
+duck
+matrix
+secret
+virus
+bsod
+sudo
+shutdown`
+        );
+
+    }
+
+    else if(command === "clear"){
+
+        document.getElementById(
+            "terminalOutput"
+        ).textContent = "";
+
+    }
+
+    else if(command === "whoami"){
+
+        terminalPrint(
+            "Jesteś użytkownikiem PIOTR OS."
+        );
+
+    }
+
+    else if(command === "date"){
+
+        terminalPrint(
+            new Date().toString()
+        );
+
+    }
+
+    else if(command === "duck"){
+
+        terminalPrint(
+            "🦆 KACZKA ZOSTAŁA PRZYWOŁANA."
+        );
+
+        unlock("ach5");
+
+        showNotification(
+            "🦆 Kaczka obserwuje."
+        );
+
+    }
+
+    else if(command === "matrix"){
+
+        terminalPrint(
+            "01001000 01000101 01001010 01011010"
+        );
+
+    }
+
+    else if(command === "secret"){
+
+        terminalPrint(
+            "🥔 Sekret: ziemniak wie wszystko."
+        );
+
+        secretFound();
+
+    }
+
+    else if(command === "virus"){
+
+        virusWarning();
+
+    }
+
+    else if(command === "bsod"){
+
+        showBSOD();
+
+    }
+
+    else if(command === "sudo"){
+
+        terminalPrint(
+            "Nie jesteś wystarczająco podejrzany."
+        );
+
+    }
+
+    else if(command === "shutdown"){
+
+        shutdown();
+
+    }
+
+    else if(command === ""){
+
+        return;
+
+    }
+
+    else{
+
+        terminalPrint(
+            "Nieznana komenda: " + command
+        );
+
+    }
+
+}
+
+
+/* =========================
+   INTERNET
+========================= */
+
+function internetAgain(){
 
     const messages = [
-
-        "🥔 Ziemniak został wykryty.",
-
-        "🚨 Uwaga: komputer jest komputerem.",
-
-        "🦆 Kaczka patrzy na Ciebie.",
-
-        "💀 System nie wie co robić.",
-
-        "📡 Znaleziono Wi-Fi sąsiada.",
-
-        "🍕 Krytyczny poziom pizzy.",
-
-        "🗿 Wszystko działa zgodnie z planem.",
-
-        "🤨 Kto Ci pozwolił wejść do ustawień?"
-
+        "Internet nadal śpi.",
+        "Router poszedł po bułki.",
+        "Kaczka ukradła Wi-Fi.",
+        "Internet został sprzedany.",
+        "Brak Internetu. Jest za drogi."
     ];
 
     alert(
@@ -653,79 +1925,356 @@ function randomEvent() {
 }
 
 
-/* WYŁĄCZANIE */
+/* =========================
+   THEMES
+========================= */
 
-function shutdown() {
+function setTheme(newTheme){
 
-    document.getElementById("desktop").innerHTML =
+    theme = newTheme;
 
-        "<div style='color:white;" +
-        "height:100vh;" +
-        "display:flex;" +
-        "align-items:center;" +
-        "justify-content:center;" +
-        "font-size:30px;" +
-        "text-align:center;'>" +
+    localStorage.setItem(
+        "piotrTheme",
+        theme
+    );
 
-        "💀<br><br>" +
-
-        "PIOTR OS został wyłączony.<br><br>" +
-
-        "<button onclick='location.reload()'>" +
-        "URUCHOM PONOWNIE" +
-        "</button>" +
-
-        "</div>";
+    applyTheme();
 
 }
 
 
-/* KALKULATOR */
+function applyTheme(){
 
-function calc(value) {
+    const desktop =
+        document.getElementById("desktop");
 
-    document.getElementById("calcDisplay").value += value;
+    desktop.classList.remove(
+        "dark",
+        "purple",
+        "green"
+    );
+
+    if(theme){
+        desktop.classList.add(theme);
+    }
 
 }
 
 
-function calculate() {
+/* =========================
+   NOTIFICATIONS
+========================= */
 
-    const display =
-        document.getElementById("calcDisplay");
+let notificationTimer;
 
-    try {
+function showNotification(text){
 
-        display.value =
-            Function(
-                "return " + display.value
-            )();
+    const n =
+        document.getElementById(
+            "notification"
+        );
 
-    } catch {
+    n.textContent = text;
 
-        display.value = "BŁĄD";
+    n.style.display = "block";
+
+    clearTimeout(notificationTimer);
+
+    notificationTimer =
+        setTimeout(function(){
+
+            n.style.display = "none";
+
+        },3500);
+
+}
+
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+function unlock(id){
+
+    achievements[id] = true;
+
+    localStorage.setItem(
+        "piotrAchievements",
+        JSON.stringify(achievements)
+    );
+
+    const element =
+        document.getElementById(id);
+
+    if(element){
+
+        element.classList.remove("locked");
+
+        element.textContent =
+            element.textContent.replace(
+                "🔒",
+                "🏆"
+            );
 
     }
 
 }
 
 
-/* POWIADOMIENIE */
+/* =========================
+   RANDOM
+========================= */
 
-setTimeout(function() {
+function randomEvent(){
 
-    const notification =
-        document.getElementById("notification");
+    const events = [
 
-    notification.style.display = "block";
+        "🥔 Ziemniak został wykryty.",
 
-    setTimeout(function() {
+        "🦆 Kaczka patrzy na Ciebie.",
 
-        notification.style.display = "none";
+        "📡 Znaleziono Wi-Fi sąsiada.",
 
-    }, 4000);
+        "🍕 Poziom pizzy: KRYTYCZNY.",
 
-}, 1500);
+        "🗿 Wszystko działa zgodnie z planem.",
+
+        "💀 System nie wie co robić.",
+
+        "🤨 Kto Ci pozwolił tu wejść?",
+
+        "💸 Znalazłeś 0,03 zł.",
+
+        "🐌 Ślimak został dodany do RAM-u."
+
+    ];
+
+    showNotification(
+        events[
+            Math.floor(
+                Math.random() * events.length
+            )
+        ]
+    );
+
+}
+
+
+/* =========================
+   SECRET
+========================= */
+
+function secretFound(){
+
+    unlock("ach2");
+
+    showNotification(
+        "🔓 ODKRYTO SEKRET!"
+    );
+
+    alert(
+        "🥔 GRATULACJE!\n\n" +
+        "Znalazłeś tajemnicę PIOTR OS.\n\n" +
+        "Ziemniak wiedział o tym od początku."
+    );
+
+}
+
+
+/* =========================
+   VIRUS
+========================= */
+
+function virusWarning(){
+
+    unlock("ach3");
+
+    const virus =
+        document.getElementById("virus");
+
+    virus.style.display = "block";
+
+    let seconds = 5;
+
+    const text =
+        document.getElementById("virusText");
+
+    const interval =
+        setInterval(function(){
+
+            text.textContent =
+                "Kasowanie systemu... " +
+                seconds + "...";
+
+            seconds--;
+
+            if(seconds < 0){
+
+                clearInterval(interval);
+
+                virus.style.display =
+                    "none";
+
+                showBSOD();
+
+            }
+
+        },700);
+
+}
+
+
+/* =========================
+   BSOD
+========================= */
+
+function showBSOD(){
+
+    document.getElementById(
+        "bsod"
+    ).style.display = "block";
+
+}
+
+
+document.addEventListener(
+    "keydown",
+    function(){
+
+        const bsod =
+            document.getElementById(
+                "bsod"
+            );
+
+        if(
+            bsod.style.display === "block"
+        ){
+
+            bsod.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+/* =========================
+   CONTEXT MENU
+========================= */
+
+document
+    .getElementById("desktop")
+    .addEventListener(
+        "contextmenu",
+        function(e){
+
+            e.preventDefault();
+
+            const menu =
+                document.getElementById(
+                    "contextMenu"
+                );
+
+            menu.style.display = "block";
+
+            menu.style.left =
+                e.clientX + "px";
+
+            menu.style.top =
+                e.clientY + "px";
+
+        }
+    );
+
+
+document.addEventListener(
+    "click",
+    function(){
+
+        document.getElementById(
+            "contextMenu"
+        ).style.display = "none";
+
+    }
+);
+
+
+/* =========================
+   REFRESH
+========================= */
+
+function refreshDesktop(){
+
+    showNotification(
+        "🔄 Pulpit został odświeżony."
+    );
+
+}
+
+
+/* =========================
+   TRASH
+========================= */
+
+function emptyTrash(){
+
+    alert(
+        "🗑️ Kosz opróżniony.\n\n" +
+        "47 plików przestało istnieć."
+    );
+
+}
+
+
+/* =========================
+   SHUTDOWN
+========================= */
+
+function shutdown(){
+
+    document.getElementById(
+        "desktop"
+    ).innerHTML = `
+
+        <div style="
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            background:#000;
+            color:white;
+            font-family:monospace;
+            text-align:center;
+        ">
+
+            <div style="font-size:70px">
+                🥔
+            </div>
+
+            <h1>PIOTR OS został wyłączony.</h1>
+
+            <p>
+                Dziękujemy za korzystanie z
+                najbardziej potrzebnego systemu
+                operacyjnego na świecie.
+            </p>
+
+            <button
+                onclick="location.reload()"
+                style="
+                    padding:14px 25px;
+                    cursor:pointer;
+                "
+            >
+                🔄 URUCHOM PONOWNIE
+            </button>
+
+        </div>
+    `;
+
+}
 
 </script>
 
