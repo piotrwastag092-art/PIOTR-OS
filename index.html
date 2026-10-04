@@ -6796,8 +6796,96 @@ async function loadCatWall6(){
   for(let i=0;i<6;i++){const img=document.createElement('img');img.loading='lazy';img.alt='brainrot cat';img.src='https://cataas.com/cat/gif?'+Date.now()+'_'+i;img.title=captions[i%captions.length];wall.appendChild(img)}
 }
 
+
+/* ---------- REAL BROWSER MODE (Electron) ----------
+   A normal browser page cannot be made universal with iframe/fetch alone:
+   many sites deliberately block embedding and browser JS is restricted by CORS.
+   When PIOTREK OS runs in Electron, the Internet app uses a real Chromium
+   <webview> so Google and ordinary websites can navigate normally.
+*/
+const PIOTREK_REAL_BROWSER = !!window.electronAPI;
+let piotrekWebview6 = null;
+let piotrekBrowserWin6 = null;
+
+function normalizeWebAddress6(raw){
+  raw=(raw||'').trim();
+  if(!raw) return 'https://www.google.com/';
+  if(/^piotr:\/\//i.test(raw)) raw=raw.replace(/^piotr:\/\//i,'');
+  if(/^[a-z]+:\/\//i.test(raw)) return raw;
+  if(/^[\w.-]+\.[a-z]{2,}(\/.*)?$/i.test(raw)) return 'https://'+raw;
+  return 'https://www.google.com/search?q='+encodeURIComponent(raw);
+}
+function setRealBrowserAddress6(url){
+  const input=piotrekBrowserWin6?.querySelector('#browserAddress6');
+  if(input) input.value=url||'';
+}
+function realBrowserNavigate6(raw){
+  if(!piotrekWebview6)return;
+  const url=normalizeWebAddress6(raw);
+  piotrekWebview6.src=url;
+  setRealBrowserAddress6(url);
+  state.browserHistory=state.browserHistory||[];
+  state.browserHistory.push(url);
+  state.browserHistory=state.browserHistory.slice(-100);
+  saveState();
+}
+function realBrowserSearch6(){
+  const input=piotrekBrowserWin6?.querySelector('#browserAddress6');
+  realBrowserNavigate6(input?.value||'');
+}
+function realBrowserHome6(){realBrowserNavigate6('https://www.google.com/');}
+function realBrowserBack6(){try{if(piotrekWebview6?.canGoBack())piotrekWebview6.goBack()}catch{}}
+function realBrowserForward6(){try{if(piotrekWebview6?.canGoForward())piotrekWebview6.goForward()}catch{}}
+function realBrowserReload6(){try{piotrekWebview6?.reload()}catch{}}
+function realBrowserExternal6(){
+  const u=piotrekWebview6?.getURL?.();
+  if(u && window.electronAPI?.openExternal) window.electronAPI.openExternal(u);
+}
+function realBrowserOpen6(){
+  const win=createWindow('Internet — prawdziwa przeglądarka','🌐',`
+    <div class="browser" style="height:100%;display:flex;flex-direction:column">
+      <div class="browser-bar">
+        <button onclick="realBrowserBack6()">←</button>
+        <button onclick="realBrowserForward6()">→</button>
+        <button onclick="realBrowserReload6()">↻</button>
+        <button onclick="realBrowserHome6()">⌂</button>
+        <input id="browserAddress6" value="https://www.google.com/" placeholder="Adres lub wyszukiwanie Google..." onkeydown="if(event.key==='Enter')realBrowserSearch6()">
+        <button onclick="realBrowserSearch6()">GO</button>
+        <button onclick="realBrowserExternal6()" title="Otwórz w normalnej karcie Chrome">↗</button>
+      </div>
+      <div class="browser-tabs" style="margin:0 0 6px 0">
+        <div class="browser-tab active">🌐 Internet</div>
+        <div class="browser-tab" onclick="realBrowserHome6()">Google</div>
+        <div class="browser-tab" onclick="realBrowserNavigate6('https://www.youtube.com/')">YouTube</div>
+      </div>
+      <div id="realBrowserStatus6" class="muted" style="padding:3px 8px">Łączenie z internetem…</div>
+      <webview id="piotrekWebview6" src="https://www.google.com/" style="flex:1;width:100%;border:0" allowpopups partition="persist:piotrek-browser"></webview>
+    </div>
+  `,1100,700);
+  piotrekBrowserWin6=win;
+  piotrekWebview6=win.querySelector('#piotrekWebview6');
+  const status=win.querySelector('#realBrowserStatus6');
+  const address=win.querySelector('#browserAddress6');
+  if(!piotrekWebview6)return win;
+  piotrekWebview6.addEventListener('did-start-loading',()=>{if(status)status.textContent='Ładowanie…';});
+  piotrekWebview6.addEventListener('did-stop-loading',()=>{if(status)status.textContent='Połączono';setRealBrowserAddress6(piotrekWebview6.getURL());});
+  piotrekWebview6.addEventListener('did-fail-load',e=>{if(status)status.textContent='Nie udało się załadować strony: '+(e.errorDescription||'błąd sieci');});
+  piotrekWebview6.addEventListener('did-navigate',e=>setRealBrowserAddress6(e.url));
+  piotrekWebview6.addEventListener('did-navigate-in-page',e=>setRealBrowserAddress6(e.url));
+  piotrekWebview6.addEventListener('page-title-updated',e=>{const t=win.querySelector('.window-title');if(t)t.textContent='🌐 '+(e.title||'Internet — prawdziwa przeglądarka');});
+  piotrekWebview6.addEventListener('new-window',e=>{e.preventDefault();piotrekWebview6.src=e.url;});
+  piotrekWebview6.addEventListener('dom-ready',()=>{if(status)status.textContent='Połączono';});
+  address?.focus();
+  return win;
+}
+
+if(PIOTREK_REAL_BROWSER){
+  const legacyOpenInternet6=openInternet;
+  openInternet=function(){return realBrowserOpen6();};
+}
+
 /* ---------- BOT WITH REAL WEB AWARENESS ---------- */
-function botWebEnabled6(){return location.protocol!=='file:'}
+function botWebEnabled6(){return !!window.electronAPI || location.protocol!=='file:'}
 function getBotGreeting(){
   if(state.chaos>70)return "Witaj. Nie wiem, dlaczego system jeszcze działa, ale mam dostęp do internetu i to chyba pogarsza sprawę.";
   if(state.sessions>3)return "Znowu Ty. Pamiętam poprzednie sesje. Dodatkowo mogę teraz sprawdzać prawdziwy internet.";
